@@ -1,0 +1,18 @@
+# Go binaries and build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+bin/
+
+# Our local generated configs
+sub/
+
+# IDE and OS specific files
+.vscode/
+.idea/
+.DS_Store
+*.swp
