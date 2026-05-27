@@ -1,4 +1,4 @@
-name: Hourly V2Ray Scraper
+name: Hourly Config Scraper
 
 on:
   schedule:
