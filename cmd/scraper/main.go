@@ -7,105 +7,118 @@ import (
 
     "ConfigHub/internal/config"
     "ConfigHub/internal/exporter"
-    "ConfigHub/internal/parser" // Import our new parser
+    "ConfigHub/internal/geoip"
+    "ConfigHub/internal/parser"
     "ConfigHub/internal/scraper"
+
+    "github.com/oschwald/maxminddb-golang"
 )
 
-// helper to convert map values to a slice
-func getMapValues(m map[string]string) []string {
-    var s []string
-    for _, v := range m {
-        s = append(s, v)
-    }
-    return s
+// ConfigItem holds the raw link and the channel it was found in
+type ConfigItem struct {
+    Raw     string
+    Channel string
 }
 
 func main() {
-    channels, err := config.ReadChannels("channels.txt")
+    // 1. Prepare GeoIP Database
+    err := geoip.EnsureDB()
     if err != nil {
-        log.Fatalf("[-] Critical Error: Could not read channels.txt: %v\n", err)
+        log.Fatalf("[-] Failed to download GeoIP DB: %v", err)
     }
+    db, err := maxminddb.Open("GeoLite2-Country.mmdb")
+    if err != nil {
+        log.Fatalf("[-] Failed to open GeoIP DB: %v", err)
+    }
+    defer db.Close()
 
-    if len(channels) == 0 {
-        log.Fatalf("[-] No channels found. Please add some to channels.txt!")
+    // 2. Read Channels
+    channels, err := config.ReadChannels("channels.txt")
+    if err != nil || len(channels) == 0 {
+        log.Fatalf("[-] Critical Error: channels.txt missing or empty.")
     }
 
     fmt.Printf("Loaded %d channels. Starting scraper...\n", len(channels))
 
-    // Changed to map[string]string
-    // Key = Semantic Fingerprint, Value = Original Raw Config
-    uniqueVmess := make(map[string]string)
-    uniqueVless := make(map[string]string)
-    uniqueTrojan := make(map[string]string)
-    uniqueSS := make(map[string]string)
+    // Deduplication maps
+    uniqueVmess := make(map[string]ConfigItem)
+    uniqueVless := make(map[string]ConfigItem)
+    uniqueTrojan := make(map[string]ConfigItem)
+    uniqueSS := make(map[string]ConfigItem)
 
     var mu sync.Mutex
     var wg sync.WaitGroup
 
+    // 3. Scrape Concurrently
     for _, ch := range channels {
         wg.Add(1)
         go func(channel string) {
             defer wg.Done()
-
             configs, err := scraper.ScrapeChannel(channel)
             if err != nil {
-                fmt.Printf("[-] Failed to scrape %s: %v\n", channel, err)
                 return
             }
 
             mu.Lock()
-            // Use the parser to generate fingerprints
             for _, c := range configs.Vmess {
                 fp := parser.GetFingerprint(c)
                 if _, exists := uniqueVmess[fp]; !exists {
-                    uniqueVmess[fp] = c
+                    uniqueVmess[fp] = ConfigItem{Raw: c, Channel: channel}
                 }
             }
             for _, c := range configs.Vless {
                 fp := parser.GetFingerprint(c)
                 if _, exists := uniqueVless[fp]; !exists {
-                    uniqueVless[fp] = c
+                    uniqueVless[fp] = ConfigItem{Raw: c, Channel: channel}
                 }
             }
             for _, c := range configs.Trojan {
                 fp := parser.GetFingerprint(c)
                 if _, exists := uniqueTrojan[fp]; !exists {
-                    uniqueTrojan[fp] = c
+                    uniqueTrojan[fp] = ConfigItem{Raw: c, Channel: channel}
                 }
             }
             for _, c := range configs.SS {
                 fp := parser.GetFingerprint(c)
                 if _, exists := uniqueSS[fp]; !exists {
-                    uniqueSS[fp] = c
+                    uniqueSS[fp] = ConfigItem{Raw: c, Channel: channel}
                 }
             }
             mu.Unlock()
-
-            totalFound := len(configs.Vmess) + len(configs.Vless) + len(configs.Trojan) + len(configs.SS)
-            fmt.Printf("[+] %s: Found %d configs\n", channel, totalFound)
+            fmt.Printf("[+] %s: Scraped\n", channel)
         }(ch)
     }
 
     wg.Wait()
 
-    // Extract the pure slices of unique configs
-    finalVmess := getMapValues(uniqueVmess)
-    finalVless := getMapValues(uniqueVless)
-    finalTrojan := getMapValues(uniqueTrojan)
-    finalSS := getMapValues(uniqueSS)
+    // 4. Rename configs using GeoIP & Channel ID
+    fmt.Println("\n[*] Resolving IPs and Applying GeoIP Names. This may take a moment...")
 
-    fmt.Println("\n--- Deduplication Complete ---")
+    finalVmess := processAndRename(uniqueVmess, db)
+    finalVless := processAndRename(uniqueVless, db)
+    finalTrojan := processAndRename(uniqueTrojan, db)
+    finalSS := processAndRename(uniqueSS, db)
+
+    // 5. Export Files
+    fmt.Println("\n--- Deduplication & Renaming Complete ---")
     fmt.Printf("VMess:  %d unique\n", len(finalVmess))
     fmt.Printf("VLESS:  %d unique\n", len(finalVless))
     fmt.Printf("Trojan: %d unique\n", len(finalTrojan))
     fmt.Printf("SS:     %d unique\n", len(finalSS))
 
-    // Pass the slices to the exporter
-    outputDirectory := "sub"
-    err = exporter.WriteSubFiles(outputDirectory, finalVmess, finalVless, finalTrojan, finalSS)
+    err = exporter.WriteSubFiles("sub", finalVmess, finalVless, finalTrojan, finalSS)
     if err != nil {
         log.Fatalf("[-] Error saving files: %v\n", err)
     }
+    fmt.Println("[+] Successfully exported Geo-named files to 'sub/'!")
+}
 
-    fmt.Printf("[+] Successfully saved highly-deduplicated files to '%s/'!\n", outputDirectory)
+// processAndRename iterates through the map and renames each config
+func processAndRename(configMap map[string]ConfigItem, db *maxminddb.Reader) []string {
+    var results []string
+    for _, item := range configMap {
+        renamed := parser.RenameConfig(item.Raw, item.Channel, db)
+        results = append(results, renamed)
+    }
+    return results
 }
