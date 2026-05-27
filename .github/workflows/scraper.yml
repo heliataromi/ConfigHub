@@ -3,22 +3,22 @@ name: Hourly Config Scraper
 on:
   schedule:
     - cron: '0 * * * *'  # Runs exactly at the top of every hour
-  workflow_dispatch:     # Gives you a "Run workflow" button in the GitHub UI for manual testing
+  workflow_dispatch:     # Gives a "Run workflow" button in the GitHub UI for manual testing
 
 permissions:
-  contents: write        # Crucial: allows the bot to push code back to your repo
+  contents: write
 
 jobs:
   scrape-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Main Branch
-        uses: actions/checkout@v4
+      - name: Checkout Master Branch
+        uses: actions/checkout@v6
 
       - name: Setup Go Environment
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version: '1.22'
+          go-version: '1.26'
 
       - name: Run Go Scraper
         run: go run cmd/scraper/main.go
@@ -38,7 +38,7 @@ jobs:
           
           # 4. Add the generated text files and commit them
           git add .
-          git commit -m "Auto-update V2Ray configs: $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git commit -m "Auto-update configs: $(date -u +'%Y-%m-%d %H:%M UTC')"
           
           # 5. Force-push this fresh history to the 'subscription' branch on GitHub
           # This overwrites the old branch entirely, keeping only 1 commit in history!
