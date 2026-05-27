@@ -36,7 +36,7 @@ func renameStandard(link, channel string, db *maxminddb.Reader) string {
 
     // Get Geo Data
     iso, flag := geoip.GetCountry(address, db)
-    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channel)
+    newName := fmt.Sprintf("%s %s - [@%s]", flag, iso, channel)
 
     // Strip the old remark (anything after #) and append the new one
     baseLink := strings.Split(link, "#")[0]
@@ -65,7 +65,7 @@ func renameVMess(link, channel string, db *maxminddb.Reader) string {
 
     address := safeString(v["add"])
     iso, flag := geoip.GetCountry(address, db)
-    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channel)
+    newName := fmt.Sprintf("%s %s - [@%s]", flag, iso, channel)
 
     // Replace the old remark with the new one
     v["ps"] = newName

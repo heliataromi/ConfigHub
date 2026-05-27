@@ -41,8 +41,6 @@ func EnsureDB() error {
 
 // GetCountry returns the Country ISO Code and Emoji Flag for a given IP or Domain
 func GetCountry(address string, db *maxminddb.Reader) (string, string) {
-    // If it's a Cloudflare IP, we can hardcode it or let the DB label it US.
-    // For now, we resolve the domain to an IP.
     ip := net.ParseIP(address)
     if ip == nil {
         // It's a domain, resolve it with a 2-second timeout
@@ -64,11 +62,18 @@ func GetCountry(address string, db *maxminddb.Reader) (string, string) {
 
     err := db.Lookup(ip, &record)
     if err != nil || record.Country.IsoCode == "" {
-        return "RELAY", "☁️" // Likely a CDN or unrecognized IP
+        return "CDN/RELAY", "☁️" // Likely a CDN or unrecognized IP
     }
 
     iso := record.Country.IsoCode
-    return iso, getFlag(iso)
+    flag := getFlag(iso)
+
+    // If the server is physically in Iran, label it as a Domestic Relay
+    if iso == "IR" {
+        iso = "IR-RELAY"
+    }
+
+    return iso, flag
 }
 
 // getFlag converts a 2-letter ISO code into an Emoji Flag
