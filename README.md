@@ -15,8 +15,8 @@ An automated V2Ray configuration scraper built in Go. This tool scrapes various 
 
 ### ✨ Features
 * **🔄 Hourly Updates:** Runs automatically every hour via GitHub Actions.
-* **🧠 Smart Deduplication:** Parses actual URL parameters to eliminate duplicates, even if the query strings are scrambled or re-ordered.
-* **🌍 GeoIP & Tunnel Recognition:** Automatically resolves IPs and domains to assign country flags (e.g., `🇩🇪 DE`).
+* **🫆 Deduplication:** Parses actual URL parameters to eliminate duplicates, even if the query strings are scrambled or re-ordered.
+* **🌍 GeoIP Recognition:** Automatically resolves IPs and domains to assign country flags (e.g., `🇩🇪 DE`).
 * **🗂 Categorized & Encoded:** Generates separate files for each protocol (VLESS, VMess, Trojan, SS) in both Normal and Base64 formats to support all clients.
 
 ### 🔗 Subscription Links
@@ -55,7 +55,7 @@ Copy the link corresponding to your preferred protocol and import it into your V
 
 ### ✨ ویژگی‌ها
 * **🔄 به‌روزرسانی ساعتی:** جمع‌آوری خودکار کانفیگ‌های جدید هر ۱ ساعت از طریق GitHub Actions.
-* **🧠 حذف تکراری‌ها (Deduplication):** بررسی پارامترهای کانفیگ برای حذف کانفیگ‌های تکراری.
+* **🫆 حذف تکراری‌ها (Deduplication):** بررسی پارامترهای کانفیگ برای حذف کانفیگ‌های تکراری.
 * **🌍 تشخیص لوکیشن:** استخراج IP و دامنه، و نمایش پرچم کشورها (مثلاً `🇩🇪 DE`).
 * **🗂 دسته‌بندی و انکود Base64:** تفکیک کانفیگ‌ها بر اساس پروتکل (VLESS, VMess, Trojan, SS) و ارائهٔ نسخه Base64 برای سازگاری کامل با آیفون.
 
