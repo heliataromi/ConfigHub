@@ -4,6 +4,7 @@ import (
     "encoding/base64"
     "encoding/json"
     "fmt"
+    "net/url"
     "strings"
 )
 
@@ -13,10 +14,34 @@ func GetFingerprint(link string) string {
         return getVMessFingerprint(link)
     }
 
-    // For VLESS, Trojan, and SS, the remark is always appended after a '#' character.
-    // By splitting at '#' and taking the first part, we drop the remark but keep
-    // all the core connection details (UUID/Password, Host, Port) and query parameters (ws, tls).
-    return strings.Split(link, "#")[0]
+    return getStandardFingerprint(link)
+}
+
+// getStandardFingerprint parses URI schemes (vless://, trojan://, ss://)
+// and normalizes them by sorting query parameters and dropping useless ones.
+func getStandardFingerprint(link string) string {
+    // Strip the remark first
+    raw := strings.Split(link, "#")[0]
+
+    u, err := url.Parse(raw)
+    if err != nil {
+        // If URL parsing fails, fallback to raw string
+        return raw
+    }
+
+    // Extract query parameters
+    q := u.Query()
+
+    // Delete parameters that are just defaults and cause false-duplicates
+    q.Del("insecure")
+    q.Del("allowInsecure")
+
+    // u.Query().Encode() automatically sorts the keys alphabetically!
+    u.RawQuery = q.Encode()
+    u.Fragment = "" // Ensure the remark is completely gone
+
+    // Return the standardized URL string as the fingerprint
+    return u.String()
 }
 
 // getVMessFingerprint decodes the VMess Base64 JSON and creates a unique identifier

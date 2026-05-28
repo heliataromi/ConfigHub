@@ -2,6 +2,7 @@ package scraper
 
 import (
     "fmt"
+    "html"
     "net/http"
     "strings"
     "time"
@@ -62,9 +63,12 @@ func ScrapeChannel(channel string) (extractor.Configs, error) {
             // Get the message text HTML
             htmlContent, _ := s.Find(".tgme_widget_message_text").Html()
 
-            // Replace HTML line breaks with actual newlines so Regex doesn't break
+            // Replace HTML line breaks with actual newlines
             textContent := strings.ReplaceAll(htmlContent, "<br/>", "\n")
             textContent = strings.ReplaceAll(textContent, "<br>", "\n")
+
+            // Unescape HTML entities (converts &amp; to &, &quot; to ", etc.)
+            textContent = html.UnescapeString(textContent)
 
             rawTexts = append(rawTexts, textContent)
         }
