@@ -1,9 +1,9 @@
-name: Hourly Config Scraper
+name: Automatic Config Scraper
 
 on:
   schedule:
-    - cron: '23 * * * *'  # Runs at minute 23 past every hour
-  workflow_dispatch:      # Gives a "Run workflow" button in the GitHub UI for manual testing
+    - cron: '*/12 * * * *'  # Run every 12 minutes
+  workflow_dispatch:        # Gives a "Run workflow" button in the GitHub UI for manual testing
 
 permissions:
   contents: write
