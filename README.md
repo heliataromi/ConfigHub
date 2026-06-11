@@ -27,6 +27,7 @@ Copy the link corresponding to your preferred protocol and import it into your V
 | Protocol |                                  Normal Link (Standard)                                   |                                     Base64 Link (iOS / Legacy)                                     |
 | :--- |:-----------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------:|
 | **Mixed (All)** | [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/mixed.txt)  | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/mixed_base64.txt)  |
+| **Mixed Lite (Mobile)** | [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/mixed_lite.txt)  | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/mixed_lite_base64.txt)  |
 | **VLESS** | [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vless.txt)  | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vless_base64.txt)  |
 | **VMess** | [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vmess.txt)  | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vmess_base64.txt)  |
 | **Trojan** | [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/trojan.txt) | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/trojan_base64.txt) |
@@ -73,6 +74,7 @@ Copy the link corresponding to your preferred protocol and import it into your V
 | پروتکل |                                   لینک معمولی (Standard)                                    |                                      لینک Base64 (مخصوص iOS)                                       |
 | :--- |:-------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------:|
 | **ترکیبی (همه)** | [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/mixed.txt)  | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/mixed_base64.txt)  |
+| **ترکیبی لایت (موبایل)** | [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/mixed_lite.txt)  | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/mixed_lite_base64.txt)  |
 | **VLESS** | [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vless.txt)  | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vless_base64.txt)  |
 | **VMess** | [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vmess.txt)  | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vmess_base64.txt)  |
 | **Trojan** | [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/trojan.txt) | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/trojan_base64.txt) |

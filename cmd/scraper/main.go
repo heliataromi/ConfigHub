@@ -20,6 +20,7 @@ import (
 type ConfigItem struct {
     Raw     string
     Channel string
+    Source  string
 }
 
 func main() {
@@ -69,11 +70,11 @@ func main() {
     var wg sync.WaitGroup
 
     // Helper function to deduplicate configs
-    processConfigs := func(configs []string, proto string, channel string) {
+    processConfigs := func(configs []string, proto string, channel string, source string) {
         for _, c := range configs {
             fp := parser.GetFingerprint(c)
             if _, exists := uniqueConfigs[proto][fp]; !exists {
-                uniqueConfigs[proto][fp] = ConfigItem{Raw: c, Channel: channel}
+                uniqueConfigs[proto][fp] = ConfigItem{Raw: c, Channel: channel, Source: source}
             }
         }
     }
@@ -89,16 +90,16 @@ func main() {
             }
 
             mu.Lock()
-            processConfigs(configs.Vmess, "vmess", channel)
-            processConfigs(configs.Vless, "vless", channel)
-            processConfigs(configs.Trojan, "trojan", channel)
-            processConfigs(configs.SS, "ss", channel)
-            processConfigs(configs.SSR, "ssr", channel)
-            processConfigs(configs.TUIC, "tuic", channel)
-            processConfigs(configs.Hy2, "hy2", channel)
-            processConfigs(configs.Hysteria, "hysteria", channel)
-            processConfigs(configs.Socks, "socks", channel)
-            processConfigs(configs.WireGuard, "wireguard", channel)
+            processConfigs(configs.Vmess, "vmess", channel, "channel")
+            processConfigs(configs.Vless, "vless", channel, "channel")
+            processConfigs(configs.Trojan, "trojan", channel, "channel")
+            processConfigs(configs.SS, "ss", channel, "channel")
+            processConfigs(configs.SSR, "ssr", channel, "channel")
+            processConfigs(configs.TUIC, "tuic", channel, "channel")
+            processConfigs(configs.Hy2, "hy2", channel, "channel")
+            processConfigs(configs.Hysteria, "hysteria", channel, "channel")
+            processConfigs(configs.Socks, "socks", channel, "channel")
+            processConfigs(configs.WireGuard, "wireguard", channel, "channel")
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped\n", channel)
         }(ch)
@@ -129,16 +130,16 @@ func main() {
             }
 
             mu.Lock()
-            processConfigs(configs.Vmess, "vmess", shortName)
-            processConfigs(configs.Vless, "vless", shortName)
-            processConfigs(configs.Trojan, "trojan", shortName)
-            processConfigs(configs.SS, "ss", shortName)
-            processConfigs(configs.SSR, "ssr", shortName)
-            processConfigs(configs.TUIC, "tuic", shortName)
-            processConfigs(configs.Hy2, "hy2", shortName)
-            processConfigs(configs.Hysteria, "hysteria", shortName)
-            processConfigs(configs.Socks, "socks", shortName)
-            processConfigs(configs.WireGuard, "wireguard", shortName)
+            processConfigs(configs.Vmess, "vmess", shortName, "subscription")
+            processConfigs(configs.Vless, "vless", shortName, "subscription")
+            processConfigs(configs.Trojan, "trojan", shortName, "subscription")
+            processConfigs(configs.SS, "ss", shortName, "subscription")
+            processConfigs(configs.SSR, "ssr", shortName, "subscription")
+            processConfigs(configs.TUIC, "tuic", shortName, "subscription")
+            processConfigs(configs.Hy2, "hy2", shortName, "subscription")
+            processConfigs(configs.Hysteria, "hysteria", shortName, "subscription")
+            processConfigs(configs.Socks, "socks", shortName, "subscription")
+            processConfigs(configs.WireGuard, "wireguard", shortName, "subscription")
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped\n", shortName)
         }(sub)
@@ -149,7 +150,7 @@ func main() {
     // 4. Rename configs using GeoIP & Channel ID
     fmt.Println("\n[*] Resolving IPs and Applying GeoIP Names. This may take a moment...")
 
-    finalConfigs := make(map[string][]string)
+    finalConfigs := make(map[string][]exporter.RenamedConfig)
     for proto, cmap := range uniqueConfigs {
         renamed := processAndRename(cmap, db)
         if len(renamed) > 0 {
@@ -171,11 +172,11 @@ func main() {
 }
 
 // processAndRename iterates through the map and renames each config
-func processAndRename(configMap map[string]ConfigItem, db *maxminddb.Reader) []string {
-    var results []string
+func processAndRename(configMap map[string]ConfigItem, db *maxminddb.Reader) []exporter.RenamedConfig {
+    var results []exporter.RenamedConfig
     for _, item := range configMap {
         renamed := parser.RenameConfig(item.Raw, item.Channel, db)
-        results = append(results, renamed)
+        results = append(results, exporter.RenamedConfig{URL: renamed, Source: item.Source})
     }
     return results
 }

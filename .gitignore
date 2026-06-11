@@ -17,4 +17,4 @@ sub/
 .DS_Store
 *.swp
 GeoLite2-Country.mmdb
-scraper
+/scraper

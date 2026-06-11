@@ -11,8 +11,14 @@ import (
     ptime "github.com/yaa110/go-persian-calendar"
 )
 
+// RenamedConfig holds the final config string and its original source type
+type RenamedConfig struct {
+    URL    string
+    Source string
+}
+
 // WriteSubFiles generates standard and Base64 encoded subscription files from a map of configs
-func WriteSubFiles(outDir string, configsMap map[string][]string) error {
+func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
     // 1. Ensure the output directory exists
     err := os.MkdirAll(outDir, 0755)
     if err != nil {
@@ -21,13 +27,22 @@ func WriteSubFiles(outDir string, configsMap map[string][]string) error {
 
     // Combine all for the "mixed" file
     var mixed []string
+    var mixedLite []string
     filesToCreate := make(map[string][]string)
     
     for protocolName, configs := range configsMap {
-        mixed = append(mixed, configs...)
-        filesToCreate[protocolName+".txt"] = configs
+        var protoConfigs []string
+        for _, c := range configs {
+            protoConfigs = append(protoConfigs, c.URL)
+            mixed = append(mixed, c.URL)
+            if c.Source == "channel" {
+                mixedLite = append(mixedLite, c.URL)
+            }
+        }
+        filesToCreate[protocolName+".txt"] = protoConfigs
     }
     filesToCreate["mixed.txt"] = mixed
+    filesToCreate["mixed_lite.txt"] = mixedLite
 
     // Generate dummy config with Jalali timestamp
     loc := time.FixedZone("IRST", int(3.5*3600))
