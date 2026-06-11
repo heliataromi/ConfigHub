@@ -10,3 +10,7 @@ https://raw.githubusercontent.com/mahsanet/MahsaFreeConfig/refs/heads/main/mtn/s
 https://raw.githubusercontent.com/masir-sefid/Sub/main/@Masir_Sefid.txt
 https://raw.githubusercontent.com/Rayan-Config/C-Sub/refs/heads/main/configs/proxy.txt
 https://raw.githubusercontent.com/ShadowException/VPN/refs/heads/main/configs/VPN-cat
+https://bin.mudfish.net/r/335-9603-5234#DailyV2ry
+https://key.zarazaex.xyz/sub
+https://sub.shadowproxy66.workers.dev/sub/be80a76c-6044-417c-9bff-e587f9380d05#ShadowProxy66(1)
+https://sub.shadowproxy66.workers.dev/sub/214abfe9-791e-44ba-bd8e-0afe298119f6#ShadowProxy66(2)
