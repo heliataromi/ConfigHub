@@ -15,4 +15,4 @@ sub/
 .vscode/
 .idea/
 .DS_Store
-*.swp
+*.swpGeoLite2-Country.mmdb

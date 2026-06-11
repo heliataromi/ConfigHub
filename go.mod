@@ -5,6 +5,7 @@ go 1.26
 require (
 	github.com/PuerkitoBio/goquery v1.12.0
 	github.com/oschwald/maxminddb-golang v1.13.1
+	github.com/yaa110/go-persian-calendar v1.3.0
 )
 
 require (
