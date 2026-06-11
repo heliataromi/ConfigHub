@@ -3,6 +3,8 @@ package main
 import (
     "fmt"
     "log"
+    "net/url"
+    "strings"
     "sync"
 
     "ConfigHub/internal/config"
@@ -100,18 +102,26 @@ func main() {
 
     for _, sub := range subscriptions {
         wg.Add(1)
-        go func(url string) {
+        go func(subURL string) {
             defer wg.Done()
-            configs, err := scraper.ScrapeSubscription(url)
+            configs, err := scraper.ScrapeSubscription(subURL)
             if err != nil {
-                fmt.Printf("[-] Error scraping subscription %s: %v\n", url, err)
+                fmt.Printf("[-] Error scraping subscription %s: %v\n", subURL, err)
                 return
             }
 
-            // Create a short name for the URL to use as the channel name
-            shortName := url
-            if len(url) > 30 {
-                shortName = url[:30] + "..."
+            // Create a short name for the subURL to use as the channel name
+            shortName := subURL
+            if parsedURL, err := url.Parse(subURL); err == nil {
+                if parsedURL.Hostname() == "raw.githubusercontent.com" || parsedURL.Hostname() == "github.com" {
+                    parts := strings.Split(strings.Trim(parsedURL.Path, "/"), "/")
+                    if len(parts) > 0 {
+                        shortName = "github.com/" + parts[0]
+                    }
+                }
+            }
+            if shortName == subURL && len(subURL) > 30 {
+                shortName = subURL[:30] + "..."
             }
 
             mu.Lock()
