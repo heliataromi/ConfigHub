@@ -6,16 +6,16 @@ import (
     "strings"
 )
 
-// ReadChannels reads the channel IDs from a specified text file.
+// ReadLines reads lines from a specified text file.
 // It automatically skips empty lines and comments (lines starting with #).
-func ReadChannels(filePath string) ([]string, error) {
+func ReadLines(filePath string) ([]string, error) {
     file, err := os.Open(filePath)
     if err != nil {
         return nil, err // Return the error if the file doesn't exist
     }
     defer file.Close()
 
-    var channels []string
+    var lines []string
     scanner := bufio.NewScanner(file)
 
     for scanner.Scan() {
@@ -27,7 +27,7 @@ func ReadChannels(filePath string) ([]string, error) {
             continue
         }
 
-        channels = append(channels, line)
+        lines = append(lines, line)
     }
 
     // Check if the scanner encountered any errors during reading
@@ -35,5 +35,5 @@ func ReadChannels(filePath string) ([]string, error) {
         return nil, err
     }
 
-    return channels, nil
+    return lines, nil
 }

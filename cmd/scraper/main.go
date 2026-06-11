@@ -32,13 +32,22 @@ func main() {
     }
     defer db.Close()
 
-    // 2. Read Channels
-    channels, err := config.ReadChannels("channels.txt")
-    if err != nil || len(channels) == 0 {
-        log.Fatalf("[-] Critical Error: channels.txt missing or empty.")
+    // 2. Read Channels & Subscriptions
+    channels, errC := config.ReadLines("channels.txt")
+    if errC != nil {
+        fmt.Println("[-] Warning: could not read channels.txt")
     }
 
-    fmt.Printf("Loaded %d channels. Starting scraper...\n", len(channels))
+    subscriptions, errS := config.ReadLines("subscriptions.txt")
+    if errS != nil {
+        fmt.Println("[-] Warning: could not read subscriptions.txt")
+    }
+
+    if len(channels) == 0 && len(subscriptions) == 0 {
+        log.Fatalf("[-] Critical Error: Both channels.txt and subscriptions.txt are missing or empty.")
+    }
+
+    fmt.Printf("Loaded %d channels and %d subscriptions. Starting scraper...\n", len(channels), len(subscriptions))
 
     // Deduplication maps
     uniqueVmess := make(map[string]ConfigItem)
@@ -87,6 +96,52 @@ func main() {
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped\n", channel)
         }(ch)
+    }
+
+    for _, sub := range subscriptions {
+        wg.Add(1)
+        go func(url string) {
+            defer wg.Done()
+            configs, err := scraper.ScrapeSubscription(url)
+            if err != nil {
+                fmt.Printf("[-] Error scraping subscription %s: %v\n", url, err)
+                return
+            }
+
+            // Create a short name for the URL to use as the channel name
+            shortName := url
+            if len(url) > 30 {
+                shortName = url[:30] + "..."
+            }
+
+            mu.Lock()
+            for _, c := range configs.Vmess {
+                fp := parser.GetFingerprint(c)
+                if _, exists := uniqueVmess[fp]; !exists {
+                    uniqueVmess[fp] = ConfigItem{Raw: c, Channel: shortName}
+                }
+            }
+            for _, c := range configs.Vless {
+                fp := parser.GetFingerprint(c)
+                if _, exists := uniqueVless[fp]; !exists {
+                    uniqueVless[fp] = ConfigItem{Raw: c, Channel: shortName}
+                }
+            }
+            for _, c := range configs.Trojan {
+                fp := parser.GetFingerprint(c)
+                if _, exists := uniqueTrojan[fp]; !exists {
+                    uniqueTrojan[fp] = ConfigItem{Raw: c, Channel: shortName}
+                }
+            }
+            for _, c := range configs.SS {
+                fp := parser.GetFingerprint(c)
+                if _, exists := uniqueSS[fp]; !exists {
+                    uniqueSS[fp] = ConfigItem{Raw: c, Channel: shortName}
+                }
+            }
+            mu.Unlock()
+            fmt.Printf("[+] %s: Scraped\n", shortName)
+        }(sub)
     }
 
     wg.Wait()
