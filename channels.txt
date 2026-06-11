@@ -1,4 +1,5 @@
 acccrd
+Amaazingwolf
 amir_webstudio
 Amirhossein_Mahboobi
 appsooner
@@ -13,6 +14,7 @@ electvpn0
 erfanandroid
 FastNetTools
 filembad
+Filtershekan_channel
 Fr33C0nfig
 gahanian_net
 hi_proxy_iran
@@ -26,17 +28,21 @@ meliproxyy
 MiyanBorNet
 NetAccount
 NetPulse_ir
+ninja2ray
 oliver_soul
 on_proxy1
 oneclickvpnkeys
 Outline_ir
 persianvpnhub
+proxy_kafee
+ProxyArc
 proxyvpn11
 prrofile_purple
 SafeV2ray
 saministamm
 sexyboyvpn
 SimChin_ir
+sorenaconfig
 SOSkeyNET
 SparrK_VPN
 SpeedTunnel
