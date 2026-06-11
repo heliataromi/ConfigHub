@@ -41,12 +41,7 @@ func renameStandard(link, channel string, db *maxminddb.Reader) string {
 
     iso, flag := geoip.GetCountry(address, db)
 
-    channelStr := channel
-    if !strings.HasPrefix(channel, "github.com/") {
-        channelStr = "@" + channel
-    }
-
-    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channelStr)
+    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channel)
 
     // url.Parse automatically handles url-encoding the fragment when String() is called.
     u.Fragment = newName
@@ -76,12 +71,7 @@ func renameVMess(link, channel string, db *maxminddb.Reader) string {
     address := safeString(v["add"])
     iso, flag := geoip.GetCountry(address, db)
     
-    channelStr := channel
-    if !strings.HasPrefix(channel, "github.com/") {
-        channelStr = "@" + channel
-    }
-    
-    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channelStr)
+    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channel)
 
     // Replace the old remark with the new one
     v["ps"] = newName

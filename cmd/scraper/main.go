@@ -89,19 +89,21 @@ func main() {
                 return
             }
 
+            channelName := "t.me/" + channel
+            
             mu.Lock()
-            processConfigs(configs.Vmess, "vmess", channel, "channel")
-            processConfigs(configs.Vless, "vless", channel, "channel")
-            processConfigs(configs.Trojan, "trojan", channel, "channel")
-            processConfigs(configs.SS, "ss", channel, "channel")
-            processConfigs(configs.SSR, "ssr", channel, "channel")
-            processConfigs(configs.TUIC, "tuic", channel, "channel")
-            processConfigs(configs.Hy2, "hy2", channel, "channel")
-            processConfigs(configs.Hysteria, "hysteria", channel, "channel")
-            processConfigs(configs.Socks, "socks", channel, "channel")
-            processConfigs(configs.WireGuard, "wireguard", channel, "channel")
+            processConfigs(configs.Vmess, "vmess", channelName, "channel")
+            processConfigs(configs.Vless, "vless", channelName, "channel")
+            processConfigs(configs.Trojan, "trojan", channelName, "channel")
+            processConfigs(configs.SS, "ss", channelName, "channel")
+            processConfigs(configs.SSR, "ssr", channelName, "channel")
+            processConfigs(configs.TUIC, "tuic", channelName, "channel")
+            processConfigs(configs.Hy2, "hy2", channelName, "channel")
+            processConfigs(configs.Hysteria, "hysteria", channelName, "channel")
+            processConfigs(configs.Socks, "socks", channelName, "channel")
+            processConfigs(configs.WireGuard, "wireguard", channelName, "channel")
             mu.Unlock()
-            fmt.Printf("[+] %s: Scraped\n", channel)
+            fmt.Printf("[+] %s: Scraped\n", channelName)
         }(ch)
     }
 
@@ -123,6 +125,8 @@ func main() {
                     if len(parts) > 0 {
                         shortName = "github.com/" + parts[0]
                     }
+                } else if parsedURL.Hostname() != "" {
+                    shortName = parsedURL.Hostname()
                 }
             }
             if shortName == subURL && len(subURL) > 30 {
