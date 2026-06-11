@@ -11,8 +11,8 @@ import (
     ptime "github.com/yaa110/go-persian-calendar"
 )
 
-// WriteSubFiles generates standard and Base64 encoded subscription files from slices
-func WriteSubFiles(outDir string, vmess, vless, trojan, ss []string) error {
+// WriteSubFiles generates standard and Base64 encoded subscription files from a map of configs
+func WriteSubFiles(outDir string, configsMap map[string][]string) error {
     // 1. Ensure the output directory exists
     err := os.MkdirAll(outDir, 0755)
     if err != nil {
@@ -21,19 +21,13 @@ func WriteSubFiles(outDir string, vmess, vless, trojan, ss []string) error {
 
     // Combine all for the "mixed" file
     var mixed []string
-    mixed = append(mixed, vmess...)
-    mixed = append(mixed, vless...)
-    mixed = append(mixed, trojan...)
-    mixed = append(mixed, ss...)
-
-    // 2. Define the files we want to create
-    filesToCreate := map[string][]string{
-        "vmess.txt":  vmess,
-        "vless.txt":  vless,
-        "trojan.txt": trojan,
-        "ss.txt":     ss,
-        "mixed.txt":  mixed,
+    filesToCreate := make(map[string][]string)
+    
+    for protocolName, configs := range configsMap {
+        mixed = append(mixed, configs...)
+        filesToCreate[protocolName+".txt"] = configs
     }
+    filesToCreate["mixed.txt"] = mixed
 
     // Generate dummy config with Jalali timestamp
     loc := time.FixedZone("IRST", int(3.5*3600))

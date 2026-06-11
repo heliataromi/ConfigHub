@@ -6,18 +6,30 @@ import (
 )
 
 var (
-    vmessRegex  = regexp.MustCompile(`(?:^|[^a-zA-Z])(vmess://[A-Za-z0-9+/=\-_]+)`)
-    vlessRegex  = regexp.MustCompile(`(?:^|[^a-zA-Z])(vless://[^\s<"']+)`)
-    trojanRegex = regexp.MustCompile(`(?:^|[^a-zA-Z])(trojan://[^\s<"']+)`)
-    ssRegex     = regexp.MustCompile(`(?:^|[^a-zA-Z])(ss://[^\s<"']+)`)
+    vmessRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z])(vmess://[A-Za-z0-9+/=\-_]+)`)
+    vlessRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z])(vless://[^\s<"']+)`)
+    trojanRegex   = regexp.MustCompile(`(?:^|[^a-zA-Z])(trojan://[^\s<"']+)`)
+    ssRegex       = regexp.MustCompile(`(?:^|[^a-zA-Z])(ss://[^\s<"']+)`)
+    ssrRegex      = regexp.MustCompile(`(?:^|[^a-zA-Z])(ssr://[A-Za-z0-9+/=\-_]+)`)
+    tuicRegex     = regexp.MustCompile(`(?:^|[^a-zA-Z])(tuic://[^\s<"']+)`)
+    hy2Regex      = regexp.MustCompile(`(?:^|[^a-zA-Z])((?:hy2|hysteria2)://[^\s<"']+)`)
+    hysteriaRegex = regexp.MustCompile(`(?:^|[^a-zA-Z])(hysteria://[^\s<"']+)`)
+    socksRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z])(socks[45]?://[^\s<"']+)`)
+    wgRegex       = regexp.MustCompile(`(?:^|[^a-zA-Z])((?:wireguard|wg)://[^\s<"']+)`)
 )
 
 // Configs holds the categorized extracted links
 type Configs struct {
-    Vmess  []string
-    Vless  []string
-    Trojan []string
-    SS     []string
+    Vmess     []string
+    Vless     []string
+    Trojan    []string
+    SS        []string
+    SSR       []string
+    TUIC      []string
+    Hy2       []string
+    Hysteria  []string
+    Socks     []string
+    WireGuard []string
 }
 
 func extractRegex(text string, re *regexp.Regexp) []string {
@@ -51,9 +63,15 @@ func Extract(text string) Configs {
     }
 
     return Configs{
-        Vmess:  validVmess,
-        Vless:  extractRegex(text, vlessRegex),
-        Trojan: extractRegex(text, trojanRegex),
-        SS:     extractRegex(text, ssRegex),
+        Vmess:     validVmess,
+        Vless:     extractRegex(text, vlessRegex),
+        Trojan:    extractRegex(text, trojanRegex),
+        SS:        extractRegex(text, ssRegex),
+        SSR:       extractRegex(text, ssrRegex),
+        TUIC:      extractRegex(text, tuicRegex),
+        Hy2:       extractRegex(text, hy2Regex),
+        Hysteria:  extractRegex(text, hysteriaRegex),
+        Socks:     extractRegex(text, socksRegex),
+        WireGuard: extractRegex(text, wgRegex),
     }
 }

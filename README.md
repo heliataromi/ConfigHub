@@ -31,6 +31,12 @@ Copy the link corresponding to your preferred protocol and import it into your V
 | 📦 **VMess** | [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vmess.txt)  | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vmess_base64.txt)  |
 | 🐎 **Trojan** | [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/trojan.txt) | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/trojan_base64.txt) |
 | 🥷🏻 **Shadowsocks** |   [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/ss.txt)   |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/ss_base64.txt)   |
+| 🌀 **ShadowsocksR**|   [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/ssr.txt)  |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/ssr_base64.txt)  |
+| ⚡ **TUIC** |   [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/tuic.txt)  |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/tuic_base64.txt)  |
+| 🌪️ **Hysteria 2** |   [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/hy2.txt)  |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/hy2_base64.txt)  |
+| 🌪️ **Hysteria** |   [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/hysteria.txt)|   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/hysteria_base64.txt)|
+| 🧦 **Socks** |   [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/socks.txt) |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/socks_base64.txt) |
+| 🛡️ **WireGuard** | [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/wireguard.txt)| [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/wireguard_base64.txt)|
 
 #### 📱 Recommended Clients
 * **Android:** [v2rayNG](https://github.com/2dust/v2rayNG) | [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid)
@@ -71,6 +77,12 @@ Copy the link corresponding to your preferred protocol and import it into your V
 | 📦 **VMess** | [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vmess.txt)  | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/vmess_base64.txt)  |
 | 🐎 **Trojan** | [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/trojan.txt) | [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/trojan_base64.txt) |
 | 🥷🏻 **Shadowsocks** |   [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/ss.txt)   |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/ss_base64.txt)   |
+| 🌀 **ShadowsocksR**|   [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/ssr.txt)  |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/ssr_base64.txt)  |
+| ⚡ **TUIC** |   [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/tuic.txt)  |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/tuic_base64.txt)  |
+| 🌪️ **Hysteria 2** |   [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/hy2.txt)  |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/hy2_base64.txt)  |
+| 🌪️ **Hysteria** |   [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/hysteria.txt)|   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/hysteria_base64.txt)|
+| 🧦 **Socks** |   [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/socks.txt) |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/socks_base64.txt) |
+| 🛡️ **WireGuard** | [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/wireguard.txt)| [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/wireguard_base64.txt)|
 
 #### 📱 برنامه‌های پیشنهادی
 * **اندروید:** [v2rayNG](https://github.com/2dust/v2rayNG) | [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid)

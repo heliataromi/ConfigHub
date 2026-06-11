@@ -13,6 +13,9 @@ func GetFingerprint(link string) string {
     if strings.HasPrefix(link, "vmess://") {
         return getVMessFingerprint(link)
     }
+    if strings.HasPrefix(link, "ssr://") {
+        return getSSRFingerprint(link)
+    }
 
     return getStandardFingerprint(link)
 }
@@ -38,6 +41,11 @@ func getStandardFingerprint(link string) string {
 		"type", "security", "sni", "alpn", "fp", "pbk", "sid", "flow", "fm",
 		"encryption", "host", "path", "headerType", "seed", "mode", "extra",
 		"authority", "serviceName",
+		// New parameters for Hy2, TUIC, WireGuard, etc.
+		"obfs", "obfs-password", "obfsParam", "pinSHA256", "allow_insecure",
+		"insecure", "peer", "auth", "plugin", "plugin-opts", "public_key",
+		"congestion_control", "udp_relay_mode", "reduce_rtt", "upmbps",
+		"downmbps", "mtu", "ip",
 	}
 
 	for _, key := range allowedKeys {
@@ -109,4 +117,50 @@ func safeString(v interface{}) string {
         return ""
     }
     return fmt.Sprintf("%v", v)
+}
+
+// getSSRFingerprint decodes the SSR Base64, removes remarks/group, and re-encodes
+func getSSRFingerprint(link string) string {
+	payload := strings.TrimPrefix(link, "ssr://")
+	payload = strings.TrimSpace(payload)
+
+	// Fix standard Base64 URL encoding and padding issues
+	payload = strings.ReplaceAll(payload, "-", "+")
+	payload = strings.ReplaceAll(payload, "_", "/")
+	if pad := len(payload) % 4; pad != 0 {
+		payload += strings.Repeat("=", 4-pad)
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(payload)
+	if err != nil {
+		return link // Fallback if invalid base64
+	}
+
+	decodedStr := string(decoded)
+	parts := strings.SplitN(decodedStr, "/?", 2)
+	if len(parts) != 2 {
+		return link // No query params means no remarks to strip
+	}
+
+	q, err := url.ParseQuery(parts[1])
+	if err != nil {
+		return link
+	}
+
+	allowed := url.Values{}
+	allowedKeys := []string{"obfsparam", "protoparam"}
+	for _, key := range allowedKeys {
+		if val := q.Get(key); val != "" {
+			allowed.Set(key, val)
+		}
+	}
+
+	newPayload := parts[0]
+	encodedQuery := allowed.Encode()
+	if encodedQuery != "" {
+		newPayload += "/?" + encodedQuery
+	}
+
+	newBase64 := base64.RawURLEncoding.EncodeToString([]byte(newPayload))
+	return "ssr://" + newBase64
 }

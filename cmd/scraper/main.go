@@ -52,13 +52,31 @@ func main() {
     fmt.Printf("Loaded %d channels and %d subscriptions. Starting scraper...\n", len(channels), len(subscriptions))
 
     // Deduplication maps
-    uniqueVmess := make(map[string]ConfigItem)
-    uniqueVless := make(map[string]ConfigItem)
-    uniqueTrojan := make(map[string]ConfigItem)
-    uniqueSS := make(map[string]ConfigItem)
+    uniqueConfigs := map[string]map[string]ConfigItem{
+        "vmess":     make(map[string]ConfigItem),
+        "vless":     make(map[string]ConfigItem),
+        "trojan":    make(map[string]ConfigItem),
+        "ss":        make(map[string]ConfigItem),
+        "ssr":       make(map[string]ConfigItem),
+        "tuic":      make(map[string]ConfigItem),
+        "hy2":       make(map[string]ConfigItem),
+        "hysteria":  make(map[string]ConfigItem),
+        "socks":     make(map[string]ConfigItem),
+        "wireguard": make(map[string]ConfigItem),
+    }
 
     var mu sync.Mutex
     var wg sync.WaitGroup
+
+    // Helper function to deduplicate configs
+    processConfigs := func(configs []string, proto string, channel string) {
+        for _, c := range configs {
+            fp := parser.GetFingerprint(c)
+            if _, exists := uniqueConfigs[proto][fp]; !exists {
+                uniqueConfigs[proto][fp] = ConfigItem{Raw: c, Channel: channel}
+            }
+        }
+    }
 
     // 3. Scrape Concurrently
     for _, ch := range channels {
@@ -71,30 +89,16 @@ func main() {
             }
 
             mu.Lock()
-            for _, c := range configs.Vmess {
-                fp := parser.GetFingerprint(c)
-                if _, exists := uniqueVmess[fp]; !exists {
-                    uniqueVmess[fp] = ConfigItem{Raw: c, Channel: channel}
-                }
-            }
-            for _, c := range configs.Vless {
-                fp := parser.GetFingerprint(c)
-                if _, exists := uniqueVless[fp]; !exists {
-                    uniqueVless[fp] = ConfigItem{Raw: c, Channel: channel}
-                }
-            }
-            for _, c := range configs.Trojan {
-                fp := parser.GetFingerprint(c)
-                if _, exists := uniqueTrojan[fp]; !exists {
-                    uniqueTrojan[fp] = ConfigItem{Raw: c, Channel: channel}
-                }
-            }
-            for _, c := range configs.SS {
-                fp := parser.GetFingerprint(c)
-                if _, exists := uniqueSS[fp]; !exists {
-                    uniqueSS[fp] = ConfigItem{Raw: c, Channel: channel}
-                }
-            }
+            processConfigs(configs.Vmess, "vmess", channel)
+            processConfigs(configs.Vless, "vless", channel)
+            processConfigs(configs.Trojan, "trojan", channel)
+            processConfigs(configs.SS, "ss", channel)
+            processConfigs(configs.SSR, "ssr", channel)
+            processConfigs(configs.TUIC, "tuic", channel)
+            processConfigs(configs.Hy2, "hy2", channel)
+            processConfigs(configs.Hysteria, "hysteria", channel)
+            processConfigs(configs.Socks, "socks", channel)
+            processConfigs(configs.WireGuard, "wireguard", channel)
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped\n", channel)
         }(ch)
@@ -125,30 +129,16 @@ func main() {
             }
 
             mu.Lock()
-            for _, c := range configs.Vmess {
-                fp := parser.GetFingerprint(c)
-                if _, exists := uniqueVmess[fp]; !exists {
-                    uniqueVmess[fp] = ConfigItem{Raw: c, Channel: shortName}
-                }
-            }
-            for _, c := range configs.Vless {
-                fp := parser.GetFingerprint(c)
-                if _, exists := uniqueVless[fp]; !exists {
-                    uniqueVless[fp] = ConfigItem{Raw: c, Channel: shortName}
-                }
-            }
-            for _, c := range configs.Trojan {
-                fp := parser.GetFingerprint(c)
-                if _, exists := uniqueTrojan[fp]; !exists {
-                    uniqueTrojan[fp] = ConfigItem{Raw: c, Channel: shortName}
-                }
-            }
-            for _, c := range configs.SS {
-                fp := parser.GetFingerprint(c)
-                if _, exists := uniqueSS[fp]; !exists {
-                    uniqueSS[fp] = ConfigItem{Raw: c, Channel: shortName}
-                }
-            }
+            processConfigs(configs.Vmess, "vmess", shortName)
+            processConfigs(configs.Vless, "vless", shortName)
+            processConfigs(configs.Trojan, "trojan", shortName)
+            processConfigs(configs.SS, "ss", shortName)
+            processConfigs(configs.SSR, "ssr", shortName)
+            processConfigs(configs.TUIC, "tuic", shortName)
+            processConfigs(configs.Hy2, "hy2", shortName)
+            processConfigs(configs.Hysteria, "hysteria", shortName)
+            processConfigs(configs.Socks, "socks", shortName)
+            processConfigs(configs.WireGuard, "wireguard", shortName)
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped\n", shortName)
         }(sub)
@@ -159,19 +149,21 @@ func main() {
     // 4. Rename configs using GeoIP & Channel ID
     fmt.Println("\n[*] Resolving IPs and Applying GeoIP Names. This may take a moment...")
 
-    finalVmess := processAndRename(uniqueVmess, db)
-    finalVless := processAndRename(uniqueVless, db)
-    finalTrojan := processAndRename(uniqueTrojan, db)
-    finalSS := processAndRename(uniqueSS, db)
+    finalConfigs := make(map[string][]string)
+    for proto, cmap := range uniqueConfigs {
+        renamed := processAndRename(cmap, db)
+        if len(renamed) > 0 {
+            finalConfigs[proto] = renamed
+        }
+    }
 
     // 5. Export Files
     fmt.Println("\n--- Deduplication & Renaming Complete ---")
-    fmt.Printf("VMess:  %d unique\n", len(finalVmess))
-    fmt.Printf("VLESS:  %d unique\n", len(finalVless))
-    fmt.Printf("Trojan: %d unique\n", len(finalTrojan))
-    fmt.Printf("SS:     %d unique\n", len(finalSS))
+    for proto, configs := range finalConfigs {
+        fmt.Printf("%-10s: %d unique\n", strings.ToUpper(proto), len(configs))
+    }
 
-    err = exporter.WriteSubFiles("sub", finalVmess, finalVless, finalTrojan, finalSS)
+    err = exporter.WriteSubFiles("sub", finalConfigs)
     if err != nil {
         log.Fatalf("[-] Error saving files: %v\n", err)
     }
