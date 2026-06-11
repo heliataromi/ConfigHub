@@ -4,6 +4,7 @@ import (
     "encoding/base64"
     "encoding/json"
     "fmt"
+    "net/url"
     "strings"
 
     "ConfigHub/internal/geoip"
@@ -22,25 +23,34 @@ func RenameConfig(rawLink, channel string, db *maxminddb.Reader) string {
 }
 
 func renameStandard(link, channel string, db *maxminddb.Reader) string {
-    // e.g., vless://uuid@1.2.3.4:443?type=ws#old-remark
-    parts := strings.Split(link, "@")
-    if len(parts) < 2 {
+    u, err := url.Parse(link)
+    if err != nil {
+        // Fallback if url.Parse fails
         return link
     }
 
-    // Extract everything after @
-    hostAndQuery := parts[1]
+    address := u.Hostname()
+    if address == "" {
+        // Fallback if parsing failed to find a host
+        parts := strings.Split(link, "@")
+        if len(parts) >= 2 {
+            hostAndQuery := parts[len(parts)-1]
+            address = strings.Split(hostAndQuery, ":")[0]
+        }
+    }
 
-    // The address is the part before the colon (port)
-    address := strings.Split(hostAndQuery, ":")[0]
-
-    // Get Geo Data
     iso, flag := geoip.GetCountry(address, db)
-    newName := fmt.Sprintf("%s %s - [@%s]", flag, iso, channel)
 
-    // Strip the old remark (anything after #) and append the new one
-    baseLink := strings.Split(link, "#")[0]
-    return fmt.Sprintf("%s#%s", baseLink, newName)
+    channelStr := channel
+    if !strings.HasPrefix(channel, "github.com/") {
+        channelStr = "@" + channel
+    }
+
+    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channelStr)
+
+    // url.Parse automatically handles url-encoding the fragment when String() is called.
+    u.Fragment = newName
+    return u.String()
 }
 
 func renameVMess(link, channel string, db *maxminddb.Reader) string {
@@ -65,7 +75,13 @@ func renameVMess(link, channel string, db *maxminddb.Reader) string {
 
     address := safeString(v["add"])
     iso, flag := geoip.GetCountry(address, db)
-    newName := fmt.Sprintf("%s %s - [@%s]", flag, iso, channel)
+    
+    channelStr := channel
+    if !strings.HasPrefix(channel, "github.com/") {
+        channelStr = "@" + channel
+    }
+    
+    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channelStr)
 
     // Replace the old remark with the new one
     v["ps"] = newName
