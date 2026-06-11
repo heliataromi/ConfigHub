@@ -38,7 +38,7 @@ func WriteSubFiles(outDir string, vmess, vless, trojan, ss []string) error {
     // Generate dummy config with Jalali timestamp
     loc := time.FixedZone("IRST", int(3.5*3600))
     pt := ptime.New(time.Now().In(loc))
-    updateTimeStr := fmt.Sprintf("🐣🏁 Last update: %s", pt.Format("yyyy/MM/dd HH:mm"))
+    updateTimeStr := fmt.Sprintf("🐣🏁 Last update: %s", pt.Format("📅yyyy/MM/dd 🕒HH:mm"))
     dummyConfig := fmt.Sprintf("vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#%s", strings.ReplaceAll(updateTimeStr, " ", "%20"))
 
     // 3. Write the files
