@@ -307,8 +307,11 @@ func parseTrojan(link string) (map[string]interface{}, string, error) {
 	if u.User != nil {
 		password = u.User.Username()
 	}
-	if server == "" || password == "" {
-		return nil, "", fmt.Errorf("missing server or password in trojan link")
+	if unescaped, err := url.QueryUnescape(password); err == nil {
+		password = unescaped
+	}
+	if port <= 0 || port > 65535 || server == "" || password == "" {
+		return nil, "", fmt.Errorf("missing or invalid server, port, or password in trojan link")
 	}
 
 	q := u.Query()
@@ -380,6 +383,33 @@ func parseTrojan(link string) (map[string]interface{}, string, error) {
 	return proxy, country, nil
 }
 
+var validSSCiphers = map[string]bool{
+	"aes-128-gcm":                   true,
+	"aes-192-gcm":                   true,
+	"aes-256-gcm":                   true,
+	"aes-128-cfb":                   true,
+	"aes-192-cfb":                   true,
+	"aes-256-cfb":                   true,
+	"aes-128-ctr":                   true,
+	"aes-192-ctr":                   true,
+	"aes-256-ctr":                   true,
+	"rc4-md5":                       true,
+	"chacha20-ietf":                 true,
+	"chacha20":                      true,
+	"chacha20-ietf-poly1305":        true,
+	"xchacha20-ietf-poly1305":       true,
+	"2022-blake3-aes-128-gcm":       true,
+	"2022-blake3-aes-256-gcm":       true,
+	"2022-blake3-chacha20-poly1305": true,
+	"2022-blake3-chacha8-poly1305":  true,
+	"none":                          true,
+	"dummy":                         true,
+}
+
+func isValidSSCipher(cipher string) bool {
+	return validSSCiphers[strings.ToLower(strings.TrimSpace(cipher))]
+}
+
 func parseSS(link string) (map[string]interface{}, string, error) {
 	raw := strings.TrimPrefix(link, "ss://")
 	parts := strings.SplitN(raw, "#", 2)
@@ -406,8 +436,14 @@ func parseSS(link string) (map[string]interface{}, string, error) {
 		}
 
 		// Decode userInfo if Base64
-		if decoded, err := decodeBase64Safe(userInfo); err == nil && strings.Contains(string(decoded), ":") {
-			userInfo = string(decoded)
+		if decoded, err := decodeBase64Safe(userInfo); err == nil {
+			decodedStr := string(decoded)
+			if strings.Contains(decodedStr, ":") && isPrintable(decodedStr) {
+				p := strings.SplitN(decodedStr, ":", 2)
+				if isValidSSCipher(p[0]) {
+					userInfo = decodedStr
+				}
+			}
 		}
 	} else {
 		// Legacy format: base64(method:password@host:port)
@@ -416,7 +452,7 @@ func parseSS(link string) (map[string]interface{}, string, error) {
 			return nil, "", fmt.Errorf("ss legacy base64 decode error: %w", err)
 		}
 		decodedStr := string(decoded)
-		if strings.Contains(decodedStr, "@") {
+		if strings.Contains(decodedStr, "@") && isPrintable(decodedStr) {
 			atSplit := strings.SplitN(decodedStr, "@", 2)
 			userInfo = atSplit[0]
 			hostPort = atSplit[1]
@@ -433,6 +469,32 @@ func parseSS(link string) (map[string]interface{}, string, error) {
 	cipher := userParts[0]
 	password := userParts[1]
 
+	if unescaped, err := url.QueryUnescape(cipher); err == nil {
+		cipher = unescaped
+	}
+	if unescaped, err := url.QueryUnescape(password); err == nil {
+		password = unescaped
+	}
+
+	cipher = strings.ToLower(strings.TrimSpace(cipher))
+	if !isValidSSCipher(cipher) {
+		return nil, "", fmt.Errorf("unsupported or invalid ss cipher: %s", cipher)
+	}
+
+	// Validate and normalize Shadowsocks 2022 keys
+	if strings.HasPrefix(cipher, "2022-") {
+		keys := strings.Split(password, ":")
+		var normalizedKeys []string
+		for _, k := range keys {
+			dec, err := decodeBase64Safe(k)
+			if err != nil || len(dec) == 0 {
+				return nil, "", fmt.Errorf("invalid base64 key for shadowsocks 2022 (%s): %w", cipher, err)
+			}
+			normalizedKeys = append(normalizedKeys, base64.StdEncoding.EncodeToString(dec))
+		}
+		password = strings.Join(normalizedKeys, ":")
+	}
+
 	// Parse host & port
 	hpParts := strings.Split(hostPort, ":")
 	if len(hpParts) < 2 {
@@ -440,6 +502,9 @@ func parseSS(link string) (map[string]interface{}, string, error) {
 	}
 	server := hpParts[0]
 	port := toInt(hpParts[1], 8388)
+	if port <= 0 || port > 65535 || server == "" {
+		return nil, "", fmt.Errorf("invalid server or port in ss link")
+	}
 
 	proxy := map[string]interface{}{
 		"name":     name,
@@ -570,6 +635,13 @@ func parseHy2(link string) (map[string]interface{}, string, error) {
 	if u.User != nil {
 		password = u.User.Username()
 	}
+	if unescaped, err := url.QueryUnescape(password); err == nil {
+		password = unescaped
+	}
+
+	if port <= 0 || port > 65535 || server == "" || password == "" {
+		return nil, "", fmt.Errorf("missing or invalid server, port, or password in hy2 link")
+	}
 
 	q := u.Query()
 	name, country := extractNameAndCountry(u.Fragment)
@@ -610,11 +682,18 @@ func parseHysteria(link string) (map[string]interface{}, string, error) {
 
 	server := u.Hostname()
 	port := toInt(u.Port(), 443)
+	if port <= 0 || port > 65535 || server == "" {
+		return nil, "", fmt.Errorf("missing or invalid server/port in hysteria link")
+	}
+
 	q := u.Query()
 
 	auth := q.Get("auth")
 	if auth == "" && u.User != nil {
 		auth = u.User.Username()
+	}
+	if unescaped, err := url.QueryUnescape(auth); err == nil {
+		auth = unescaped
 	}
 
 	sni := q.Get("peer")
@@ -673,6 +752,16 @@ func parseTUIC(link string) (map[string]interface{}, string, error) {
 		uuid = u.User.Username()
 		password, _ = u.User.Password()
 	}
+	if unescaped, err := url.QueryUnescape(uuid); err == nil {
+		uuid = unescaped
+	}
+	if unescaped, err := url.QueryUnescape(password); err == nil {
+		password = unescaped
+	}
+
+	if port <= 0 || port > 65535 || server == "" || uuid == "" {
+		return nil, "", fmt.Errorf("missing or invalid server, port, or uuid in tuic link")
+	}
 
 	q := u.Query()
 	name, country := extractNameAndCountry(u.Fragment)
@@ -716,6 +805,10 @@ func parseSocks(link string) (map[string]interface{}, string, error) {
 
 	server := u.Hostname()
 	port := toInt(u.Port(), 1080)
+	if port <= 0 || port > 65535 || server == "" {
+		return nil, "", fmt.Errorf("missing or invalid server/port in socks link")
+	}
+
 	name, country := extractNameAndCountry(u.Fragment)
 
 	proxy := map[string]interface{}{
@@ -727,8 +820,15 @@ func parseSocks(link string) (map[string]interface{}, string, error) {
 	}
 
 	if u.User != nil {
-		proxy["username"] = u.User.Username()
+		user := u.User.Username()
+		if unescaped, err := url.QueryUnescape(user); err == nil {
+			user = unescaped
+		}
+		proxy["username"] = user
 		if pass, ok := u.User.Password(); ok {
+			if unescaped, err := url.QueryUnescape(pass); err == nil {
+				pass = unescaped
+			}
 			proxy["password"] = pass
 		}
 	}
@@ -748,9 +848,39 @@ func parseWireGuard(link string) (map[string]interface{}, string, error) {
 	if u.User != nil {
 		privKey = u.User.Username()
 	}
+	if unescaped, err := url.PathUnescape(privKey); err == nil && unescaped != "" {
+		privKey = unescaped
+	}
+
+	if port <= 0 || port > 65535 || server == "" || privKey == "" {
+		return nil, "", fmt.Errorf("missing or invalid server, port, or private-key in wireguard link")
+	}
 
 	q := u.Query()
 	name, country := extractNameAndCountry(u.Fragment)
+
+	pubKey := q.Get("publickey")
+	if pubKey == "" {
+		pubKey = q.Get("public_key")
+	}
+	if pubKey == "" {
+		pubKey = q.Get("pbk")
+	}
+
+	ip := q.Get("address")
+	if ip == "" {
+		ip = q.Get("ip")
+	}
+	if ip == "" {
+		ip = "172.16.0.2/32"
+	}
+	if strings.Contains(ip, "/") {
+		ip = strings.Split(ip, "/")[0]
+	}
+
+	if pubKey == "" || privKey == "" {
+		return nil, "", fmt.Errorf("missing public-key or private-key in wireguard link")
+	}
 
 	proxy := map[string]interface{}{
 		"name":        name,
@@ -758,9 +888,27 @@ func parseWireGuard(link string) (map[string]interface{}, string, error) {
 		"server":      server,
 		"port":        port,
 		"private-key": privKey,
-		"public-key":  q.Get("public_key"),
-		"ip":          q.Get("ip"),
+		"public-key":  pubKey,
+		"ip":          ip,
 		"udp":         true,
+	}
+
+	if psk := q.Get("presharedkey"); psk != "" {
+		proxy["preshared-key"] = psk
+	} else if psk := q.Get("preshared_key"); psk != "" {
+		proxy["preshared-key"] = psk
+	}
+
+	if resStr := q.Get("reserved"); resStr != "" {
+		var resInts []int
+		for _, part := range strings.Split(resStr, ",") {
+			if num, err := strconv.Atoi(strings.TrimSpace(part)); err == nil {
+				resInts = append(resInts, num)
+			}
+		}
+		if len(resInts) > 0 {
+			proxy["reserved"] = resInts
+		}
 	}
 
 	if mtu := q.Get("mtu"); mtu != "" {
@@ -816,4 +964,13 @@ func toInt(v interface{}, defaultVal int) int {
 		}
 	}
 	return defaultVal
+}
+
+func isPrintable(s string) bool {
+	for _, r := range s {
+		if r < 32 && r != '\t' && r != '\n' && r != '\r' {
+			return false
+		}
+	}
+	return true
 }

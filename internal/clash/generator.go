@@ -115,7 +115,8 @@ func GenerateClashConfig(links []string) ([]byte, error) {
 
 	for _, code := range countryCodes {
 		nodes := countryMap[code]
-		if len(nodes) == 0 {
+		// Only create country auto-groups for countries with at least 2 nodes
+		if len(nodes) < 2 {
 			continue
 		}
 
@@ -140,11 +141,11 @@ func GenerateClashConfig(links []string) ([]byte, error) {
 	var mainSelectorProxies []string
 	mainSelectorProxies = append(mainSelectorProxies, "⚡ AUTO (Fastest Node)", "🔄 FALLBACK (Failover)", "⚖️ LOAD-BALANCE")
 	mainSelectorProxies = append(mainSelectorProxies, countryGroupNames...)
-	mainSelectorProxies = append(mainSelectorProxies, allNodeNames...)
+	mainSelectorProxies = append(mainSelectorProxies, "🎯 MANUAL (All Nodes)")
 
 	var proxyGroups []ProxyGroup
 
-	// Root SELECT group
+	// Root SELECT group (clean, high-level menu)
 	proxyGroups = append(proxyGroups, ProxyGroup{
 		Name:    "🔰 PROXY",
 		Type:    "select",
@@ -182,6 +183,13 @@ func GenerateClashConfig(links []string) ([]byte, error) {
 
 	// Add country groups
 	proxyGroups = append(proxyGroups, countryGroups...)
+
+	// Manual Selection group containing all individual nodes
+	proxyGroups = append(proxyGroups, ProxyGroup{
+		Name:    "🎯 MANUAL (All Nodes)",
+		Type:    "select",
+		Proxies: allNodeNames,
+	})
 
 	// 5. Construct full Config object
 	cfg := Config{

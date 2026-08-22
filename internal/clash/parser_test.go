@@ -98,6 +98,22 @@ func TestParseSS(t *testing.T) {
 	}
 }
 
+func TestParseSS2022(t *testing.T) {
+	// 2022 cipher with URL-encoded characters in key
+	link := "ss://2022-blake3-chacha20-poly1305:vIFQQpkS5WcGd%2F5Sfpv3pt72Il7ReRZ3Z5FAzGM6e74=@129.151.74.15:61312#%F0%9F%87%AC%F0%9F%87%A7%20GB"
+	proxy, country, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse SS 2022: %v", err)
+	}
+
+	if country != "GB" {
+		t.Errorf("Expected country GB, got %s", country)
+	}
+	if proxy["password"] != "vIFQQpkS5WcGd/5Sfpv3pt72Il7ReRZ3Z5FAzGM6e74=" {
+		t.Errorf("Expected unescaped base64 key, got %v", proxy["password"])
+	}
+}
+
 func TestParseHy2(t *testing.T) {
 	link := "hy2://pass123@hy2.example.com:443?sni=hy2.example.com&insecure=1#%F0%9F%87%B9%F0%9F%87%B7%20TR%20-%20%5Bt.me%2Ftest%5D"
 	proxy, country, err := ParseConfigToClash(link)
@@ -137,7 +153,9 @@ func TestParseTUIC(t *testing.T) {
 func TestGenerateClashConfig(t *testing.T) {
 	links := []string{
 		"vless://11111111-2222-3333-4444-555555555555@example.com:443?type=tcp&security=reality&pbk=testpubkey&sid=1234&sni=target.com#🇩🇪 DE - [t.me/test]",
+		"vless://22222222-3333-4444-5555-666666666666@example2.com:443?type=tcp&security=reality&pbk=testpubkey&sid=1234&sni=target2.com#🇩🇪 DE - [t.me/test2]",
 		"trojan://password123@trojan.example.com:443?security=tls&sni=trojan.example.com#🇫🇷 FR - [t.me/test]",
+		"trojan://password456@trojan2.example.com:443?security=tls&sni=trojan2.example.com#🇫🇷 FR - [t.me/test2]",
 	}
 
 	yamlData, err := GenerateClashConfig(links)
@@ -154,6 +172,9 @@ func TestGenerateClashConfig(t *testing.T) {
 	}
 	if !strings.Contains(yamlStr, "⚡ AUTO (Fastest Node)") {
 		t.Errorf("Generated YAML missing AUTO group:\n%s", yamlStr)
+	}
+	if !strings.Contains(yamlStr, "🎯 MANUAL (All Nodes)") {
+		t.Errorf("Generated YAML missing MANUAL group:\n%s", yamlStr)
 	}
 	if !strings.Contains(yamlStr, "GEOIP,IR,DIRECT") {
 		t.Errorf("Generated YAML missing Iran direct rule:\n%s", yamlStr)
