@@ -1,4 +1,4 @@
-# Auto V2Ray Config Collector
+# Auto V2Ray & Clash Config Collector
 
 [![Update Configs](https://github.com/heliataromi/ConfigHub/actions/workflows/scraper.yml/badge.svg)](https://github.com/heliataromi/ConfigHub/actions/workflows/scraper.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -11,26 +11,19 @@
 <a id="english"></a>
 ## English
 
-An automated V2Ray configuration scraper built in Go. This tool scrapes various Iranian Telegram channels and subscription links every couple of hours, parses the configurations, removes duplicates, resolves IPs to identify their geographical location, and outputs ready-to-use subscription links.
+An automated V2Ray and Clash (Mihomo) configuration scraper built in Go. This tool scrapes various Iranian Telegram channels and subscription links every couple of hours, parses the configurations, removes duplicates, resolves IPs to identify their geographical location, and outputs ready-to-use subscription links for both V2Ray and Clash Meta clients.
 
 ### Features
 * **Hourly Updates:** Runs automatically every couple of hours via GitHub Actions.
 * **Deduplication:** Parses actual URL parameters to eliminate duplicates.
-* **GeoIP Recognition:** Automatically resolves IPs and domains to assign country codes.
+* **GeoIP Recognition:** Automatically resolves IPs and domains to assign country codes and flags.
+* **🚀 Clash Meta (Mihomo) Generation:** Full support for Clash Meta YAML with automated latency testing (`url-test`), failover (`fallback`), load balancing, clean Country Auto Groups, and Fake-IP DNS.
 * **Categorized & Encoded:** Generates separate files for each protocol in both Normal and Base64 formats to support all clients.
 
 ### Subscription Links
 
-Copy the link corresponding to your preferred protocol and import it into your V2Ray or Clash client.
+Copy the link corresponding to your preferred protocol or client.
 *(Base64 links are strictly recommended for iOS users and older clients).*
-
-#### 🚀 Clash / Clash Meta (Mihomo) Subscriptions
-> Designed with auto speed testing (`url-test`), failover (`fallback`), load balancing, and Country Auto Groups.
-
-| Type | Link |
-| :--- | :---: |
-| **Clash Meta (All)** | [Clash YAML](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml) |
-| **Clash Meta Lite (Mobile)** | [Clash YAML](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml) |
 
 #### 🌐 V2Ray / Standard Subscriptions
 
@@ -49,17 +42,34 @@ Copy the link corresponding to your preferred protocol and import it into your V
 | **Socks** |   [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/socks.txt) |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/socks_base64.txt) |
 | **WireGuard** | [Normal](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/wireguard.txt)| [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/wireguard_base64.txt)|
 
+#### 🚀 Clash / Clash Meta (Mihomo) Subscriptions
+> Designed with auto speed testing (`url-test`), failover (`fallback`), load balancing, and Country Auto Groups.
+
+| Subscription | Format | Raw URL |
+| :--- | :---: | :--- |
+| **Clash Meta (All / Mixed)** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
+| **Clash Meta Lite (Mobile)** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
+
 #### Recommended Clients
 * **Clash Meta / Mihomo:** [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev) | [Mihomo Party](https://github.com/mihomo-party-org/mihomo-party) | [Clash Meta for Android](https://github.com/MetaCubeX/ClashMetaForAndroid) | [FlClash](https://github.com/chen08209/FlClash)
 * **Android:** [v2rayNG](https://github.com/2dust/v2rayNG) | [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid)
 * **Windows:** [v2rayN](https://github.com/2dust/v2rayN) | [NekoBox](https://github.com/qr243vbi/nekobox)
 * **iOS:** [Stash](https://apps.apple.com/app/stash/id1596063349) | Shadowrocket | V2Box | Streisand
 
-#### How to use
-1. Copy one of the subscription links from the tables above.
-2. Open your V2Ray or Clash client.
-3. Import the subscription URL as a Remote Profile / Subscription.
+#### How to Use
+
+##### 🌐 For V2Ray Clients (v2rayNG, v2rayN, NekoBox)
+1. Copy one of the V2Ray subscription links from the table above.
+2. Open your client (e.g. **v2rayNG**).
+3. Go to `Subscription Group` -> `Add (+)` -> Paste the link in the `URL` field and save.
 4. Click **Update Subscription** to fetch the latest configurations.
+
+##### 🚀 For Clash Clients (Clash Verge Rev, Mihomo Party, FlClash)
+1. Copy the **Clash Meta** URL (`clash.yaml` or `clash_lite.yaml`).
+2. Open your client (e.g. **Clash Verge Rev**).
+3. Navigate to **Profiles** -> Paste the subscription URL into the **Profile URL** box -> Click **Import**.
+4. Select the downloaded profile to activate it.
+5. In **Home / Proxies**, leave Group on `PROXY` and Proxy on **`⚡ AUTO (Fastest Node)`** for zero-maintenance automated speed testing and routing.
 
 > In Hope of a Free Internet.
 
@@ -68,27 +78,19 @@ Copy the link corresponding to your preferred protocol and import it into your V
 <a id="فارسی"></a>
 ## فارسی (Persian)
 
-یک ابزار خودکار برای جمع‌آوری کانفیگ‌های V2Ray که به زبان Go نوشته شده‌است. این ربات هر چند ساعت کانفیگ‌های جدید را از کانال‌های تلگرامی و اشتراک‌های ایرانی استخراج کرده، تکراری‌ها را حذف می‌کند، لوکیشن سرورها را تشخیص می‌دهد و لینک‌های اشتراک (Subscription) آماده (شامل V2Ray و Clash Meta) را برای شما تولید می‌کند.
+یک ابزار خودکار برای جمع‌آوری کانفیگ‌های V2Ray و کلش (Clash Meta) که به زبان Go نوشته شده‌است. این ربات هر چند ساعت کانفیگ‌های جدید را از کانال‌های تلگرامی و اشتراک‌های ایرانی استخراج کرده، تکراری‌ها را حذف می‌کند، لوکیشن سرورها را تشخیص می‌دهد و لینک‌های اشتراک (Subscription) آماده را برای نرم‌افزارهای V2Ray و Clash تولید می‌کند.
 
 ### ویژگی‌ها
 * **به‌روزرسانی ساعتی:** جمع‌آوری خودکار کانفیگ‌های جدید هر چند ساعت از طریق GitHub Actions.
 * **حذف تکراری‌ها (Deduplication):** بررسی پارامترهای کانفیگ برای حذف کانفیگ‌های تکراری.
-* **تشخیص لوکیشن:** استخراج IP و دامنه، و نمایش کدهای کشورها.
-* **پشتیبانی از کلش (Clash Meta):** تولید خودکار کانفیگ کلش همراه با گروه‌های هوشمند تست پینگ خودکار (`url-test`)، پشتیبان (`fallback`) و گروه‌های تفکیک‌شده بر اساس کشور.
+* **تشخیص لوکیشن:** استخراج IP و دامنه، و نمایش پرچم و کدهای کشورها.
+* **🚀 پشتیبانی کامل از کلش (Clash Meta / Mihomo):** تولید خودکار کانفیگ کلش همراه با تست پینگ خودکار (`url-test`)، پشتیبان (`fallback`)، گروه‌های کشوری تفکیک‌شده و جلوگیری از شلوغی با پوشهٔ اختصاصی انتخاب دستی (`🎯 MANUAL`).
 * **دسته‌بندی و انکود Base64:** تفکیک کانفیگ‌ها بر اساس پروتکل و ارائهٔ نسخه Base64 برای سازگاری کامل با آیفون.
 
 ### لینک‌های اشتراک (سابسکریپشن)
 
 لینک مربوط به پروتکل یا برنامهٔ دلخواه خود را کپی کرده و در برنامهٔ خود وارد کنید.
 *(استفاده از لینک‌های Base64 برای کاربران آیفون و برنامه‌های قدیمی‌تر اکیداً توصیه می‌شود).*
-
-#### 🚀 لینک‌های اشتراک مخصوص کلش (Clash Meta / Mihomo)
-> دارای تست پینگ خودکار، انتخاب سریع‌ترین سرور و دسته‌بندی کشوری.
-
-| نوع | لینک اشتراک |
-| :--- | :---: |
-| **کلش ترکیبی (همه کانفیگ‌ها)** | [لینک کلش](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml) |
-| **کلش لایت (مخصوص موبایل)** | [لینک کلش](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml) |
 
 #### 🌐 لینک‌های استاندارد V2Ray
 
@@ -107,6 +109,14 @@ Copy the link corresponding to your preferred protocol and import it into your V
 | **Socks** |   [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/socks.txt) |   [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/socks_base64.txt) |
 | **WireGuard** | [معمولی](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/wireguard.txt)| [Base64](https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/wireguard_base64.txt)|
 
+#### 🚀 لینک‌های اشتراک مخصوص کلش (Clash Meta / Mihomo)
+> دارای تست پینگ خودکار، انتخاب سریع‌ترین سرور و دسته‌بندی کشوری.
+
+| نوع اشتراک | فرمت | لینک مستقیم (Raw URL) |
+| :--- | :---: | :--- |
+| **کلش ترکیبی (همه کانفیگ‌ها)** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
+| **کلش لایت (مخصوص موبایل)** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
+
 #### برنامه‌های پیشنهادی
 * **کلش (Clash Meta / Mihomo):** [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev) | [Mihomo Party](https://github.com/mihomo-party-org/mihomo-party) | [Clash Meta for Android](https://github.com/MetaCubeX/ClashMetaForAndroid) | [FlClash](https://github.com/chen08209/FlClash)
 * **اندروید:** [v2rayNG](https://github.com/2dust/v2rayNG) | [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid)
@@ -114,9 +124,19 @@ Copy the link corresponding to your preferred protocol and import it into your V
 * **آیفون (iOS):** [Stash](https://apps.apple.com/app/stash/id1596063349) | Shadowrocket | V2Box | Streisand
 
 #### آموزش استفاده
-1. یکی از لینک‌های جدول بالا را کپی کنید.
-2. وارد نرم‌افزار خود (مثلاً Clash Verge یا v2rayNG) شوید.
-3. لینک را در بخش Profiles / Subscriptions وارد و ذخیره کنید.
-4. روی دکمهٔ **Update** کلیک کنید تا جدیدترین کانفیگ‌ها دریافت شوند.
+
+##### 🌐 مخصوص برنامه‌های V2Ray (مانند v2rayNG, v2rayN, NekoBox)
+1. یکی از لینک‌های جدول V2Ray بالا را کپی کنید.
+2. وارد نرم‌افزار خود (مثلاً **v2rayNG**) شوید.
+3. از منوی کناری به بخش `Subscription Group` رفته و روی دکمه `+` کلیک کنید.
+4. یک نام دلخواه بنویسید و لینک را در بخش `URL` جای‌گذاری (Paste) کنید و تیک تایید را بزنید.
+5. در صفحهٔ اصلی برنامه، از منوی سه‌نقطه گزینهٔ **Update Subscription** را انتخاب کنید تا جدیدترین کانفیگ‌ها دریافت شوند.
+
+##### 🚀 مخصوص برنامه‌های کلش (Clash Verge Rev, Mihomo Party, FlClash)
+1. یکی از لینک‌های **Clash Meta** جدول بالا را کپی کنید.
+2. وارد نرم‌افزار خود (مثلاً **Clash Verge Rev**) شوید.
+3. از منوی کناری به بخش **Profiles** رفته و لینک را در کادر **Profile URL** قرار داده و **Import** را بزنید.
+4. روی پروفایل جدید کلیک کنید تا انتخاب و فعال شود.
+5. در بخش **Home** یا **Proxies**، گزینهٔ `PROXY` را روی **`⚡ AUTO (Fastest Node)`** بگذارید تا همیشه کم‌پینگ‌ترین و پایدارترین سرور به‌طور خودکار انتخاب شود.
 
 > به امید اینترنت آزاد.
