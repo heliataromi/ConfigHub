@@ -8,6 +8,8 @@ import (
     "strings"
     "time"
 
+    "ConfigHub/internal/clash"
+
     ptime "github.com/yaa110/go-persian-calendar"
 )
 
@@ -75,6 +77,27 @@ func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
         err = os.WriteFile(base64Path, []byte(encodedContent), 0644)
         if err != nil {
             return fmt.Errorf("failed to write %s: %w", base64Name, err)
+        }
+    }
+
+    // 4. Generate Clash Subscriptions (Full & Lite)
+    if len(mixed) > 0 {
+        clashMixedYAML, err := clash.GenerateClashConfig(mixed)
+        if err == nil {
+            clashPath := filepath.Join(outDir, "clash.yaml")
+            if err := os.WriteFile(clashPath, clashMixedYAML, 0644); err != nil {
+                return fmt.Errorf("failed to write clash.yaml: %w", err)
+            }
+        }
+    }
+
+    if len(mixedLite) > 0 {
+        clashLiteYAML, err := clash.GenerateClashConfig(mixedLite)
+        if err == nil {
+            clashLitePath := filepath.Join(outDir, "clash_lite.yaml")
+            if err := os.WriteFile(clashLitePath, clashLiteYAML, 0644); err != nil {
+                return fmt.Errorf("failed to write clash_lite.yaml: %w", err)
+            }
         }
     }
 
