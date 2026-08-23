@@ -97,5 +97,5 @@ func decodeBase64(s string) string {
 }
 
 func hasConfigs(c extractor.Configs) bool {
-    return len(c.Vmess) > 0 || len(c.Vless) > 0 || len(c.Trojan) > 0 || len(c.SS) > 0
+    return c.Count() > 0
 }
