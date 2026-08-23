@@ -87,3 +87,28 @@ func TestValidateConfig_BogusUUIDs(t *testing.T) {
 		t.Logf("Correctly rejected (%s): %s", reason, link)
 	}
 }
+
+func TestValidateConfig_NewProtocolsEdgeCases(t *testing.T) {
+	invalidCases := []struct {
+		link string
+		desc string
+	}{
+		{"tg://proxy?server=1.2.3.4&port=443&secret=short", "Telegram secret too short (< 20)"},
+		{"tg://proxy?port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d", "Telegram missing server"},
+		{"anytls://00000000-0000-0000-0000-000000000000@1.2.3.4:443", "AnyTLS all-zero dummy UUID"},
+		{"anytls://@1.2.3.4:443", "AnyTLS missing UUID"},
+		{"snell://@1.2.3.4:443", "Snell missing PSK"},
+		{"http://1.2.3.4:8080", "HTTP proxy missing credentials"},
+		{"cottendns://invalid-base64-payload", "CottenDNS invalid base64"},
+		{"stormdns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwicHJvZmlsZSI6eyJzZXJ2ZXIiOnt9fX0=", "StormDNS missing domain"},
+	}
+
+	for _, tc := range invalidCases {
+		ok, reason := ValidateConfig(tc.link)
+		if ok {
+			t.Errorf("Expected %s to be rejected, but it passed: %s", tc.desc, tc.link)
+		} else {
+			t.Logf("Correctly rejected %s (%s): %s", tc.desc, reason, tc.link)
+		}
+	}
+}
