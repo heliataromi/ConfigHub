@@ -3,6 +3,7 @@ package exporter
 import (
     "encoding/base64"
     "fmt"
+    "net/url"
     "os"
     "path/filepath"
     "strings"
@@ -80,7 +81,43 @@ func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
         }
     }
 
-    // 4. Generate Clash Subscriptions (Full & Lite)
+    // 4. Generate Per-Country Subscriptions in sub/countries/
+    countriesDir := filepath.Join(outDir, "countries")
+    if err := os.MkdirAll(countriesDir, 0755); err != nil {
+        return fmt.Errorf("failed to create countries directory: %w", err)
+    }
+
+    countryMap := make(map[string][]string)
+    for _, link := range mixed {
+        code := extractCountryCode(link)
+        if code != "" {
+            countryMap[code] = append(countryMap[code], link)
+        }
+    }
+
+    for code, configs := range countryMap {
+        if len(configs) == 0 {
+            continue
+        }
+
+        finalConfigs := append([]string{dummyConfig}, configs...)
+        rawContent := strings.Join(finalConfigs, "\n")
+
+        // Raw country file: sub/countries/de.txt
+        rawPath := filepath.Join(countriesDir, code+".txt")
+        if err := os.WriteFile(rawPath, []byte(rawContent), 0644); err != nil {
+            return fmt.Errorf("failed to write country file %s: %w", rawPath, err)
+        }
+
+        // Base64 country file: sub/countries/de_base64.txt
+        base64Path := filepath.Join(countriesDir, code+"_base64.txt")
+        encodedContent := base64.StdEncoding.EncodeToString([]byte(rawContent))
+        if err := os.WriteFile(base64Path, []byte(encodedContent), 0644); err != nil {
+            return fmt.Errorf("failed to write country base64 file %s: %w", base64Path, err)
+        }
+    }
+
+    // 5. Generate Clash Subscriptions (Full & Lite)
     if len(mixed) > 0 {
         clashMixedYAML, err := clash.GenerateClashConfig(mixed)
         if err == nil {
@@ -102,4 +139,31 @@ func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
     }
 
     return nil
+}
+
+// extractCountryCode extracts the lowercase 2-letter ISO or category code from a config remark
+func extractCountryCode(link string) string {
+    parts := strings.Split(link, "#")
+    if len(parts) < 2 {
+        return ""
+    }
+    remark := parts[len(parts)-1]
+    if unescaped, err := url.QueryUnescape(remark); err == nil && unescaped != "" {
+        remark = unescaped
+    }
+
+    fields := strings.Fields(remark)
+    if len(fields) >= 2 {
+        tag := strings.ToUpper(strings.TrimSpace(fields[1]))
+        if len(tag) == 2 && tag != "UN" {
+            return strings.ToLower(tag)
+        }
+        if tag == "CDN/RELAY" || tag == "CDN" {
+            return "cdn"
+        }
+        if tag == "IR-RELAY" || tag == "IRAN-RELAY" {
+            return "ir_relay"
+        }
+    }
+    return ""
 }
