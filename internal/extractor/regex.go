@@ -39,13 +39,16 @@ func (c Configs) Count() int {
         len(c.Socks) + len(c.WireGuard)
 }
 
+// trailingCutset defines characters commonly appended by markdown, HTML, or punctuation
+const trailingCutset = ".,;!?) \r\n\t\"'>]`*~_\\"
+
 func extractRegex(text string, re *regexp.Regexp) []string {
     matches := re.FindAllStringSubmatch(text, -1)
     var valid []string
     for _, m := range matches {
         if len(m) > 1 {
             // m[1] contains the actual URL
-            link := strings.TrimRight(m[1], ".,;!?) \r\n\t")
+            link := strings.TrimRight(m[1], trailingCutset)
             if len(link) > 10 {
                 valid = append(valid, link)
             }
@@ -62,7 +65,7 @@ func Extract(text string) Configs {
     rawVmessMatches := vmessRegex.FindAllStringSubmatch(text, -1)
     for _, m := range rawVmessMatches {
         if len(m) > 1 {
-            v := strings.TrimRight(m[1], ".,;!?) \r\n\t")
+            v := strings.TrimRight(m[1], trailingCutset)
             if len(v) > 50 {
                 validVmess = append(validVmess, v)
             }
@@ -81,4 +84,37 @@ func Extract(text string) Configs {
         Socks:     extractRegex(text, socksRegex),
         WireGuard: extractRegex(text, wgRegex),
     }
+}
+
+// AuditAndExtract extracts configs while scanning and logging dropped candidate lines to telemetry
+func AuditAndExtract(text, source string, recordDropped func(source, candidate, reason string)) Configs {
+    configs := Extract(text)
+
+    if recordDropped == nil {
+        return configs
+    }
+
+    // Scan lines to audit dropped/unsupported candidate URLs
+    lines := strings.Split(text, "\n")
+    for _, line := range lines {
+        line = strings.TrimSpace(line)
+        if strings.Contains(line, "://") && len(line) > 8 {
+            matched := strings.HasPrefix(line, "vless://") || strings.HasPrefix(line, "vmess://") ||
+                strings.HasPrefix(line, "trojan://") || strings.HasPrefix(line, "ss://") ||
+                strings.HasPrefix(line, "ssr://") || strings.HasPrefix(line, "tuic://") ||
+                strings.HasPrefix(line, "hy2://") || strings.HasPrefix(line, "hysteria://") ||
+                strings.HasPrefix(line, "hysteria2://") || strings.HasPrefix(line, "socks://") ||
+                strings.HasPrefix(line, "socks5://") || strings.HasPrefix(line, "wireguard://") ||
+                strings.HasPrefix(line, "wg://")
+
+            if !matched {
+                // Suspicious link with unsupported or custom scheme
+                recordDropped(source, line, "unsupported or unrecognized proxy scheme")
+            } else if strings.HasPrefix(line, "vmess://") && len(line) <= 50 {
+                recordDropped(source, line, "vmess payload too short or malformed")
+            }
+        }
+    }
+
+    return configs
 }

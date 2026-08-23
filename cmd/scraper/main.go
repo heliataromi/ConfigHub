@@ -12,6 +12,7 @@ import (
     "ConfigHub/internal/geoip"
     "ConfigHub/internal/parser"
     "ConfigHub/internal/scraper"
+    "ConfigHub/internal/telemetry"
 
     "github.com/oschwald/maxminddb-golang"
 )
@@ -176,8 +177,11 @@ func main() {
 
     // 5. Export Files
     fmt.Println("\n--- Deduplication & Renaming Complete ---")
+    uniqueCounts := make(map[string]int)
     for proto, configs := range finalConfigs {
-        fmt.Printf("%-10s: %d unique\n", strings.ToUpper(proto), len(configs))
+        count := len(configs)
+        uniqueCounts[proto] = count
+        fmt.Printf("%-10s: %d unique\n", strings.ToUpper(proto), count)
     }
 
     err = exporter.WriteSubFiles("sub", finalConfigs)
@@ -185,6 +189,14 @@ func main() {
         log.Fatalf("[-] Error saving files: %v\n", err)
     }
     fmt.Println("[+] Successfully exported Geo-named files to 'sub/'!")
+
+    // 6. Export Telemetry & Observability Report
+    if err := telemetry.Global.ExportReport("sub/telemetry.json", uniqueCounts); err != nil {
+        fmt.Printf("[-] Warning: Failed to export telemetry report: %v\n", err)
+    } else {
+        fmt.Println("[+] Successfully exported observability report to 'sub/telemetry.json'!")
+    }
+    telemetry.Global.PrintConsoleSummary(uniqueCounts)
 }
 
 // processAndRename iterates through the map and renames each config concurrently
