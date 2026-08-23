@@ -243,20 +243,14 @@ func TestGenerateClashConfig(t *testing.T) {
 	}
 
 	yamlStr := string(yamlData)
-	if !strings.Contains(yamlStr, "🇩🇪 Germany (Auto)") {
-		t.Errorf("Generated YAML missing German auto group:\n%s", yamlStr)
-	}
-	if !strings.Contains(yamlStr, "🇫🇷 France (Auto)") {
-		t.Errorf("Generated YAML missing French auto group:\n%s", yamlStr)
-	}
-	if !strings.Contains(yamlStr, "☁️ CDN & Cloud Relay (Auto)") {
-		t.Errorf("Generated YAML missing CDN auto group:\n%s", yamlStr)
-	}
-	if !strings.Contains(yamlStr, "🇮🇷 Iran Domestic Relay (Auto)") {
-		t.Errorf("Generated YAML missing Iran Domestic Relay auto group:\n%s", yamlStr)
-	}
 	if !strings.Contains(yamlStr, "⚡ AUTO (Fastest Node)") {
 		t.Errorf("Generated YAML missing AUTO group:\n%s", yamlStr)
+	}
+	if !strings.Contains(yamlStr, "🔄 FALLBACK (Failover)") {
+		t.Errorf("Generated YAML missing FALLBACK group:\n%s", yamlStr)
+	}
+	if !strings.Contains(yamlStr, "⚖️ LOAD-BALANCE") {
+		t.Errorf("Generated YAML missing LOAD-BALANCE group:\n%s", yamlStr)
 	}
 	if !strings.Contains(yamlStr, "🎯 MANUAL (All Nodes)") {
 		t.Errorf("Generated YAML missing MANUAL group:\n%s", yamlStr)

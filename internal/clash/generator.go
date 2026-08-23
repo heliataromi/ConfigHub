@@ -2,60 +2,15 @@ package clash
 
 import (
 	"fmt"
-	"sort"
 	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
 )
 
-var countryNames = map[string]string{
-	"DE": "🇩🇪 Germany",
-	"US": "🇺🇸 United States",
-	"FR": "🇫🇷 France",
-	"NL": "🇳🇱 Netherlands",
-	"GB": "🇬🇧 United Kingdom",
-	"UK": "🇬🇧 United Kingdom",
-	"TR": "🇹🇷 Turkey",
-	"CA": "🇨🇦 Canada",
-	"FI": "🇫🇮 Finland",
-	"PL": "🇵🇱 Poland",
-	"SE": "🇸🇪 Sweden",
-	"CH": "🇨🇭 Switzerland",
-	"IT": "🇮🇹 Italy",
-	"ES": "🇪🇸 Spain",
-	"RU": "🇷🇺 Russia",
-	"SG": "🇸🇬 Singapore",
-	"JP": "🇯🇵 Japan",
-	"KR": "🇰🇷 South Korea",
-	"HK": "🇭🇰 Hong Kong",
-	"AE": "🇦🇪 UAE",
-	"IN": "🇮🇳 India",
-	"AT": "🇦🇹 Austria",
-	"BE": "🇧🇪 Belgium",
-	"NO": "🇳🇴 Norway",
-	"DK": "🇩🇰 Denmark",
-	"RO": "🇷🇴 Romania",
-	"BG": "🇧🇬 Bulgaria",
-	"CZ": "🇨🇿 Czechia",
-	"UA": "🇺🇦 Ukraine",
-	"IR": "🇮🇷 Iran",
-	"AM": "🇦🇲 Armenia",
-	"GE": "🇬🇪 Georgia",
-	"AZ":       "🇦🇿 Azerbaijan",
-	"KZ":       "🇰🇿 Kazakhstan",
-	"IL":       "🇮🇱 Israel",
-	"AU":       "🇦🇺 Australia",
-	"BR":       "🇧🇷 Brazil",
-	"ZA":       "🇿🇦 South Africa",
-	"CDN":      "☁️ CDN & Cloud Relay",
-	"IR-RELAY": "🇮🇷 Iran Domestic Relay",
-}
-
 // GenerateClashConfig converts a slice of proxy links to a full Clash Meta YAML string
 func GenerateClashConfig(links []string) ([]byte, error) {
 	var parsedProxies []ParsedProxy
-	countryMap := make(map[string][]string)
 	nameCounts := make(map[string]int)
 
 	// 1. Parse each link
@@ -65,7 +20,7 @@ func GenerateClashConfig(links []string) ([]byte, error) {
 			continue
 		}
 
-		proxyData, country, err := ParseConfigToClash(link)
+		proxyData, _, err := ParseConfigToClash(link)
 		if err != nil || proxyData == nil {
 			continue
 		}
@@ -81,9 +36,8 @@ func GenerateClashConfig(links []string) ([]byte, error) {
 		proxyData["name"] = uniqueName
 
 		parsedProxies = append(parsedProxies, ParsedProxy{
-			Name:        uniqueName,
-			CountryCode: country,
-			Data:        proxyData,
+			Name: uniqueName,
+			Data: proxyData,
 		})
 	}
 
@@ -91,63 +45,26 @@ func GenerateClashConfig(links []string) ([]byte, error) {
 		return nil, fmt.Errorf("no valid proxies to generate clash config")
 	}
 
-	// 2. Collect all node names and group by country
+	// 2. Collect all node names
 	var allNodeNames []string
 	var rawProxies []map[string]interface{}
 
 	for _, p := range parsedProxies {
 		allNodeNames = append(allNodeNames, p.Name)
 		rawProxies = append(rawProxies, p.Data)
-
-		if p.CountryCode != "" {
-			countryMap[p.CountryCode] = append(countryMap[p.CountryCode], p.Name)
-		}
 	}
 
-	// 3. Build Country Auto Groups
-	var countryGroups []ProxyGroup
-	var countryGroupNames []string
-
-	// Sort country codes for deterministic output
-	var countryCodes []string
-	for code := range countryMap {
-		countryCodes = append(countryCodes, code)
+	// 3. Build Primary Proxy Groups
+	mainSelectorProxies := []string{
+		"⚡ AUTO (Fastest Node)",
+		"🔄 FALLBACK (Failover)",
+		"⚖️ LOAD-BALANCE",
+		"🎯 MANUAL (All Nodes)",
 	}
-	sort.Strings(countryCodes)
-
-	for _, code := range countryCodes {
-		nodes := countryMap[code]
-		// Only create country auto-groups for countries with at least 2 nodes
-		if len(nodes) < 2 {
-			continue
-		}
-
-		cName, ok := countryNames[code]
-		if !ok {
-			cName = fmt.Sprintf("🌐 %s", code)
-		}
-		groupName := fmt.Sprintf("%s (Auto)", cName)
-
-		countryGroups = append(countryGroups, ProxyGroup{
-			Name:      groupName,
-			Type:      "url-test",
-			URL:       "http://www.gstatic.com/generate_204",
-			Interval:  300,
-			Tolerance: 50,
-			Proxies:   nodes,
-		})
-		countryGroupNames = append(countryGroupNames, groupName)
-	}
-
-	// 4. Build Primary Proxy Groups
-	var mainSelectorProxies []string
-	mainSelectorProxies = append(mainSelectorProxies, "⚡ AUTO (Fastest Node)", "🔄 FALLBACK (Failover)", "⚖️ LOAD-BALANCE")
-	mainSelectorProxies = append(mainSelectorProxies, countryGroupNames...)
-	mainSelectorProxies = append(mainSelectorProxies, "🎯 MANUAL (All Nodes)")
 
 	var proxyGroups []ProxyGroup
 
-	// Root SELECT group (clean, high-level menu)
+	// Root SELECT group
 	proxyGroups = append(proxyGroups, ProxyGroup{
 		Name:    "🔰 PROXY",
 		Type:    "select",
@@ -182,9 +99,6 @@ func GenerateClashConfig(links []string) ([]byte, error) {
 		Strategy: "consistent-hashing",
 		Proxies:  allNodeNames,
 	})
-
-	// Add country groups
-	proxyGroups = append(proxyGroups, countryGroups...)
 
 	// Manual Selection group containing all individual nodes
 	proxyGroups = append(proxyGroups, ProxyGroup{
