@@ -86,7 +86,9 @@ func Extract(text string) Configs {
     }
 }
 
-// AuditAndExtract extracts configs while scanning and logging dropped candidate lines to telemetry
+var anySchemeRegex = regexp.MustCompile(`([a-zA-Z0-9+.-]+://[^\s<"']+)`)
+
+// AuditAndExtract extracts configs while scanning and logging dropped candidate URLs to telemetry
 func AuditAndExtract(text, source string, recordDropped func(source, candidate, reason string)) Configs {
     configs := Extract(text)
 
@@ -94,24 +96,48 @@ func AuditAndExtract(text, source string, recordDropped func(source, candidate, 
         return configs
     }
 
-    // Scan lines to audit dropped/unsupported candidate URLs
-    lines := strings.Split(text, "\n")
-    for _, line := range lines {
-        line = strings.TrimSpace(line)
-        if strings.Contains(line, "://") && len(line) > 8 {
-            matched := strings.HasPrefix(line, "vless://") || strings.HasPrefix(line, "vmess://") ||
-                strings.HasPrefix(line, "trojan://") || strings.HasPrefix(line, "ss://") ||
-                strings.HasPrefix(line, "ssr://") || strings.HasPrefix(line, "tuic://") ||
-                strings.HasPrefix(line, "hy2://") || strings.HasPrefix(line, "hysteria://") ||
-                strings.HasPrefix(line, "hysteria2://") || strings.HasPrefix(line, "socks://") ||
-                strings.HasPrefix(line, "socks5://") || strings.HasPrefix(line, "wireguard://") ||
-                strings.HasPrefix(line, "wg://")
+    // Build a lookup set of all successfully extracted configs
+    extractedSet := make(map[string]bool)
+    for _, l := range configs.Vmess { extractedSet[l] = true }
+    for _, l := range configs.Vless { extractedSet[l] = true }
+    for _, l := range configs.Trojan { extractedSet[l] = true }
+    for _, l := range configs.SS { extractedSet[l] = true }
+    for _, l := range configs.SSR { extractedSet[l] = true }
+    for _, l := range configs.TUIC { extractedSet[l] = true }
+    for _, l := range configs.Hy2 { extractedSet[l] = true }
+    for _, l := range configs.Hysteria { extractedSet[l] = true }
+    for _, l := range configs.Socks { extractedSet[l] = true }
+    for _, l := range configs.WireGuard { extractedSet[l] = true }
 
-            if !matched {
-                // Suspicious link with unsupported or custom scheme
-                recordDropped(source, line, "unsupported or unrecognized proxy scheme")
-            } else if strings.HasPrefix(line, "vmess://") && len(line) <= 50 {
-                recordDropped(source, line, "vmess payload too short or malformed")
+    // Scan for candidate URLs in text
+    matches := anySchemeRegex.FindAllStringSubmatch(text, -1)
+    for _, m := range matches {
+        if len(m) > 1 {
+            candidate := strings.TrimRight(m[1], trailingCutset)
+            if len(candidate) <= 8 {
+                continue
+            }
+
+            // If it was already successfully extracted, don't report as dropped
+            if extractedSet[candidate] {
+                continue
+            }
+
+            // Check if it starts with a known supported protocol
+            isKnownProto := strings.HasPrefix(candidate, "vless://") || strings.HasPrefix(candidate, "vmess://") ||
+                strings.HasPrefix(candidate, "trojan://") || strings.HasPrefix(candidate, "ss://") ||
+                strings.HasPrefix(candidate, "ssr://") || strings.HasPrefix(candidate, "tuic://") ||
+                strings.HasPrefix(candidate, "hy2://") || strings.HasPrefix(candidate, "hysteria://") ||
+                strings.HasPrefix(candidate, "hysteria2://") || strings.HasPrefix(candidate, "socks://") ||
+                strings.HasPrefix(candidate, "socks5://") || strings.HasPrefix(candidate, "wireguard://") ||
+                strings.HasPrefix(candidate, "wg://")
+
+            if isKnownProto {
+                if strings.HasPrefix(candidate, "vmess://") && len(candidate) <= 50 {
+                    recordDropped(source, candidate, "vmess payload too short or malformed")
+                }
+            } else {
+                recordDropped(source, candidate, "unsupported or unrecognized proxy scheme")
             }
         }
     }

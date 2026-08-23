@@ -83,3 +83,28 @@ vless://11111111-2222-3333-4444-555555555555@example.com:443?type=tcp#Node5\
 		t.Errorf("Expected trimmed tuic without angle bracket, got %v", configs.TUIC)
 	}
 }
+
+func TestExtract_PersianTextWithConfig(t *testing.T) {
+	text := "کل پیام رو کپی کن، برو تو v2ray، دکمه مثبت (  ➕  ) رو بزن و Import configs from clipboard رو انتخاب کن. همهی کانفیگها یه جا میاد تو برنامهت  vless://435bda4c-fe5e-42c9-a3ad-15334943b38a@104.17.163.59:80?security=none&type=ws&host=us3.rtacg.com&path=/#  🃏   @v2ray_Dalghak"
+	c := Extract(text)
+	if len(c.Vless) != 1 {
+		t.Fatalf("Expected 1 VLESS config, got %d", len(c.Vless))
+	}
+}
+
+func TestAuditAndExtract_NoFalsePositiveOnValidInlineConfig(t *testing.T) {
+	text := "کل پیام رو کپی کن، برو تو v2ray، دکمه مثبت (  ➕  ) رو بزن و Import configs from clipboard رو انتخاب کن. همهی کانفیگها یه جا میاد تو برنامهت  vless://435bda4c-fe5e-42c9-a3ad-15334943b38a@104.17.163.59:80?security=none&type=ws&host=us3.rtacg.com&path=/#  🃏   @v2ray_Dalghak"
+	
+	var dropped []string
+	configs := AuditAndExtract(text, "t.me/v2ray_dalghak", func(source, candidate, reason string) {
+		dropped = append(dropped, candidate)
+	})
+
+	if len(configs.Vless) != 1 {
+		t.Fatalf("Expected 1 extracted VLESS config, got %d", len(configs.Vless))
+	}
+	if len(dropped) != 0 {
+		t.Fatalf("Expected 0 false positive dropped items, got %d: %v", len(dropped), dropped)
+	}
+}
+
