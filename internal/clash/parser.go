@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/url"
 	"strconv"
 	"strings"
@@ -421,6 +422,7 @@ var validSSCiphers = map[string]bool{
 	"chacha20-ietf":                 true,
 	"chacha20":                      true,
 	"chacha20-ietf-poly1305":        true,
+	"chacha20-poly1305":             true,
 	"xchacha20-ietf-poly1305":       true,
 	"2022-blake3-aes-128-gcm":       true,
 	"2022-blake3-aes-256-gcm":       true,
@@ -428,10 +430,24 @@ var validSSCiphers = map[string]bool{
 	"2022-blake3-chacha8-poly1305":  true,
 	"none":                          true,
 	"dummy":                         true,
+	"plain":                         true,
+	"camellia-128-cfb":              true,
+	"camellia-192-cfb":              true,
+	"camellia-256-cfb":              true,
 }
 
 func isValidSSCipher(cipher string) bool {
 	return validSSCiphers[strings.ToLower(strings.TrimSpace(cipher))]
+}
+
+func splitHostPortSafe(hostPort string, defaultPort int) (string, int) {
+	hostPort = strings.TrimSpace(hostPort)
+	if h, p, err := net.SplitHostPort(hostPort); err == nil {
+		port := toInt(p, defaultPort)
+		return strings.Trim(h, "[]"), port
+	}
+	cleaned := strings.Trim(hostPort, "[]")
+	return cleaned, defaultPort
 }
 
 func parseSS(link string) (map[string]interface{}, string, error) {
@@ -504,6 +520,9 @@ func parseSS(link string) (map[string]interface{}, string, error) {
 	if !isValidSSCipher(cipher) {
 		return nil, "", fmt.Errorf("unsupported or invalid ss cipher: %s", cipher)
 	}
+	if cipher == "chacha20-poly1305" {
+		cipher = "chacha20-ietf-poly1305"
+	}
 
 	// Validate and normalize Shadowsocks 2022 keys
 	if strings.HasPrefix(cipher, "2022-") {
@@ -519,15 +538,10 @@ func parseSS(link string) (map[string]interface{}, string, error) {
 		password = strings.Join(normalizedKeys, ":")
 	}
 
-	// Parse host & port
-	hpParts := strings.Split(hostPort, ":")
-	if len(hpParts) < 2 {
-		return nil, "", fmt.Errorf("invalid ss host:port")
-	}
-	server := hpParts[0]
-	port := toInt(hpParts[1], 8388)
+	// Parse host & port safely with IPv6 support
+	server, port := splitHostPortSafe(hostPort, 8388)
 	if port <= 0 || port > 65535 || server == "" {
-		return nil, "", fmt.Errorf("invalid server or port in ss link")
+		return nil, "", fmt.Errorf("invalid server or port in ss link: %s", hostPort)
 	}
 
 	proxy := map[string]interface{}{
