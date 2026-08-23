@@ -18,6 +18,9 @@ var (
     wgRegex       = regexp.MustCompile(`(?:^|[^a-zA-Z])((?:wireguard|wg)://[^\s<"']+)`)
 )
 
+// trailingCutset defines characters commonly appended by markdown, HTML, or punctuation
+const trailingCutset = ".,;!?) \r\n\t\"'>]`*~_\\"
+
 // Configs holds the categorized extracted links
 type Configs struct {
     Vmess     []string
@@ -32,13 +35,20 @@ type Configs struct {
     WireGuard []string
 }
 
+// Count returns the total number of valid configs across all protocols
+func (c Configs) Count() int {
+    return len(c.Vmess) + len(c.Vless) + len(c.Trojan) + len(c.SS) +
+        len(c.SSR) + len(c.TUIC) + len(c.Hy2) + len(c.Hysteria) +
+        len(c.Socks) + len(c.WireGuard)
+}
+
 func extractRegex(text string, re *regexp.Regexp) []string {
     matches := re.FindAllStringSubmatch(text, -1)
     var valid []string
     for _, m := range matches {
         if len(m) > 1 {
             // m[1] contains the actual URL
-            link := strings.TrimRight(m[1], ".,;!?) \r\n\t")
+            link := strings.TrimRight(m[1], trailingCutset)
             if len(link) > 10 {
                 valid = append(valid, link)
             }
@@ -55,7 +65,7 @@ func Extract(text string) Configs {
     rawVmessMatches := vmessRegex.FindAllStringSubmatch(text, -1)
     for _, m := range rawVmessMatches {
         if len(m) > 1 {
-            v := strings.TrimRight(m[1], ".,;!?) \r\n\t")
+            v := strings.TrimRight(m[1], trailingCutset)
             if len(v) > 50 {
                 validVmess = append(validVmess, v)
             }
