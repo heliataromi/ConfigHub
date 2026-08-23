@@ -47,10 +47,17 @@ func extractNameAndCountry(remark string) (name string, country string) {
 		remark = "Proxy"
 	}
 
-	// Example format: "🇩🇪 DE - [t.me/channel]"
+	// Example formats: "🇩🇪 DE - [t.me/channel]", "☁️ CDN/RELAY - [channel]", "🇮🇷 IR-RELAY - [channel]"
 	parts := strings.Fields(remark)
-	if len(parts) >= 2 && len(parts[1]) == 2 && strings.ToUpper(parts[1]) == parts[1] {
-		country = parts[1]
+	if len(parts) >= 2 {
+		tag := strings.ToUpper(strings.TrimSpace(parts[1]))
+		if len(tag) == 2 {
+			country = tag
+		} else if tag == "CDN/RELAY" || tag == "CDN" || tag == "RELAY" {
+			country = "CDN"
+		} else if tag == "IR-RELAY" || tag == "IRAN-RELAY" {
+			country = "IR-RELAY"
+		}
 	}
 
 	return remark, country
