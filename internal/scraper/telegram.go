@@ -4,6 +4,7 @@ import (
     "fmt"
     "html"
     "net/http"
+    "regexp"
     "strings"
     "time"
 
@@ -12,6 +13,8 @@ import (
 
     "github.com/PuerkitoBio/goquery"
 )
+
+var htmlTagRegex = regexp.MustCompile(`<[^>]+>`)
 
 // ScrapeChannel fetches a Telegram web preview and extracts configs from the last 24 hours
 func ScrapeChannel(channel string) (extractor.Configs, error) {
@@ -96,6 +99,10 @@ func ScrapeChannel(channel string) (extractor.Configs, error) {
 
             textContent := strings.ReplaceAll(htmlContent, "<br/>", "\n")
             textContent = strings.ReplaceAll(textContent, "<br>", "\n")
+            textContent = strings.ReplaceAll(textContent, "</p>", "\n")
+            textContent = strings.ReplaceAll(textContent, "</div>", "\n")
+            textContent = strings.ReplaceAll(textContent, "</blockquote>", "\n")
+            textContent = htmlTagRegex.ReplaceAllString(textContent, " ")
             textContent = html.UnescapeString(textContent)
 
             rawTexts = append(rawTexts, textContent)
