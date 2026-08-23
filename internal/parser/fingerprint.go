@@ -157,6 +157,9 @@ func getSSFingerprint(link string) string {
     if strings.Contains(raw, "@") {
         atSplit := strings.SplitN(raw, "@", 2)
         userInfo = atSplit[0]
+        if unescaped, err := url.QueryUnescape(userInfo); err == nil && unescaped != "" {
+            userInfo = unescaped
+        }
         rest := atSplit[1]
 
         if qIdx := strings.Index(rest, "?"); qIdx != -1 {
@@ -174,7 +177,11 @@ func getSSFingerprint(link string) string {
         }
     } else {
         // Legacy base64(method:password@host:port)
-        if decoded, err := decodeBase64Safe(raw); err == nil {
+        legacyRaw := raw
+        if unescaped, err := url.QueryUnescape(legacyRaw); err == nil && unescaped != "" {
+            legacyRaw = unescaped
+        }
+        if decoded, err := decodeBase64Safe(legacyRaw); err == nil {
             decodedStr := string(decoded)
             if atIdx := strings.LastIndex(decodedStr, "@"); atIdx != -1 {
                 userInfo = decodedStr[:atIdx]

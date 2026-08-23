@@ -68,6 +68,10 @@ func renameSS(link, channel string, db *maxminddb.Reader) string {
     if strings.Contains(mainPart, "@") {
         // SIP002 format: base64(method:pass)@host:port
         atSplit := strings.SplitN(mainPart, "@", 2)
+        userInfo := atSplit[0]
+        if unescaped, err := url.QueryUnescape(userInfo); err == nil && unescaped != "" {
+            userInfo = unescaped
+        }
         rest := atSplit[1]
         if qIdx := strings.Index(rest, "?"); qIdx != -1 {
             rest = rest[:qIdx]
@@ -80,7 +84,11 @@ func renameSS(link, channel string, db *maxminddb.Reader) string {
         }
     } else {
         // Legacy format: base64(method:pass@host:port)
-        if decoded, err := decodeBase64Safe(mainPart); err == nil {
+        legacyPart := mainPart
+        if unescaped, err := url.QueryUnescape(legacyPart); err == nil && unescaped != "" {
+            legacyPart = unescaped
+        }
+        if decoded, err := decodeBase64Safe(legacyPart); err == nil {
             decodedStr := string(decoded)
             if atIdx := strings.LastIndex(decodedStr, "@"); atIdx != -1 {
                 hostPort := decodedStr[atIdx+1:]

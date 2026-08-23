@@ -56,4 +56,19 @@ func TestWriteSubFiles_WithCountrySubs(t *testing.T) {
 	if !strings.Contains(string(deContent), "vless://uuid1") || !strings.Contains(string(deContent), "trojan://pass1") {
 		t.Errorf("Expected de.txt to contain both German nodes, got:\n%s", string(deContent))
 	}
+
+	// Verify telegram proxies are excluded from mixed.txt
+	mixedContent, _ := os.ReadFile(filepath.Join(tmpDir, "mixed.txt"))
+	if strings.Contains(string(mixedContent), "tg://proxy?") {
+		t.Errorf("Telegram proxies must not be present in mixed.txt:\n%s", string(mixedContent))
+	}
+
+	// Verify telegram.txt does NOT contain dummy vless header
+	tgContent, _ := os.ReadFile(filepath.Join(tmpDir, "telegram.txt"))
+	if strings.Contains(string(tgContent), "vless://00000000-0000") {
+		t.Errorf("telegram.txt must not contain dummy vless config:\n%s", string(tgContent))
+	}
+	if !strings.Contains(string(tgContent), "tg://proxy?server=1.2.3.8") {
+		t.Errorf("telegram.txt missing telegram proxy link:\n%s", string(tgContent))
+	}
 }

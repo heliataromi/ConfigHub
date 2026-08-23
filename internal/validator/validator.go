@@ -226,6 +226,9 @@ func validateSS(link string) (bool, string) {
 	if strings.Contains(raw, "@") {
 		atSplit := strings.SplitN(raw, "@", 2)
 		userInfo = atSplit[0]
+		if unescaped, err := url.QueryUnescape(userInfo); err == nil && unescaped != "" {
+			userInfo = unescaped
+		}
 		rest := atSplit[1]
 		if qIdx := strings.Index(rest, "?"); qIdx != -1 {
 			hostPort = rest[:qIdx]
@@ -374,7 +377,7 @@ func validateTelegram(link string) (bool, string) {
 	if secret == "" {
 		return false, "missing telegram proxy secret"
 	}
-	if len(secret) < 32 {
+	if len(secret) < 20 {
 		return false, "telegram proxy secret too short"
 	}
 
