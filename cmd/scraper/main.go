@@ -69,6 +69,9 @@ func main() {
         "juicity":   make(map[string]ConfigItem),
         "naive":     make(map[string]ConfigItem),
         "telegram":  make(map[string]ConfigItem),
+        "anytls":    make(map[string]ConfigItem),
+        "snell":     make(map[string]ConfigItem),
+        "http":      make(map[string]ConfigItem),
     }
 
     var mu sync.Mutex
@@ -125,6 +128,9 @@ func main() {
             processConfigs(configs.Juicity, "juicity", channelName, "channel")
             processConfigs(configs.Naive, "naive", channelName, "channel")
             processConfigs(configs.Telegram, "telegram", channelName, "channel")
+            processConfigs(configs.AnyTLS, "anytls", channelName, "channel")
+            processConfigs(configs.Snell, "snell", channelName, "channel")
+            processConfigs(configs.HTTP, "http", channelName, "channel")
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped (%d configs)\n", channelName, configs.Count())
         }(ch)
@@ -176,6 +182,9 @@ func main() {
             processConfigs(configs.Juicity, "juicity", shortName, "subscription")
             processConfigs(configs.Naive, "naive", shortName, "subscription")
             processConfigs(configs.Telegram, "telegram", shortName, "subscription")
+            processConfigs(configs.AnyTLS, "anytls", shortName, "subscription")
+            processConfigs(configs.Snell, "snell", shortName, "subscription")
+            processConfigs(configs.HTTP, "http", shortName, "subscription")
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped (%d configs)\n", shortName, configs.Count())
         }(sub)

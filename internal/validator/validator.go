@@ -56,6 +56,12 @@ func ValidateConfig(link string) (bool, string) {
 		return validateNaive(link)
 	} else if strings.HasPrefix(link, "tg://proxy?") || strings.HasPrefix(link, "https://t.me/proxy?") || strings.HasPrefix(link, "http://t.me/proxy?") {
 		return validateTelegram(link)
+	} else if strings.HasPrefix(link, "anytls://") {
+		return validateAnyTLS(link)
+	} else if strings.HasPrefix(link, "snell://") {
+		return validateSnell(link)
+	} else if strings.HasPrefix(link, "http://") || strings.HasPrefix(link, "https://") {
+		return validateHTTPProxy(link)
 	}
 
 	return false, "unsupported proxy scheme"
@@ -77,6 +83,9 @@ func SanitizeConfigs(configs extractor.Configs, source string, recordDropped fun
 		Juicity:   filterSlice(configs.Juicity, source, recordDropped),
 		Naive:     filterSlice(configs.Naive, source, recordDropped),
 		Telegram:  filterSlice(configs.Telegram, source, recordDropped),
+		AnyTLS:    filterSlice(configs.AnyTLS, source, recordDropped),
+		Snell:     filterSlice(configs.Snell, source, recordDropped),
+		HTTP:      filterSlice(configs.HTTP, source, recordDropped),
 	}
 }
 
@@ -405,6 +414,46 @@ func validateNaive(link string) (bool, string) {
 		return false, "missing naiveproxy credentials"
 	}
 	return validateHostAndPort(u.Hostname(), u.Port(), 443)
+}
+
+func validateAnyTLS(link string) (bool, string) {
+	u, err := url.Parse(link)
+	if err != nil {
+		return false, "malformed anytls url"
+	}
+	if u.User == nil || strings.TrimSpace(u.User.Username()) == "" {
+		return false, "missing anytls uuid"
+	}
+	if ok, reason := validateUUID(u.User.Username()); !ok {
+		return false, reason
+	}
+	return validateHostAndPort(u.Hostname(), u.Port(), 443)
+}
+
+func validateSnell(link string) (bool, string) {
+	u, err := url.Parse(link)
+	if err != nil {
+		return false, "malformed snell url"
+	}
+	if u.User == nil || strings.TrimSpace(u.User.Username()) == "" {
+		return false, "missing snell psk"
+	}
+	return validateHostAndPort(u.Hostname(), u.Port(), 443)
+}
+
+func validateHTTPProxy(link string) (bool, string) {
+	u, err := url.Parse(link)
+	if err != nil {
+		return false, "malformed http proxy url"
+	}
+	if u.User == nil || strings.TrimSpace(u.User.Username()) == "" {
+		return false, "missing http proxy credentials"
+	}
+	defaultPort := 8080
+	if strings.HasPrefix(link, "https://") {
+		defaultPort = 8443
+	}
+	return validateHostAndPort(u.Hostname(), u.Port(), defaultPort)
 }
 
 func decodeBase64Safe(s string) ([]byte, error) {

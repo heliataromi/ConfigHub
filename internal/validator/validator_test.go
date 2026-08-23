@@ -18,6 +18,9 @@ func TestValidateConfig_ValidProtocols(t *testing.T) {
 		"naive+https://user1:pass1@198.51.200.1:443#NaiveNode",
 		"https://t.me/proxy?server=198.51.200.1&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d",
 		"tg://proxy?server=198.51.200.1&port=2096&secret=dd79e344818749bd7ac519130220c25d09",
+		"anytls://7aecb4a5-f0a4-32a0-aabe-c9d5241e313f@198.51.200.1:443?security=tls#AnyTLSNode",
+		"snell://psk123456@198.51.200.1:443?version=4#SnellNode",
+		"http://user1:pass1@198.51.200.1:8080#HTTPNode",
 	}
 
 	for _, link := range validList {

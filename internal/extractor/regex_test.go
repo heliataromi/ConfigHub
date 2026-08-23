@@ -21,6 +21,9 @@ juicity://uuid1:pass1@juicity.example.com:443?sni=juicity.example.com#JuicityNod
 naive+https://user1:pass1@naive.example.com:443#NaiveNode
 https://t.me/proxy?server=1.2.3.4&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d
 tg://proxy?server=5.6.7.8&port=2096&secret=dd79e344818749bd7ac519130220c25d09
+anytls://11111111-2222-3333-4444-555555555555@anytls.example.com:443?security=tls#AnyTLSNode
+snell://psk123@snell.example.com:443?version=4#SnellNode
+http://proxyuser:proxypass@httpproxy.example.com:8080#HTTPNode
 `
 
 	configs := Extract(sampleText)
@@ -64,9 +67,18 @@ tg://proxy?server=5.6.7.8&port=2096&secret=dd79e344818749bd7ac519130220c25d09
 	if len(configs.Telegram) != 2 {
 		t.Errorf("Expected 2 Telegram proxy configs, got %d", len(configs.Telegram))
 	}
+	if len(configs.AnyTLS) != 1 {
+		t.Errorf("Expected 1 AnyTLS config, got %d", len(configs.AnyTLS))
+	}
+	if len(configs.Snell) != 1 {
+		t.Errorf("Expected 1 Snell config, got %d", len(configs.Snell))
+	}
+	if len(configs.HTTP) != 1 {
+		t.Errorf("Expected 1 HTTP proxy config, got %d", len(configs.HTTP))
+	}
 
-	if count := configs.Count(); count != 14 {
-		t.Errorf("Expected total count 14, got %d", count)
+	if count := configs.Count(); count != 17 {
+		t.Errorf("Expected total count 17, got %d", count)
 	}
 }
 
