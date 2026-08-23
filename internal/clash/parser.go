@@ -124,15 +124,39 @@ func parseVLESS(link string) (map[string]interface{}, string, error) {
 		}
 	}
 
-	if security == "reality" || q.Get("pbk") != "" {
+	pbk := q.Get("pbk")
+	if pbk == "" {
+		pbk = q.Get("public_key")
+	}
+	if pbk == "" {
+		pbk = q.Get("publicKey")
+	}
+
+	sid := q.Get("sid")
+	if sid == "" {
+		sid = q.Get("short_id")
+	}
+	if sid == "" {
+		sid = q.Get("shortId")
+	}
+
+	spx := q.Get("spx")
+	if spx == "" {
+		spx = q.Get("spider_x")
+	}
+	if spx == "" {
+		spx = q.Get("spiderX")
+	}
+
+	if security == "reality" || pbk != "" {
 		proxy["tls"] = true
 		realityOpts := map[string]interface{}{
-			"public-key": q.Get("pbk"),
+			"public-key": pbk,
 		}
-		if sid := q.Get("sid"); sid != "" {
+		if sid != "" {
 			realityOpts["short-id"] = sid
 		}
-		if spx := q.Get("spx"); spx != "" {
+		if spx != "" {
 			realityOpts["spider-x"] = spx
 		}
 		proxy["reality-opts"] = realityOpts
