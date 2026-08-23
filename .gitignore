@@ -18,3 +18,4 @@ sub/
 *.swp
 GeoLite2-Country.mmdb
 /scraper
+plans/

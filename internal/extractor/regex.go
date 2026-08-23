@@ -85,3 +85,36 @@ func Extract(text string) Configs {
         WireGuard: extractRegex(text, wgRegex),
     }
 }
+
+// AuditAndExtract extracts configs while scanning and logging dropped candidate lines to telemetry
+func AuditAndExtract(text, source string, recordDropped func(source, candidate, reason string)) Configs {
+    configs := Extract(text)
+
+    if recordDropped == nil {
+        return configs
+    }
+
+    // Scan lines to audit dropped/unsupported candidate URLs
+    lines := strings.Split(text, "\n")
+    for _, line := range lines {
+        line = strings.TrimSpace(line)
+        if strings.Contains(line, "://") && len(line) > 8 {
+            matched := strings.HasPrefix(line, "vless://") || strings.HasPrefix(line, "vmess://") ||
+                strings.HasPrefix(line, "trojan://") || strings.HasPrefix(line, "ss://") ||
+                strings.HasPrefix(line, "ssr://") || strings.HasPrefix(line, "tuic://") ||
+                strings.HasPrefix(line, "hy2://") || strings.HasPrefix(line, "hysteria://") ||
+                strings.HasPrefix(line, "hysteria2://") || strings.HasPrefix(line, "socks://") ||
+                strings.HasPrefix(line, "socks5://") || strings.HasPrefix(line, "wireguard://") ||
+                strings.HasPrefix(line, "wg://")
+
+            if !matched {
+                // Suspicious link with unsupported or custom scheme
+                recordDropped(source, line, "unsupported or unrecognized proxy scheme")
+            } else if strings.HasPrefix(line, "vmess://") && len(line) <= 50 {
+                recordDropped(source, line, "vmess payload too short or malformed")
+            }
+        }
+    }
+
+    return configs
+}

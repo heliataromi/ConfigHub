@@ -9,13 +9,35 @@ import (
     "time"
 
     "ConfigHub/internal/extractor"
+    "ConfigHub/internal/telemetry"
 )
 
 // ScrapeSubscription fetches a subscription link, attempts to base64 decode it,
 // and extracts the configs.
 func ScrapeSubscription(url string) (extractor.Configs, error) {
+    startTime := time.Now()
+    var finalConfigs extractor.Configs
+    var finalErr error
+    var statusCode int
+
+    defer func() {
+        errStr := ""
+        if finalErr != nil {
+            errStr = finalErr.Error()
+        }
+        telemetry.Global.RecordSource(telemetry.ChannelStat{
+            Name:         url,
+            Type:         "subscription",
+            StatusCode:   statusCode,
+            Duration:     time.Since(startTime),
+            ConfigsYield: finalConfigs.Count(),
+            Error:        errStr,
+        })
+    }()
+
     req, err := http.NewRequest("GET", url, nil)
     if err != nil {
+        finalErr = err
         return extractor.Configs{}, err
     }
 
@@ -24,16 +46,20 @@ func ScrapeSubscription(url string) (extractor.Configs, error) {
     client := &http.Client{Timeout: 10 * time.Second}
     resp, err := client.Do(req)
     if err != nil {
+        finalErr = err
         return extractor.Configs{}, err
     }
     defer resp.Body.Close()
 
+    statusCode = resp.StatusCode
     if resp.StatusCode != 200 {
-        return extractor.Configs{}, fmt.Errorf("received status code %d", resp.StatusCode)
+        finalErr = fmt.Errorf("received status code %d", resp.StatusCode)
+        return extractor.Configs{}, finalErr
     }
 
     bodyBytes, err := io.ReadAll(resp.Body)
     if err != nil {
+        finalErr = err
         return extractor.Configs{}, err
     }
 
@@ -41,14 +67,16 @@ func ScrapeSubscription(url string) (extractor.Configs, error) {
     
     decodedText := decodeBase64(bodyText)
     if decodedText != "" {
-        configs := extractor.Extract(decodedText)
+        configs := extractor.AuditAndExtract(decodedText, url, telemetry.Global.RecordDropped)
         if hasConfigs(configs) {
-            return configs, nil
+            finalConfigs = configs
+            return finalConfigs, nil
         }
     }
 
     // Fallback to plain text
-    return extractor.Extract(bodyText), nil
+    finalConfigs = extractor.AuditAndExtract(bodyText, url, telemetry.Global.RecordDropped)
+    return finalConfigs, nil
 }
 
 func decodeBase64(s string) string {

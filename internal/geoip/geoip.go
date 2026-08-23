@@ -8,6 +8,7 @@ import (
     "net/http"
     "os"
     "strings"
+    "sync"
     "time"
 
     "github.com/oschwald/maxminddb-golang"
@@ -15,6 +16,13 @@ import (
 
 const dbURL = "https://raw.githubusercontent.com/P3TERX/GeoLite.mmdb/download/GeoLite2-Country.mmdb"
 const dbPath = "GeoLite2-Country.mmdb"
+
+type geoResult struct {
+    iso  string
+    flag string
+}
+
+var geoCache sync.Map
 
 // EnsureDB checks if the database exists; if not, it downloads it.
 func EnsureDB() error {
@@ -39,15 +47,28 @@ func EnsureDB() error {
     return err
 }
 
-// GetCountry returns the Country ISO Code and Emoji Flag for a given IP or Domain
+// GetCountry returns the Country ISO Code and Emoji Flag for a given IP or Domain, using cached lookups when available.
 func GetCountry(address string, db *maxminddb.Reader) (string, string) {
+    address = strings.TrimSpace(address)
+    address = strings.Trim(address, "[]")
+    if address == "" {
+        return "UNK", "🏳️"
+    }
+
+    if val, ok := geoCache.Load(address); ok {
+        res := val.(geoResult)
+        return res.iso, res.flag
+    }
+
     ip := net.ParseIP(address)
     if ip == nil {
-        // It's a domain, resolve it with a 2-second timeout
-        ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+        // It's a domain, resolve it with a timeout
+        ctx, cancel := context.WithTimeout(context.Background(), 1500*time.Millisecond)
         defer cancel()
         ips, err := net.DefaultResolver.LookupIPAddr(ctx, address)
         if err != nil || len(ips) == 0 {
+            res := geoResult{iso: "UNK", flag: "🏳️"}
+            geoCache.Store(address, res)
             return "UNK", "🏳️" // Unknown / Dead Domain
         }
         ip = ips[0].IP
@@ -66,6 +87,8 @@ func GetCountry(address string, db *maxminddb.Reader) (string, string) {
 
     err := db.Lookup(ip, &record)
     if err != nil || record.Country.IsoCode == "" {
+        res := geoResult{iso: "CDN/RELAY", flag: "☁️"}
+        geoCache.Store(address, res)
         return "CDN/RELAY", "☁️" // Likely a CDN or unrecognized IP
     }
 
@@ -77,6 +100,8 @@ func GetCountry(address string, db *maxminddb.Reader) (string, string) {
         iso = "IR-RELAY"
     }
 
+    res := geoResult{iso: iso, flag: flag}
+    geoCache.Store(address, res)
     return iso, flag
 }
 
