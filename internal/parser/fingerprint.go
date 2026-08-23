@@ -38,14 +38,16 @@ func getStandardFingerprint(link string) string {
 
 	// List of parameters strictly compared by v2rayN for standard configs
 	allowedKeys := []string{
-		"type", "security", "sni", "alpn", "fp", "pbk", "sid", "flow", "fm",
+		"type", "security", "sni", "alpn", "fp", "pbk", "public_key", "publicKey",
+		"sid", "short_id", "shortId", "spx", "spider_x", "spiderX", "flow", "fm",
 		"encryption", "host", "path", "headerType", "seed", "mode", "extra",
-		"authority", "serviceName",
-		// New parameters for Hy2, TUIC, WireGuard, etc.
-		"obfs", "obfs-password", "obfsParam", "pinSHA256", "allow_insecure",
-		"insecure", "peer", "auth", "plugin", "plugin-opts", "public_key",
+		"authority", "serviceName", "servicename",
+		// Parameters for Hy2, TUIC, WireGuard, SS plugins, etc.
+		"obfs", "obfs-password", "obfsParam", "pinSHA256", "allow_insecure", "allowInsecure",
+		"insecure", "peer", "auth", "plugin", "plugin-opts",
+		"private_key", "privkey", "privatekey", "preshared_key", "presharedkey", "psk",
 		"congestion_control", "udp_relay_mode", "reduce_rtt", "upmbps",
-		"downmbps", "mtu", "ip",
+		"downmbps", "mtu", "ip", "address",
 	}
 
 	for _, key := range allowedKeys {

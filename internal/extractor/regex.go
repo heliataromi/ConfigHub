@@ -18,6 +18,9 @@ var (
     wgRegex       = regexp.MustCompile(`(?:^|[^a-zA-Z])((?:wireguard|wg)://[^\s<"']+)`)
 )
 
+// trailingCutset defines characters commonly appended by markdown, HTML, or punctuation
+const trailingCutset = ".,;!?) \r\n\t\"'>]`*~_\\"
+
 // Configs holds the categorized extracted links
 type Configs struct {
     Vmess     []string
@@ -38,9 +41,6 @@ func (c Configs) Count() int {
         len(c.SSR) + len(c.TUIC) + len(c.Hy2) + len(c.Hysteria) +
         len(c.Socks) + len(c.WireGuard)
 }
-
-// trailingCutset defines characters commonly appended by markdown, HTML, or punctuation
-const trailingCutset = ".,;!?) \r\n\t\"'>]`*~_\\"
 
 func extractRegex(text string, re *regexp.Regexp) []string {
     matches := re.FindAllStringSubmatch(text, -1)
