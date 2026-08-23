@@ -844,11 +844,28 @@ func parseWireGuard(link string) (map[string]interface{}, string, error) {
 
 	server := u.Hostname()
 	port := toInt(u.Port(), 51820)
+	q := u.Query()
+
 	privKey := ""
 	if u.User != nil {
 		privKey = u.User.Username()
 	}
+	if privKey == "" {
+		privKey = q.Get("private_key")
+	}
+	if privKey == "" {
+		privKey = q.Get("privatekey")
+	}
+	if privKey == "" {
+		privKey = q.Get("privkey")
+	}
+	if privKey == "" {
+		privKey = q.Get("secret_key")
+	}
 	if unescaped, err := url.PathUnescape(privKey); err == nil && unescaped != "" {
+		privKey = unescaped
+	}
+	if unescaped, err := url.QueryUnescape(privKey); err == nil && unescaped != "" {
 		privKey = unescaped
 	}
 
@@ -856,7 +873,6 @@ func parseWireGuard(link string) (map[string]interface{}, string, error) {
 		return nil, "", fmt.Errorf("missing or invalid server, port, or private-key in wireguard link")
 	}
 
-	q := u.Query()
 	name, country := extractNameAndCountry(u.Fragment)
 
 	pubKey := q.Get("publickey")
