@@ -14,6 +14,10 @@ func TestValidateConfig_ValidProtocols(t *testing.T) {
 		"tuic://7aecb4a5-f0a4-32a0-aabe-c9d5241e313f:pass1@198.51.200.1:443#TuicNode",
 		"wireguard://cGFzc3dvcmQ=@198.51.200.1:51820?public_key=cHVibGlj&ip=10.0.0.2#WGNode",
 		"socks5://user:pass@198.51.200.1:1080#SocksNode",
+		"juicity://7aecb4a5-f0a4-32a0-aabe-c9d5241e313f:pass1@198.51.200.1:443?sni=example.com#JuicityNode",
+		"naive+https://user1:pass1@198.51.200.1:443#NaiveNode",
+		"https://t.me/proxy?server=198.51.200.1&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d",
+		"tg://proxy?server=198.51.200.1&port=2096&secret=dd79e344818749bd7ac519130220c25d09",
 	}
 
 	for _, link := range validList {

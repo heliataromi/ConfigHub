@@ -19,6 +19,9 @@ func TestWriteSubFiles_WithCountrySubs(t *testing.T) {
 		"trojan": {
 			{URL: "trojan://pass1@1.2.3.7:443?security=tls#🇩🇪 DE - [t.me/test]", Source: "channel"},
 		},
+		"telegram": {
+			{URL: "tg://proxy?server=1.2.3.8&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d#%F0%9F%87%A9%F0%9F%87%AA%20DE%20-%20%5Bt.me%2Ftest%5D", Source: "channel"},
+		},
 	}
 
 	err := WriteSubFiles(tmpDir, configsMap)
@@ -27,7 +30,7 @@ func TestWriteSubFiles_WithCountrySubs(t *testing.T) {
 	}
 
 	// 1. Verify standard files
-	for _, name := range []string{"vless.txt", "vless_base64.txt", "mixed.txt", "clash.yaml"} {
+	for _, name := range []string{"vless.txt", "vless_base64.txt", "telegram.txt", "telegram_base64.txt", "mtproto.txt", "mtproto_base64.txt", "mixed.txt", "clash.yaml"} {
 		path := filepath.Join(tmpDir, name)
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			t.Errorf("Expected standard file %s to exist", name)

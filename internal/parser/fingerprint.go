@@ -22,6 +22,9 @@ func GetFingerprint(link string) string {
     if strings.HasPrefix(link, "ss://") {
         return getSSFingerprint(link)
     }
+    if strings.HasPrefix(link, "tg://proxy?") || strings.HasPrefix(link, "https://t.me/proxy?") || strings.HasPrefix(link, "http://t.me/proxy?") {
+        return getTelegramFingerprint(link)
+    }
 
     return getStandardFingerprint(link)
 }
@@ -307,4 +310,17 @@ func getSSRFingerprint(link string) string {
 
     newBase64 := base64.RawURLEncoding.EncodeToString([]byte(newPayload))
     return "ssr://" + newBase64
+}
+
+func getTelegramFingerprint(link string) string {
+    link = strings.Split(link, "#")[0]
+    u, err := url.Parse(link)
+    if err != nil {
+        return link
+    }
+    q := u.Query()
+    server := strings.ToLower(strings.TrimSuffix(strings.TrimSpace(q.Get("server")), "."))
+    port := strings.TrimSpace(q.Get("port"))
+    secret := strings.ToLower(strings.TrimSpace(q.Get("secret")))
+    return fmt.Sprintf("tg://proxy?server=%s:%s&secret=%s", server, port, secret)
 }

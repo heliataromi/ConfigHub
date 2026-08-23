@@ -24,8 +24,11 @@ func RenameConfig(rawLink, channel string, db *maxminddb.Reader) string {
     if strings.HasPrefix(rawLink, "ss://") {
         return renameSS(rawLink, channel, db)
     }
+    if strings.HasPrefix(rawLink, "tg://proxy?") || strings.HasPrefix(rawLink, "https://t.me/proxy?") || strings.HasPrefix(rawLink, "http://t.me/proxy?") {
+        return renameTelegram(rawLink, channel, db)
+    }
 
-    // For VLESS, Trojan, TUIC, Hy2, Hysteria, Socks, WireGuard
+    // For VLESS, Trojan, TUIC, Hy2, Hysteria, Socks, WireGuard, Juicity, Naive
     return renameStandard(rawLink, channel, db)
 }
 
@@ -170,4 +173,19 @@ func decodeBase64Safe(s string) ([]byte, error) {
         s += strings.Repeat("=", 4-pad)
     }
     return base64.StdEncoding.DecodeString(s)
+}
+
+func renameTelegram(link, channel string, db *maxminddb.Reader) string {
+    link = strings.Split(link, "#")[0]
+    u, err := url.Parse(link)
+    if err != nil {
+        return link
+    }
+    q := u.Query()
+    server := strings.TrimSuffix(strings.TrimSpace(q.Get("server")), ".")
+    server = strings.Trim(server, "[]")
+    iso, flag := geoip.GetCountry(server, db)
+    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channel)
+
+    return fmt.Sprintf("tg://proxy?server=%s&port=%s&secret=%s#%s", q.Get("server"), q.Get("port"), q.Get("secret"), url.QueryEscape(newName))
 }

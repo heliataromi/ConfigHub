@@ -17,6 +17,10 @@ hy2://pass1@hy2.example.com:443?sni=hy2.example.com#Hy2Node
 hysteria://pass1@hysteria.example.com:443?protocol=udp#HysteriaNode
 socks5://user:pass@socks.example.com:1080#SocksNode
 wireguard://privkey1@wg.example.com:51820?public_key=pubkey1&ip=10.0.0.2#WGNode
+juicity://uuid1:pass1@juicity.example.com:443?sni=juicity.example.com#JuicityNode
+naive+https://user1:pass1@naive.example.com:443#NaiveNode
+https://t.me/proxy?server=1.2.3.4&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d
+tg://proxy?server=5.6.7.8&port=2096&secret=dd79e344818749bd7ac519130220c25d09
 `
 
 	configs := Extract(sampleText)
@@ -51,9 +55,18 @@ wireguard://privkey1@wg.example.com:51820?public_key=pubkey1&ip=10.0.0.2#WGNode
 	if len(configs.WireGuard) != 1 {
 		t.Errorf("Expected 1 WireGuard config, got %d", len(configs.WireGuard))
 	}
+	if len(configs.Juicity) != 1 {
+		t.Errorf("Expected 1 Juicity config, got %d", len(configs.Juicity))
+	}
+	if len(configs.Naive) != 1 {
+		t.Errorf("Expected 1 Naive config, got %d", len(configs.Naive))
+	}
+	if len(configs.Telegram) != 2 {
+		t.Errorf("Expected 2 Telegram proxy configs, got %d", len(configs.Telegram))
+	}
 
-	if count := configs.Count(); count != 10 {
-		t.Errorf("Expected total count 10, got %d", count)
+	if count := configs.Count(); count != 14 {
+		t.Errorf("Expected total count 14, got %d", count)
 	}
 }
 

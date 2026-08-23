@@ -67,3 +67,15 @@ func TestGetFingerprint_DefaultPorts(t *testing.T) {
 		t.Fatalf("Default port 443 normalization failed:\n  fp1: %s\n  fp2: %s", fp1, fp2)
 	}
 }
+
+func TestGetFingerprint_TelegramProxy(t *testing.T) {
+	tgLink := "tg://proxy?server=1.2.3.4&port=443&secret=EE1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d#Remark1"
+	httpsLink := "https://t.me/proxy?server=1.2.3.4.&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d"
+
+	fp1 := GetFingerprint(tgLink)
+	fp2 := GetFingerprint(httpsLink)
+
+	if fp1 != fp2 {
+		t.Fatalf("Telegram proxy fingerprint normalization failed:\n  fp1: %s\n  fp2: %s", fp1, fp2)
+	}
+}

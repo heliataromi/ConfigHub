@@ -50,6 +50,12 @@ func ValidateConfig(link string) (bool, string) {
 		return validateSocks(link)
 	} else if strings.HasPrefix(link, "wireguard://") || strings.HasPrefix(link, "wg://") {
 		return validateWireGuard(link)
+	} else if strings.HasPrefix(link, "juicity://") {
+		return validateJuicity(link)
+	} else if strings.HasPrefix(link, "naive+https://") || strings.HasPrefix(link, "naive+http://") {
+		return validateNaive(link)
+	} else if strings.HasPrefix(link, "tg://proxy?") || strings.HasPrefix(link, "https://t.me/proxy?") || strings.HasPrefix(link, "http://t.me/proxy?") {
+		return validateTelegram(link)
 	}
 
 	return false, "unsupported proxy scheme"
@@ -68,6 +74,9 @@ func SanitizeConfigs(configs extractor.Configs, source string, recordDropped fun
 		Hysteria:  filterSlice(configs.Hysteria, source, recordDropped),
 		Socks:     filterSlice(configs.Socks, source, recordDropped),
 		WireGuard: filterSlice(configs.WireGuard, source, recordDropped),
+		Juicity:   filterSlice(configs.Juicity, source, recordDropped),
+		Naive:     filterSlice(configs.Naive, source, recordDropped),
+		Telegram:  filterSlice(configs.Telegram, source, recordDropped),
 	}
 }
 
@@ -347,6 +356,52 @@ func validateWireGuard(link string) (bool, string) {
 	}
 
 	return validateHostAndPort(u.Hostname(), u.Port(), 51820)
+}
+
+func validateTelegram(link string) (bool, string) {
+	link = strings.Split(link, "#")[0]
+	u, err := url.Parse(link)
+	if err != nil {
+		return false, "malformed telegram proxy url"
+	}
+	q := u.Query()
+	server := strings.TrimSuffix(strings.TrimSpace(q.Get("server")), ".")
+	if server == "" {
+		return false, "missing telegram proxy server"
+	}
+	port := strings.TrimSpace(q.Get("port"))
+	secret := strings.TrimSpace(q.Get("secret"))
+	if secret == "" {
+		return false, "missing telegram proxy secret"
+	}
+	if len(secret) < 32 {
+		return false, "telegram proxy secret too short"
+	}
+
+	return validateHostAndPort(server, port, 443)
+}
+
+func validateJuicity(link string) (bool, string) {
+	u, err := url.Parse(link)
+	if err != nil {
+		return false, "malformed juicity url"
+	}
+	if u.User == nil || strings.TrimSpace(u.User.Username()) == "" {
+		return false, "missing juicity uuid/user"
+	}
+	return validateHostAndPort(u.Hostname(), u.Port(), 443)
+}
+
+func validateNaive(link string) (bool, string) {
+	raw := strings.TrimPrefix(link, "naive+")
+	u, err := url.Parse(raw)
+	if err != nil {
+		return false, "malformed naiveproxy url"
+	}
+	if u.User == nil || strings.TrimSpace(u.User.Username()) == "" {
+		return false, "missing naiveproxy credentials"
+	}
+	return validateHostAndPort(u.Hostname(), u.Port(), 443)
 }
 
 func decodeBase64Safe(s string) ([]byte, error) {

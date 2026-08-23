@@ -43,6 +43,9 @@ func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
             }
         }
         filesToCreate[protocolName+".txt"] = protoConfigs
+        if protocolName == "telegram" {
+            filesToCreate["mtproto.txt"] = protoConfigs
+        }
     }
     filesToCreate["mixed.txt"] = mixed
     filesToCreate["mixed_lite.txt"] = mixedLite
