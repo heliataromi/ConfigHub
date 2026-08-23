@@ -22,6 +22,15 @@ func GetFingerprint(link string) string {
     if strings.HasPrefix(link, "ss://") {
         return getSSFingerprint(link)
     }
+    if strings.HasPrefix(link, "tg://proxy?") || strings.HasPrefix(link, "https://t.me/proxy?") || strings.HasPrefix(link, "http://t.me/proxy?") {
+        return getTelegramFingerprint(link)
+    }
+    if strings.HasPrefix(link, "cottendns://") {
+        return getWhiteDNSFingerprint(link, "cottendns")
+    }
+    if strings.HasPrefix(link, "stormdns://") {
+        return getWhiteDNSFingerprint(link, "stormdns")
+    }
 
     return getStandardFingerprint(link)
 }
@@ -154,6 +163,9 @@ func getSSFingerprint(link string) string {
     if strings.Contains(raw, "@") {
         atSplit := strings.SplitN(raw, "@", 2)
         userInfo = atSplit[0]
+        if unescaped, err := url.QueryUnescape(userInfo); err == nil && unescaped != "" {
+            userInfo = unescaped
+        }
         rest := atSplit[1]
 
         if qIdx := strings.Index(rest, "?"); qIdx != -1 {
@@ -171,7 +183,11 @@ func getSSFingerprint(link string) string {
         }
     } else {
         // Legacy base64(method:password@host:port)
-        if decoded, err := decodeBase64Safe(raw); err == nil {
+        legacyRaw := raw
+        if unescaped, err := url.QueryUnescape(legacyRaw); err == nil && unescaped != "" {
+            legacyRaw = unescaped
+        }
+        if decoded, err := decodeBase64Safe(legacyRaw); err == nil {
             decodedStr := string(decoded)
             if atIdx := strings.LastIndex(decodedStr, "@"); atIdx != -1 {
                 userInfo = decodedStr[:atIdx]
@@ -307,4 +323,38 @@ func getSSRFingerprint(link string) string {
 
     newBase64 := base64.RawURLEncoding.EncodeToString([]byte(newPayload))
     return "ssr://" + newBase64
+}
+
+func getTelegramFingerprint(link string) string {
+    link = strings.Split(link, "#")[0]
+    u, err := url.Parse(link)
+    if err != nil {
+        return link
+    }
+    q := u.Query()
+    server := strings.ToLower(strings.TrimSuffix(strings.TrimSpace(q.Get("server")), "."))
+    port := strings.TrimSpace(q.Get("port"))
+    secret := strings.ToLower(strings.TrimSpace(q.Get("secret")))
+    return fmt.Sprintf("tg://proxy?server=%s:%s&secret=%s", server, port, secret)
+}
+
+func getWhiteDNSFingerprint(link, scheme string) string {
+    payload := strings.TrimPrefix(link, scheme+"://")
+    decoded, err := decodeBase64Safe(payload)
+    if err != nil {
+        return link
+    }
+
+    var data map[string]interface{}
+    if err := json.Unmarshal(decoded, &data); err != nil {
+        return link
+    }
+
+    profile, _ := data["profile"].(map[string]interface{})
+    server, _ := profile["server"].(map[string]interface{})
+    domain := strings.ToLower(strings.TrimSpace(safeString(server["domain"])))
+    key := strings.ToLower(strings.TrimSpace(safeString(server["encryption_key"])))
+    method := safeString(server["encryption_method"])
+
+    return fmt.Sprintf("%s://%s@%s?method=%s", scheme, domain, key, method)
 }

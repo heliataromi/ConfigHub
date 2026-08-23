@@ -50,6 +50,22 @@ func ValidateConfig(link string) (bool, string) {
 		return validateSocks(link)
 	} else if strings.HasPrefix(link, "wireguard://") || strings.HasPrefix(link, "wg://") {
 		return validateWireGuard(link)
+	} else if strings.HasPrefix(link, "juicity://") {
+		return validateJuicity(link)
+	} else if strings.HasPrefix(link, "naive+https://") || strings.HasPrefix(link, "naive+http://") {
+		return validateNaive(link)
+	} else if strings.HasPrefix(link, "tg://proxy?") || strings.HasPrefix(link, "https://t.me/proxy?") || strings.HasPrefix(link, "http://t.me/proxy?") {
+		return validateTelegram(link)
+	} else if strings.HasPrefix(link, "anytls://") {
+		return validateAnyTLS(link)
+	} else if strings.HasPrefix(link, "snell://") {
+		return validateSnell(link)
+	} else if strings.HasPrefix(link, "http://") || strings.HasPrefix(link, "https://") {
+		return validateHTTPProxy(link)
+	} else if strings.HasPrefix(link, "cottendns://") {
+		return validateWhiteDNS(link, "cottendns")
+	} else if strings.HasPrefix(link, "stormdns://") {
+		return validateWhiteDNS(link, "stormdns")
 	}
 
 	return false, "unsupported proxy scheme"
@@ -68,6 +84,14 @@ func SanitizeConfigs(configs extractor.Configs, source string, recordDropped fun
 		Hysteria:  filterSlice(configs.Hysteria, source, recordDropped),
 		Socks:     filterSlice(configs.Socks, source, recordDropped),
 		WireGuard: filterSlice(configs.WireGuard, source, recordDropped),
+		Juicity:   filterSlice(configs.Juicity, source, recordDropped),
+		Naive:     filterSlice(configs.Naive, source, recordDropped),
+		Telegram:  filterSlice(configs.Telegram, source, recordDropped),
+		AnyTLS:    filterSlice(configs.AnyTLS, source, recordDropped),
+		Snell:     filterSlice(configs.Snell, source, recordDropped),
+		HTTP:      filterSlice(configs.HTTP, source, recordDropped),
+		CottenDNS: filterSlice(configs.CottenDNS, source, recordDropped),
+		StormDNS:  filterSlice(configs.StormDNS, source, recordDropped),
 	}
 }
 
@@ -217,6 +241,9 @@ func validateSS(link string) (bool, string) {
 	if strings.Contains(raw, "@") {
 		atSplit := strings.SplitN(raw, "@", 2)
 		userInfo = atSplit[0]
+		if unescaped, err := url.QueryUnescape(userInfo); err == nil && unescaped != "" {
+			userInfo = unescaped
+		}
 		rest := atSplit[1]
 		if qIdx := strings.Index(rest, "?"); qIdx != -1 {
 			hostPort = rest[:qIdx]
@@ -349,6 +376,124 @@ func validateWireGuard(link string) (bool, string) {
 	return validateHostAndPort(u.Hostname(), u.Port(), 51820)
 }
 
+func validateTelegram(link string) (bool, string) {
+	link = strings.Split(link, "#")[0]
+	u, err := url.Parse(link)
+	if err != nil {
+		return false, "malformed telegram proxy url"
+	}
+	q := u.Query()
+	server := strings.TrimSuffix(strings.TrimSpace(q.Get("server")), ".")
+	if server == "" {
+		return false, "missing telegram proxy server"
+	}
+	port := strings.TrimSpace(q.Get("port"))
+	secret := strings.TrimSpace(q.Get("secret"))
+	if secret == "" {
+		return false, "missing telegram proxy secret"
+	}
+	if len(secret) < 20 {
+		return false, "telegram proxy secret too short"
+	}
+
+	return validateHostAndPort(server, port, 443)
+}
+
+func validateJuicity(link string) (bool, string) {
+	u, err := url.Parse(link)
+	if err != nil {
+		return false, "malformed juicity url"
+	}
+	if u.User == nil || strings.TrimSpace(u.User.Username()) == "" {
+		return false, "missing juicity uuid/user"
+	}
+	return validateHostAndPort(u.Hostname(), u.Port(), 443)
+}
+
+func validateNaive(link string) (bool, string) {
+	raw := strings.TrimPrefix(link, "naive+")
+	u, err := url.Parse(raw)
+	if err != nil {
+		return false, "malformed naiveproxy url"
+	}
+	if u.User == nil || strings.TrimSpace(u.User.Username()) == "" {
+		return false, "missing naiveproxy credentials"
+	}
+	return validateHostAndPort(u.Hostname(), u.Port(), 443)
+}
+
+func validateAnyTLS(link string) (bool, string) {
+	u, err := url.Parse(link)
+	if err != nil {
+		return false, "malformed anytls url"
+	}
+	if u.User == nil || strings.TrimSpace(u.User.Username()) == "" {
+		return false, "missing anytls uuid"
+	}
+	if ok, reason := validateUUID(u.User.Username()); !ok {
+		return false, reason
+	}
+	return validateHostAndPort(u.Hostname(), u.Port(), 443)
+}
+
+func validateSnell(link string) (bool, string) {
+	u, err := url.Parse(link)
+	if err != nil {
+		return false, "malformed snell url"
+	}
+	if u.User == nil || strings.TrimSpace(u.User.Username()) == "" {
+		return false, "missing snell psk"
+	}
+	return validateHostAndPort(u.Hostname(), u.Port(), 443)
+}
+
+func validateHTTPProxy(link string) (bool, string) {
+	u, err := url.Parse(link)
+	if err != nil {
+		return false, "malformed http proxy url"
+	}
+	if u.User == nil || strings.TrimSpace(u.User.Username()) == "" {
+		return false, "missing http proxy credentials"
+	}
+	defaultPort := 8080
+	if strings.HasPrefix(link, "https://") {
+		defaultPort = 8443
+	}
+	return validateHostAndPort(u.Hostname(), u.Port(), defaultPort)
+}
+
+func validateWhiteDNS(link, scheme string) (bool, string) {
+	payload := strings.TrimPrefix(link, scheme+"://")
+	decoded, err := decodeBase64Safe(payload)
+	if err != nil {
+		return false, fmt.Sprintf("invalid %s base64 payload", scheme)
+	}
+
+	var data map[string]interface{}
+	if err := json.Unmarshal(decoded, &data); err != nil {
+		return false, fmt.Sprintf("invalid %s json payload", scheme)
+	}
+
+	profile, ok := data["profile"].(map[string]interface{})
+	if !ok {
+		return false, fmt.Sprintf("missing %s profile", scheme)
+	}
+	server, ok := profile["server"].(map[string]interface{})
+	if !ok {
+		return false, fmt.Sprintf("missing %s server config", scheme)
+	}
+
+	domainStr := strings.TrimSpace(safeString(server["domain"]))
+	if domainStr == "" {
+		return false, fmt.Sprintf("missing %s domain", scheme)
+	}
+
+	firstDomain := strings.TrimSpace(strings.Split(domainStr, ",")[0])
+	firstDomain = strings.Trim(firstDomain, "[]")
+
+	return validateHostAndPort(firstDomain, "443", 443)
+}
+
 func decodeBase64Safe(s string) ([]byte, error) {
 	s = strings.TrimSpace(s)
 	s = strings.ReplaceAll(s, "-", "+")
@@ -357,4 +502,11 @@ func decodeBase64Safe(s string) ([]byte, error) {
 		s += strings.Repeat("=", 4-pad)
 	}
 	return base64.StdEncoding.DecodeString(s)
+}
+
+func safeString(v interface{}) string {
+	if v == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", v)
 }

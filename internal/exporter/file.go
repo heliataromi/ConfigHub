@@ -33,16 +33,28 @@ func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
     var mixedLite []string
     filesToCreate := make(map[string][]string)
     
+    var whitednsConfigs []string
     for protocolName, configs := range configsMap {
         var protoConfigs []string
         for _, c := range configs {
             protoConfigs = append(protoConfigs, c.URL)
-            mixed = append(mixed, c.URL)
-            if c.Source == "channel" {
-                mixedLite = append(mixedLite, c.URL)
+            if protocolName != "telegram" && protocolName != "cottendns" && protocolName != "stormdns" {
+                mixed = append(mixed, c.URL)
+                if c.Source == "channel" {
+                    mixedLite = append(mixedLite, c.URL)
+                }
+            }
+            if protocolName == "cottendns" || protocolName == "stormdns" {
+                whitednsConfigs = append(whitednsConfigs, c.URL)
             }
         }
         filesToCreate[protocolName+".txt"] = protoConfigs
+        if protocolName == "telegram" {
+            filesToCreate["mtproto.txt"] = protoConfigs
+        }
+    }
+    if len(whitednsConfigs) > 0 {
+        filesToCreate["whitedns.txt"] = whitednsConfigs
     }
     filesToCreate["mixed.txt"] = mixed
     filesToCreate["mixed_lite.txt"] = mixedLite
@@ -59,8 +71,13 @@ func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
             continue // Skip empty files
         }
 
-        // Prepend dummy config at the top
-        finalConfigs := append([]string{dummyConfig}, configs...)
+        var finalConfigs []string
+        if filename == "telegram.txt" || filename == "mtproto.txt" || filename == "cottendns.txt" || filename == "stormdns.txt" || filename == "whitedns.txt" {
+            finalConfigs = configs
+        } else {
+            // Prepend dummy config at the top for standard client subscriptions
+            finalConfigs = append([]string{dummyConfig}, configs...)
+        }
         rawContent := strings.Join(finalConfigs, "\n")
 
         // Write Raw File

@@ -17,6 +17,15 @@ hy2://pass1@hy2.example.com:443?sni=hy2.example.com#Hy2Node
 hysteria://pass1@hysteria.example.com:443?protocol=udp#HysteriaNode
 socks5://user:pass@socks.example.com:1080#SocksNode
 wireguard://privkey1@wg.example.com:51820?public_key=pubkey1&ip=10.0.0.2#WGNode
+juicity://uuid1:pass1@juicity.example.com:443?sni=juicity.example.com#JuicityNode
+naive+https://user1:pass1@naive.example.com:443#NaiveNode
+https://t.me/proxy?server=1.2.3.4&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d
+tg://proxy?server=5.6.7.8&port=2096&secret=dd79e344818749bd7ac519130220c25d09
+anytls://11111111-2222-3333-4444-555555555555@anytls.example.com:443?security=tls#AnyTLSNode
+snell://psk123@snell.example.com:443?version=4#SnellNode
+http://proxyuser:proxypass@httpproxy.example.com:8080#HTTPNode
+cottendns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwidmVyc2lvbiI6MSwicHJvZmlsZSI6eyJuYW1lIjoidC5tZVwvV2hpdGVETlMgQ290dGVuRE5T8J-HufCfh7cgdGh4IHRvIExvcmRvZkNpbmRlciIsInNlcnZlciI6eyJkb21haW4iOiJ2LmFzaGVudGFqaXIuc2JzLCBjLmFzaGVudGFqaXIuc2l0ZSIsImVuY3J5cHRpb25fa2V5IjoiZTU1NGI4ZmI4ZGU4Mjc4ZDJmMTFlODcwNDA0NDI2OWEiLCJlbmNyeXB0aW9uX21ldGhvZCI6M319fQ
+stormdns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwidmVyc2lvbiI6MSwicHJvZmlsZSI6eyJuYW1lIjoidC5tZVwvV2hpdGVETlMgIPCfh7nwn4e3ICAgdGh4IHRvIENvcmVmb3JnZSIsInNlcnZlciI6eyJkb21haW4iOiJ2LmFub255bW91cy5vYnNlcnZlciIsImVuY3J5cHRpb25fa2V5IjoiYjI3NTAzOTE5OWIxYzhjOSIsImVuY3J5cHRpb25fbWV0aG9kIjozfX19
 `
 
 	configs := Extract(sampleText)
@@ -51,9 +60,33 @@ wireguard://privkey1@wg.example.com:51820?public_key=pubkey1&ip=10.0.0.2#WGNode
 	if len(configs.WireGuard) != 1 {
 		t.Errorf("Expected 1 WireGuard config, got %d", len(configs.WireGuard))
 	}
+	if len(configs.Juicity) != 1 {
+		t.Errorf("Expected 1 Juicity config, got %d", len(configs.Juicity))
+	}
+	if len(configs.Naive) != 1 {
+		t.Errorf("Expected 1 Naive config, got %d", len(configs.Naive))
+	}
+	if len(configs.Telegram) != 2 {
+		t.Errorf("Expected 2 Telegram proxy configs, got %d", len(configs.Telegram))
+	}
+	if len(configs.AnyTLS) != 1 {
+		t.Errorf("Expected 1 AnyTLS config, got %d", len(configs.AnyTLS))
+	}
+	if len(configs.Snell) != 1 {
+		t.Errorf("Expected 1 Snell config, got %d", len(configs.Snell))
+	}
+	if len(configs.HTTP) != 1 {
+		t.Errorf("Expected 1 HTTP proxy config, got %d", len(configs.HTTP))
+	}
+	if len(configs.CottenDNS) != 1 {
+		t.Errorf("Expected 1 CottenDNS config, got %d", len(configs.CottenDNS))
+	}
+	if len(configs.StormDNS) != 1 {
+		t.Errorf("Expected 1 StormDNS config, got %d", len(configs.StormDNS))
+	}
 
-	if count := configs.Count(); count != 10 {
-		t.Errorf("Expected total count 10, got %d", count)
+	if count := configs.Count(); count != 19 {
+		t.Errorf("Expected total count 19, got %d", count)
 	}
 }
 

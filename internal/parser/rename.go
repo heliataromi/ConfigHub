@@ -24,8 +24,17 @@ func RenameConfig(rawLink, channel string, db *maxminddb.Reader) string {
     if strings.HasPrefix(rawLink, "ss://") {
         return renameSS(rawLink, channel, db)
     }
+    if strings.HasPrefix(rawLink, "tg://proxy?") || strings.HasPrefix(rawLink, "https://t.me/proxy?") || strings.HasPrefix(rawLink, "http://t.me/proxy?") {
+        return renameTelegram(rawLink, channel, db)
+    }
+    if strings.HasPrefix(rawLink, "cottendns://") {
+        return renameWhiteDNS(rawLink, "cottendns", channel, db)
+    }
+    if strings.HasPrefix(rawLink, "stormdns://") {
+        return renameWhiteDNS(rawLink, "stormdns", channel, db)
+    }
 
-    // For VLESS, Trojan, TUIC, Hy2, Hysteria, Socks, WireGuard
+    // For VLESS, Trojan, TUIC, Hy2, Hysteria, Socks, WireGuard, Juicity, Naive, AnyTLS, Snell, HTTP
     return renameStandard(rawLink, channel, db)
 }
 
@@ -65,6 +74,10 @@ func renameSS(link, channel string, db *maxminddb.Reader) string {
     if strings.Contains(mainPart, "@") {
         // SIP002 format: base64(method:pass)@host:port
         atSplit := strings.SplitN(mainPart, "@", 2)
+        userInfo := atSplit[0]
+        if unescaped, err := url.QueryUnescape(userInfo); err == nil && unescaped != "" {
+            userInfo = unescaped
+        }
         rest := atSplit[1]
         if qIdx := strings.Index(rest, "?"); qIdx != -1 {
             rest = rest[:qIdx]
@@ -77,7 +90,11 @@ func renameSS(link, channel string, db *maxminddb.Reader) string {
         }
     } else {
         // Legacy format: base64(method:pass@host:port)
-        if decoded, err := decodeBase64Safe(mainPart); err == nil {
+        legacyPart := mainPart
+        if unescaped, err := url.QueryUnescape(legacyPart); err == nil && unescaped != "" {
+            legacyPart = unescaped
+        }
+        if decoded, err := decodeBase64Safe(legacyPart); err == nil {
             decodedStr := string(decoded)
             if atIdx := strings.LastIndex(decodedStr, "@"); atIdx != -1 {
                 hostPort := decodedStr[atIdx+1:]
@@ -170,4 +187,55 @@ func decodeBase64Safe(s string) ([]byte, error) {
         s += strings.Repeat("=", 4-pad)
     }
     return base64.StdEncoding.DecodeString(s)
+}
+
+func renameTelegram(link, channel string, db *maxminddb.Reader) string {
+    link = strings.Split(link, "#")[0]
+    u, err := url.Parse(link)
+    if err != nil {
+        return link
+    }
+    q := u.Query()
+    server := strings.TrimSuffix(strings.TrimSpace(q.Get("server")), ".")
+    server = strings.Trim(server, "[]")
+    iso, flag := geoip.GetCountry(server, db)
+    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channel)
+
+    return fmt.Sprintf("tg://proxy?server=%s&port=%s&secret=%s#%s", q.Get("server"), q.Get("port"), q.Get("secret"), url.QueryEscape(newName))
+}
+
+func renameWhiteDNS(rawLink, scheme, channel string, db *maxminddb.Reader) string {
+    payload := strings.TrimPrefix(rawLink, scheme+"://")
+    decoded, err := decodeBase64Safe(payload)
+    if err != nil {
+        return rawLink
+    }
+
+    var data map[string]interface{}
+    if err := json.Unmarshal(decoded, &data); err != nil {
+        return rawLink
+    }
+
+    profile, ok := data["profile"].(map[string]interface{})
+    if !ok {
+        return rawLink
+    }
+    server, ok := profile["server"].(map[string]interface{})
+    if !ok {
+        return rawLink
+    }
+
+    domainStr := safeString(server["domain"])
+    firstDomain := strings.TrimSpace(strings.Split(domainStr, ",")[0])
+    firstDomain = strings.Trim(firstDomain, "[]")
+
+    iso, flag := geoip.GetCountry(firstDomain, db)
+    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channel)
+    profile["name"] = newName
+
+    newJSON, err := json.Marshal(data)
+    if err != nil {
+        return rawLink
+    }
+    return scheme + "://" + base64.StdEncoding.EncodeToString(newJSON)
 }

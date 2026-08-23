@@ -16,6 +16,14 @@ var (
     hysteriaRegex = regexp.MustCompile(`(?:^|[^a-zA-Z])(hysteria://[^\s<"']+)`)
     socksRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z])(socks[45]?://[^\s<"']+)`)
     wgRegex       = regexp.MustCompile(`(?:^|[^a-zA-Z])((?:wireguard|wg)://[^\s<"']+)`)
+    juicityRegex  = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(juicity://[^\s<"']+)`)
+    naiveRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(naive\+https?://[^\s<"']+)`)
+    tgProxyRegex  = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])((?:tg://proxy\?|https?://t\.me/proxy\?)[^\s<"']+)`)
+    anytlsRegex   = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(anytls://[^\s<"']+)`)
+    snellRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(snell://[^\s<"']+)`)
+    httpRegex     = regexp.MustCompile(`(?:^|[^a-zA-Z0-9+])(https?://[^:@\s]+:[^:@\s]+@[^\s<"']+)`)
+    cottenRegex   = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(cottendns://[A-Za-z0-9+/=\-_]+)`)
+    stormRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(stormdns://[A-Za-z0-9+/=\-_]+)`)
 )
 
 // trailingCutset defines characters commonly appended by markdown, HTML, or punctuation
@@ -33,13 +41,23 @@ type Configs struct {
     Hysteria  []string
     Socks     []string
     WireGuard []string
+    Juicity   []string
+    Naive     []string
+    Telegram  []string
+    AnyTLS    []string
+    Snell     []string
+    HTTP      []string
+    CottenDNS []string
+    StormDNS  []string
 }
 
 // Count returns the total number of valid configs across all protocols
 func (c Configs) Count() int {
     return len(c.Vmess) + len(c.Vless) + len(c.Trojan) + len(c.SS) +
         len(c.SSR) + len(c.TUIC) + len(c.Hy2) + len(c.Hysteria) +
-        len(c.Socks) + len(c.WireGuard)
+        len(c.Socks) + len(c.WireGuard) + len(c.Juicity) + len(c.Naive) +
+        len(c.Telegram) + len(c.AnyTLS) + len(c.Snell) + len(c.HTTP) +
+        len(c.CottenDNS) + len(c.StormDNS)
 }
 
 func extractRegex(text string, re *regexp.Regexp) []string {
@@ -57,7 +75,7 @@ func extractRegex(text string, re *regexp.Regexp) []string {
     return valid
 }
 
-// Extract parses raw text and extracts supported V2Ray configs
+// Extract parses raw text and extracts supported proxy configs
 func Extract(text string) Configs {
     var validVmess []string
 
@@ -83,6 +101,14 @@ func Extract(text string) Configs {
         Hysteria:  extractRegex(text, hysteriaRegex),
         Socks:     extractRegex(text, socksRegex),
         WireGuard: extractRegex(text, wgRegex),
+        Juicity:   extractRegex(text, juicityRegex),
+        Naive:     extractRegex(text, naiveRegex),
+        Telegram:  extractRegex(text, tgProxyRegex),
+        AnyTLS:    extractRegex(text, anytlsRegex),
+        Snell:     extractRegex(text, snellRegex),
+        HTTP:      extractRegex(text, httpRegex),
+        CottenDNS: extractRegex(text, cottenRegex),
+        StormDNS:  extractRegex(text, stormRegex),
     }
 }
 
@@ -108,6 +134,14 @@ func AuditAndExtract(text, source string, recordDropped func(source, candidate, 
     for _, l := range configs.Hysteria { extractedSet[l] = true }
     for _, l := range configs.Socks { extractedSet[l] = true }
     for _, l := range configs.WireGuard { extractedSet[l] = true }
+    for _, l := range configs.Juicity { extractedSet[l] = true }
+    for _, l := range configs.Naive { extractedSet[l] = true }
+    for _, l := range configs.Telegram { extractedSet[l] = true }
+    for _, l := range configs.AnyTLS { extractedSet[l] = true }
+    for _, l := range configs.Snell { extractedSet[l] = true }
+    for _, l := range configs.HTTP { extractedSet[l] = true }
+    for _, l := range configs.CottenDNS { extractedSet[l] = true }
+    for _, l := range configs.StormDNS { extractedSet[l] = true }
 
     // Scan for candidate URLs in text
     matches := anySchemeRegex.FindAllStringSubmatch(text, -1)
@@ -130,7 +164,12 @@ func AuditAndExtract(text, source string, recordDropped func(source, candidate, 
                 strings.HasPrefix(candidate, "hy2://") || strings.HasPrefix(candidate, "hysteria://") ||
                 strings.HasPrefix(candidate, "hysteria2://") || strings.HasPrefix(candidate, "socks://") ||
                 strings.HasPrefix(candidate, "socks5://") || strings.HasPrefix(candidate, "wireguard://") ||
-                strings.HasPrefix(candidate, "wg://")
+                strings.HasPrefix(candidate, "wg://") || strings.HasPrefix(candidate, "juicity://") ||
+                strings.HasPrefix(candidate, "naive+https://") || strings.HasPrefix(candidate, "naive+http://") ||
+                strings.HasPrefix(candidate, "tg://proxy?") || strings.HasPrefix(candidate, "https://t.me/proxy?") ||
+                strings.HasPrefix(candidate, "http://t.me/proxy?") || strings.HasPrefix(candidate, "anytls://") ||
+                strings.HasPrefix(candidate, "snell://") || strings.HasPrefix(candidate, "cottendns://") ||
+                strings.HasPrefix(candidate, "stormdns://")
 
             if isKnownProto {
                 if strings.HasPrefix(candidate, "vmess://") && len(candidate) <= 50 {

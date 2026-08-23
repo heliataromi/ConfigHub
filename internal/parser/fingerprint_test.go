@@ -67,3 +67,27 @@ func TestGetFingerprint_DefaultPorts(t *testing.T) {
 		t.Fatalf("Default port 443 normalization failed:\n  fp1: %s\n  fp2: %s", fp1, fp2)
 	}
 }
+
+func TestGetFingerprint_TelegramProxy(t *testing.T) {
+	tgLink := "tg://proxy?server=1.2.3.4&port=443&secret=EE1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d#Remark1"
+	httpsLink := "https://t.me/proxy?server=1.2.3.4.&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d"
+
+	fp1 := GetFingerprint(tgLink)
+	fp2 := GetFingerprint(httpsLink)
+
+	if fp1 != fp2 {
+		t.Fatalf("Telegram proxy fingerprint normalization failed:\n  fp1: %s\n  fp2: %s", fp1, fp2)
+	}
+}
+
+func TestGetFingerprint_WhiteDNS(t *testing.T) {
+	cotten1 := "cottendns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwidmVyc2lvbiI6MSwicHJvZmlsZSI6eyJuYW1lIjoiTmFtZTEiLCJzZXJ2ZXIiOnsiZG9tYWluIjoidXNhLmFsaWFzLmNvbSIsImVuY3J5cHRpb25fa2V5IjoiQUJDREVGIiwiZW5jcnlwdGlvbl9tZXRob2QiOjF9fX0="
+	cotten2 := "cottendns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwidmVyc2lvbiI6MSwicHJvZmlsZSI6eyJuYW1lIjoiTmFtZTIiLCJzZXJ2ZXIiOnsiZG9tYWluIjoiVVNBLkFMSUFTLkNPTSIsImVuY3J5cHRpb25fa2V5IjoiYWJjZGVmIiwiZW5jcnlwdGlvbl9tZXRob2QiOjF9fX0="
+
+	fp1 := GetFingerprint(cotten1)
+	fp2 := GetFingerprint(cotten2)
+
+	if fp1 != fp2 {
+		t.Fatalf("WhiteDNS fingerprint normalization failed:\n  fp1: %s\n  fp2: %s", fp1, fp2)
+	}
+}

@@ -66,6 +66,14 @@ func main() {
         "hysteria":  make(map[string]ConfigItem),
         "socks":     make(map[string]ConfigItem),
         "wireguard": make(map[string]ConfigItem),
+        "juicity":   make(map[string]ConfigItem),
+        "naive":     make(map[string]ConfigItem),
+        "telegram":  make(map[string]ConfigItem),
+        "anytls":    make(map[string]ConfigItem),
+        "snell":     make(map[string]ConfigItem),
+        "http":      make(map[string]ConfigItem),
+        "cottendns": make(map[string]ConfigItem),
+        "stormdns":  make(map[string]ConfigItem),
     }
 
     var mu sync.Mutex
@@ -119,6 +127,14 @@ func main() {
             processConfigs(configs.Hysteria, "hysteria", channelName, "channel")
             processConfigs(configs.Socks, "socks", channelName, "channel")
             processConfigs(configs.WireGuard, "wireguard", channelName, "channel")
+            processConfigs(configs.Juicity, "juicity", channelName, "channel")
+            processConfigs(configs.Naive, "naive", channelName, "channel")
+            processConfigs(configs.Telegram, "telegram", channelName, "channel")
+            processConfigs(configs.AnyTLS, "anytls", channelName, "channel")
+            processConfigs(configs.Snell, "snell", channelName, "channel")
+            processConfigs(configs.HTTP, "http", channelName, "channel")
+            processConfigs(configs.CottenDNS, "cottendns", channelName, "channel")
+            processConfigs(configs.StormDNS, "stormdns", channelName, "channel")
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped (%d configs)\n", channelName, configs.Count())
         }(ch)
@@ -167,6 +183,14 @@ func main() {
             processConfigs(configs.Hysteria, "hysteria", shortName, "subscription")
             processConfigs(configs.Socks, "socks", shortName, "subscription")
             processConfigs(configs.WireGuard, "wireguard", shortName, "subscription")
+            processConfigs(configs.Juicity, "juicity", shortName, "subscription")
+            processConfigs(configs.Naive, "naive", shortName, "subscription")
+            processConfigs(configs.Telegram, "telegram", shortName, "subscription")
+            processConfigs(configs.AnyTLS, "anytls", shortName, "subscription")
+            processConfigs(configs.Snell, "snell", shortName, "subscription")
+            processConfigs(configs.HTTP, "http", shortName, "subscription")
+            processConfigs(configs.CottenDNS, "cottendns", shortName, "subscription")
+            processConfigs(configs.StormDNS, "stormdns", shortName, "subscription")
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped (%d configs)\n", shortName, configs.Count())
         }(sub)
