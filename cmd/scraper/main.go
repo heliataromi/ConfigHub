@@ -13,6 +13,7 @@ import (
     "ConfigHub/internal/parser"
     "ConfigHub/internal/scraper"
     "ConfigHub/internal/telemetry"
+    "ConfigHub/internal/validator"
 
     "github.com/oschwald/maxminddb-golang"
 )
@@ -105,7 +106,8 @@ func main() {
             }
 
             channelName := "t.me/" + channel
-            
+            configs = validator.SanitizeConfigs(configs, channelName, telemetry.Global.RecordDropped)
+
             mu.Lock()
             processConfigs(configs.Vmess, "vmess", channelName, "channel")
             processConfigs(configs.Vless, "vless", channelName, "channel")
@@ -151,6 +153,8 @@ func main() {
             if shortName == subURL && len(subURL) > 30 {
                 shortName = subURL[:30] + "..."
             }
+
+            configs = validator.SanitizeConfigs(configs, shortName, telemetry.Global.RecordDropped)
 
             mu.Lock()
             processConfigs(configs.Vmess, "vmess", shortName, "subscription")
