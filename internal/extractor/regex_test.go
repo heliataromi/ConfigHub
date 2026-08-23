@@ -24,6 +24,8 @@ tg://proxy?server=5.6.7.8&port=2096&secret=dd79e344818749bd7ac519130220c25d09
 anytls://11111111-2222-3333-4444-555555555555@anytls.example.com:443?security=tls#AnyTLSNode
 snell://psk123@snell.example.com:443?version=4#SnellNode
 http://proxyuser:proxypass@httpproxy.example.com:8080#HTTPNode
+cottendns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwidmVyc2lvbiI6MSwicHJvZmlsZSI6eyJuYW1lIjoidC5tZVwvV2hpdGVETlMgQ290dGVuRE5T8J-HufCfh7cgdGh4IHRvIExvcmRvZkNpbmRlciIsInNlcnZlciI6eyJkb21haW4iOiJ2LmFzaGVudGFqaXIuc2JzLCBjLmFzaGVudGFqaXIuc2l0ZSIsImVuY3J5cHRpb25fa2V5IjoiZTU1NGI4ZmI4ZGU4Mjc4ZDJmMTFlODcwNDA0NDI2OWEiLCJlbmNyeXB0aW9uX21ldGhvZCI6M319fQ
+stormdns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwidmVyc2lvbiI6MSwicHJvZmlsZSI6eyJuYW1lIjoidC5tZVwvV2hpdGVETlMgIPCfh7nwn4e3ICAgdGh4IHRvIENvcmVmb3JnZSIsInNlcnZlciI6eyJkb21haW4iOiJ2LmFub255bW91cy5vYnNlcnZlciIsImVuY3J5cHRpb25fa2V5IjoiYjI3NTAzOTE5OWIxYzhjOSIsImVuY3J5cHRpb25fbWV0aG9kIjozfX19
 `
 
 	configs := Extract(sampleText)
@@ -76,9 +78,15 @@ http://proxyuser:proxypass@httpproxy.example.com:8080#HTTPNode
 	if len(configs.HTTP) != 1 {
 		t.Errorf("Expected 1 HTTP proxy config, got %d", len(configs.HTTP))
 	}
+	if len(configs.CottenDNS) != 1 {
+		t.Errorf("Expected 1 CottenDNS config, got %d", len(configs.CottenDNS))
+	}
+	if len(configs.StormDNS) != 1 {
+		t.Errorf("Expected 1 StormDNS config, got %d", len(configs.StormDNS))
+	}
 
-	if count := configs.Count(); count != 17 {
-		t.Errorf("Expected total count 17, got %d", count)
+	if count := configs.Count(); count != 19 {
+		t.Errorf("Expected total count 19, got %d", count)
 	}
 }
 

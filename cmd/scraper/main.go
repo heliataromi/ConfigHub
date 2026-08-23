@@ -72,6 +72,8 @@ func main() {
         "anytls":    make(map[string]ConfigItem),
         "snell":     make(map[string]ConfigItem),
         "http":      make(map[string]ConfigItem),
+        "cottendns": make(map[string]ConfigItem),
+        "stormdns":  make(map[string]ConfigItem),
     }
 
     var mu sync.Mutex
@@ -131,6 +133,8 @@ func main() {
             processConfigs(configs.AnyTLS, "anytls", channelName, "channel")
             processConfigs(configs.Snell, "snell", channelName, "channel")
             processConfigs(configs.HTTP, "http", channelName, "channel")
+            processConfigs(configs.CottenDNS, "cottendns", channelName, "channel")
+            processConfigs(configs.StormDNS, "stormdns", channelName, "channel")
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped (%d configs)\n", channelName, configs.Count())
         }(ch)
@@ -185,6 +189,8 @@ func main() {
             processConfigs(configs.AnyTLS, "anytls", shortName, "subscription")
             processConfigs(configs.Snell, "snell", shortName, "subscription")
             processConfigs(configs.HTTP, "http", shortName, "subscription")
+            processConfigs(configs.CottenDNS, "cottendns", shortName, "subscription")
+            processConfigs(configs.StormDNS, "stormdns", shortName, "subscription")
             mu.Unlock()
             fmt.Printf("[+] %s: Scraped (%d configs)\n", shortName, configs.Count())
         }(sub)

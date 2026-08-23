@@ -79,3 +79,15 @@ func TestGetFingerprint_TelegramProxy(t *testing.T) {
 		t.Fatalf("Telegram proxy fingerprint normalization failed:\n  fp1: %s\n  fp2: %s", fp1, fp2)
 	}
 }
+
+func TestGetFingerprint_WhiteDNS(t *testing.T) {
+	cotten1 := "cottendns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwidmVyc2lvbiI6MSwicHJvZmlsZSI6eyJuYW1lIjoiTmFtZTEiLCJzZXJ2ZXIiOnsiZG9tYWluIjoidXNhLmFsaWFzLmNvbSIsImVuY3J5cHRpb25fa2V5IjoiQUJDREVGIiwiZW5jcnlwdGlvbl9tZXRob2QiOjF9fX0="
+	cotten2 := "cottendns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwidmVyc2lvbiI6MSwicHJvZmlsZSI6eyJuYW1lIjoiTmFtZTIiLCJzZXJ2ZXIiOnsiZG9tYWluIjoiVVNBLkFMSUFTLkNPTSIsImVuY3J5cHRpb25fa2V5IjoiYWJjZGVmIiwiZW5jcnlwdGlvbl9tZXRob2QiOjF9fX0="
+
+	fp1 := GetFingerprint(cotten1)
+	fp2 := GetFingerprint(cotten2)
+
+	if fp1 != fp2 {
+		t.Fatalf("WhiteDNS fingerprint normalization failed:\n  fp1: %s\n  fp2: %s", fp1, fp2)
+	}
+}

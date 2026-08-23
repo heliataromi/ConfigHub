@@ -67,6 +67,7 @@ Viturey
 vpn2freenet
 VPNBaz
 vpnrezz
+whitedns
 WhiteNet_new
 X_Golio
 xixv2ray

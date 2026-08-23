@@ -62,6 +62,10 @@ func ValidateConfig(link string) (bool, string) {
 		return validateSnell(link)
 	} else if strings.HasPrefix(link, "http://") || strings.HasPrefix(link, "https://") {
 		return validateHTTPProxy(link)
+	} else if strings.HasPrefix(link, "cottendns://") {
+		return validateWhiteDNS(link, "cottendns")
+	} else if strings.HasPrefix(link, "stormdns://") {
+		return validateWhiteDNS(link, "stormdns")
 	}
 
 	return false, "unsupported proxy scheme"
@@ -86,6 +90,8 @@ func SanitizeConfigs(configs extractor.Configs, source string, recordDropped fun
 		AnyTLS:    filterSlice(configs.AnyTLS, source, recordDropped),
 		Snell:     filterSlice(configs.Snell, source, recordDropped),
 		HTTP:      filterSlice(configs.HTTP, source, recordDropped),
+		CottenDNS: filterSlice(configs.CottenDNS, source, recordDropped),
+		StormDNS:  filterSlice(configs.StormDNS, source, recordDropped),
 	}
 }
 
@@ -456,6 +462,38 @@ func validateHTTPProxy(link string) (bool, string) {
 	return validateHostAndPort(u.Hostname(), u.Port(), defaultPort)
 }
 
+func validateWhiteDNS(link, scheme string) (bool, string) {
+	payload := strings.TrimPrefix(link, scheme+"://")
+	decoded, err := decodeBase64Safe(payload)
+	if err != nil {
+		return false, fmt.Sprintf("invalid %s base64 payload", scheme)
+	}
+
+	var data map[string]interface{}
+	if err := json.Unmarshal(decoded, &data); err != nil {
+		return false, fmt.Sprintf("invalid %s json payload", scheme)
+	}
+
+	profile, ok := data["profile"].(map[string]interface{})
+	if !ok {
+		return false, fmt.Sprintf("missing %s profile", scheme)
+	}
+	server, ok := profile["server"].(map[string]interface{})
+	if !ok {
+		return false, fmt.Sprintf("missing %s server config", scheme)
+	}
+
+	domainStr := strings.TrimSpace(safeString(server["domain"]))
+	if domainStr == "" {
+		return false, fmt.Sprintf("missing %s domain", scheme)
+	}
+
+	firstDomain := strings.TrimSpace(strings.Split(domainStr, ",")[0])
+	firstDomain = strings.Trim(firstDomain, "[]")
+
+	return validateHostAndPort(firstDomain, "443", 443)
+}
+
 func decodeBase64Safe(s string) ([]byte, error) {
 	s = strings.TrimSpace(s)
 	s = strings.ReplaceAll(s, "-", "+")
@@ -464,4 +502,11 @@ func decodeBase64Safe(s string) ([]byte, error) {
 		s += strings.Repeat("=", 4-pad)
 	}
 	return base64.StdEncoding.DecodeString(s)
+}
+
+func safeString(v interface{}) string {
+	if v == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", v)
 }

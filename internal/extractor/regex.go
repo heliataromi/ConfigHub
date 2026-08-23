@@ -22,6 +22,8 @@ var (
     anytlsRegex   = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(anytls://[^\s<"']+)`)
     snellRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(snell://[^\s<"']+)`)
     httpRegex     = regexp.MustCompile(`(?:^|[^a-zA-Z0-9+])(https?://[^:@\s]+:[^:@\s]+@[^\s<"']+)`)
+    cottenRegex   = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(cottendns://[A-Za-z0-9+/=\-_]+)`)
+    stormRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(stormdns://[A-Za-z0-9+/=\-_]+)`)
 )
 
 // trailingCutset defines characters commonly appended by markdown, HTML, or punctuation
@@ -45,6 +47,8 @@ type Configs struct {
     AnyTLS    []string
     Snell     []string
     HTTP      []string
+    CottenDNS []string
+    StormDNS  []string
 }
 
 // Count returns the total number of valid configs across all protocols
@@ -52,7 +56,8 @@ func (c Configs) Count() int {
     return len(c.Vmess) + len(c.Vless) + len(c.Trojan) + len(c.SS) +
         len(c.SSR) + len(c.TUIC) + len(c.Hy2) + len(c.Hysteria) +
         len(c.Socks) + len(c.WireGuard) + len(c.Juicity) + len(c.Naive) +
-        len(c.Telegram) + len(c.AnyTLS) + len(c.Snell) + len(c.HTTP)
+        len(c.Telegram) + len(c.AnyTLS) + len(c.Snell) + len(c.HTTP) +
+        len(c.CottenDNS) + len(c.StormDNS)
 }
 
 func extractRegex(text string, re *regexp.Regexp) []string {
@@ -102,6 +107,8 @@ func Extract(text string) Configs {
         AnyTLS:    extractRegex(text, anytlsRegex),
         Snell:     extractRegex(text, snellRegex),
         HTTP:      extractRegex(text, httpRegex),
+        CottenDNS: extractRegex(text, cottenRegex),
+        StormDNS:  extractRegex(text, stormRegex),
     }
 }
 
@@ -133,6 +140,8 @@ func AuditAndExtract(text, source string, recordDropped func(source, candidate, 
     for _, l := range configs.AnyTLS { extractedSet[l] = true }
     for _, l := range configs.Snell { extractedSet[l] = true }
     for _, l := range configs.HTTP { extractedSet[l] = true }
+    for _, l := range configs.CottenDNS { extractedSet[l] = true }
+    for _, l := range configs.StormDNS { extractedSet[l] = true }
 
     // Scan for candidate URLs in text
     matches := anySchemeRegex.FindAllStringSubmatch(text, -1)
@@ -159,7 +168,8 @@ func AuditAndExtract(text, source string, recordDropped func(source, candidate, 
                 strings.HasPrefix(candidate, "naive+https://") || strings.HasPrefix(candidate, "naive+http://") ||
                 strings.HasPrefix(candidate, "tg://proxy?") || strings.HasPrefix(candidate, "https://t.me/proxy?") ||
                 strings.HasPrefix(candidate, "http://t.me/proxy?") || strings.HasPrefix(candidate, "anytls://") ||
-                strings.HasPrefix(candidate, "snell://")
+                strings.HasPrefix(candidate, "snell://") || strings.HasPrefix(candidate, "cottendns://") ||
+                strings.HasPrefix(candidate, "stormdns://")
 
             if isKnownProto {
                 if strings.HasPrefix(candidate, "vmess://") && len(candidate) <= 50 {

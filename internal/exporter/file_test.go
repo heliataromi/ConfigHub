@@ -22,6 +22,12 @@ func TestWriteSubFiles_WithCountrySubs(t *testing.T) {
 		"telegram": {
 			{URL: "tg://proxy?server=1.2.3.8&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d#%F0%9F%87%A9%F0%9F%87%AA%20DE%20-%20%5Bt.me%2Ftest%5D", Source: "channel"},
 		},
+		"cottendns": {
+			{URL: "cottendns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwidmVyc2lvbiI6MSwicHJvZmlsZSI6eyJuYW1lIjoiVFIiLCJzZXJ2ZXIiOnsiZG9tYWluIjoidHJ1ZW1haWwuY29tIiwiZW5jcnlwdGlvbl9rZXkiOiJrZXkxIiwiZW5jcnlwdGlvbl9tZXRob2QiOjF9fX0=", Source: "channel"},
+		},
+		"stormdns": {
+			{URL: "stormdns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwidmVyc2lvbiI6MSwicHJvZmlsZSI6eyJuYW1lIjoiVVMiLCJzZXJ2ZXIiOnsiZG9tYWluIjoidXNhaG9zdC5jb20iLCJlbmNyeXB0aW9uX2tleSI6ImtleTIiLCJlbmNyeXB0aW9uX21ldGhvZCI6MX19fQ==", Source: "channel"},
+		},
 	}
 
 	err := WriteSubFiles(tmpDir, configsMap)
@@ -30,7 +36,7 @@ func TestWriteSubFiles_WithCountrySubs(t *testing.T) {
 	}
 
 	// 1. Verify standard files
-	for _, name := range []string{"vless.txt", "vless_base64.txt", "telegram.txt", "telegram_base64.txt", "mtproto.txt", "mtproto_base64.txt", "mixed.txt", "clash.yaml"} {
+	for _, name := range []string{"vless.txt", "vless_base64.txt", "telegram.txt", "telegram_base64.txt", "mtproto.txt", "mtproto_base64.txt", "cottendns.txt", "stormdns.txt", "whitedns.txt", "mixed.txt", "clash.yaml"} {
 		path := filepath.Join(tmpDir, name)
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			t.Errorf("Expected standard file %s to exist", name)
@@ -57,18 +63,26 @@ func TestWriteSubFiles_WithCountrySubs(t *testing.T) {
 		t.Errorf("Expected de.txt to contain both German nodes, got:\n%s", string(deContent))
 	}
 
-	// Verify telegram proxies are excluded from mixed.txt
+	// Verify telegram proxies and whitedns protocols are excluded from mixed.txt
 	mixedContent, _ := os.ReadFile(filepath.Join(tmpDir, "mixed.txt"))
-	if strings.Contains(string(mixedContent), "tg://proxy?") {
-		t.Errorf("Telegram proxies must not be present in mixed.txt:\n%s", string(mixedContent))
+	if strings.Contains(string(mixedContent), "tg://proxy?") || strings.Contains(string(mixedContent), "cottendns://") || strings.Contains(string(mixedContent), "stormdns://") {
+		t.Errorf("Telegram or WhiteDNS proxies must not be present in mixed.txt:\n%s", string(mixedContent))
 	}
 
-	// Verify telegram.txt does NOT contain dummy vless header
+	// Verify telegram.txt and whitedns.txt do NOT contain dummy vless header
 	tgContent, _ := os.ReadFile(filepath.Join(tmpDir, "telegram.txt"))
 	if strings.Contains(string(tgContent), "vless://00000000-0000") {
 		t.Errorf("telegram.txt must not contain dummy vless config:\n%s", string(tgContent))
 	}
 	if !strings.Contains(string(tgContent), "tg://proxy?server=1.2.3.8") {
 		t.Errorf("telegram.txt missing telegram proxy link:\n%s", string(tgContent))
+	}
+
+	whitednsContent, _ := os.ReadFile(filepath.Join(tmpDir, "whitedns.txt"))
+	if strings.Contains(string(whitednsContent), "vless://00000000-0000") {
+		t.Errorf("whitedns.txt must not contain dummy vless config:\n%s", string(whitednsContent))
+	}
+	if !strings.Contains(string(whitednsContent), "cottendns://") || !strings.Contains(string(whitednsContent), "stormdns://") {
+		t.Errorf("whitedns.txt must contain both CottenDNS and StormDNS configs:\n%s", string(whitednsContent))
 	}
 }

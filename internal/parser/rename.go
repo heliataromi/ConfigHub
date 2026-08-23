@@ -27,8 +27,14 @@ func RenameConfig(rawLink, channel string, db *maxminddb.Reader) string {
     if strings.HasPrefix(rawLink, "tg://proxy?") || strings.HasPrefix(rawLink, "https://t.me/proxy?") || strings.HasPrefix(rawLink, "http://t.me/proxy?") {
         return renameTelegram(rawLink, channel, db)
     }
+    if strings.HasPrefix(rawLink, "cottendns://") {
+        return renameWhiteDNS(rawLink, "cottendns", channel, db)
+    }
+    if strings.HasPrefix(rawLink, "stormdns://") {
+        return renameWhiteDNS(rawLink, "stormdns", channel, db)
+    }
 
-    // For VLESS, Trojan, TUIC, Hy2, Hysteria, Socks, WireGuard, Juicity, Naive
+    // For VLESS, Trojan, TUIC, Hy2, Hysteria, Socks, WireGuard, Juicity, Naive, AnyTLS, Snell, HTTP
     return renameStandard(rawLink, channel, db)
 }
 
@@ -196,4 +202,40 @@ func renameTelegram(link, channel string, db *maxminddb.Reader) string {
     newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channel)
 
     return fmt.Sprintf("tg://proxy?server=%s&port=%s&secret=%s#%s", q.Get("server"), q.Get("port"), q.Get("secret"), url.QueryEscape(newName))
+}
+
+func renameWhiteDNS(rawLink, scheme, channel string, db *maxminddb.Reader) string {
+    payload := strings.TrimPrefix(rawLink, scheme+"://")
+    decoded, err := decodeBase64Safe(payload)
+    if err != nil {
+        return rawLink
+    }
+
+    var data map[string]interface{}
+    if err := json.Unmarshal(decoded, &data); err != nil {
+        return rawLink
+    }
+
+    profile, ok := data["profile"].(map[string]interface{})
+    if !ok {
+        return rawLink
+    }
+    server, ok := profile["server"].(map[string]interface{})
+    if !ok {
+        return rawLink
+    }
+
+    domainStr := safeString(server["domain"])
+    firstDomain := strings.TrimSpace(strings.Split(domainStr, ",")[0])
+    firstDomain = strings.Trim(firstDomain, "[]")
+
+    iso, flag := geoip.GetCountry(firstDomain, db)
+    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channel)
+    profile["name"] = newName
+
+    newJSON, err := json.Marshal(data)
+    if err != nil {
+        return rawLink
+    }
+    return scheme + "://" + base64.StdEncoding.EncodeToString(newJSON)
 }
