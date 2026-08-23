@@ -53,6 +53,10 @@ func GetCountry(address string, db *maxminddb.Reader) (string, string) {
         ip = ips[0].IP
     }
 
+    if db == nil {
+        return "UNK", "🏳️"
+    }
+
     // Query the DB
     var record struct {
         Country struct {

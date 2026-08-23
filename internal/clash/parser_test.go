@@ -150,12 +150,91 @@ func TestParseTUIC(t *testing.T) {
 	}
 }
 
+func TestParseWireGuard_QueryParamKey(t *testing.T) {
+	link := "wireguard://example.com:51820?private_key=cGFzc3dvcmQxMjM=&public_key=cHVibGljMTIzNDU=&ip=10.0.0.2#%F0%9F%87%A9%F0%9F%87%AA%20DE%20-%20%5Bt.me%2Ftest%5D"
+	proxy, country, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse WireGuard with query private_key: %v", err)
+	}
+
+	if country != "DE" {
+		t.Errorf("Expected country DE, got %s", country)
+	}
+	if proxy["type"] != "wireguard" {
+		t.Errorf("Expected type wireguard, got %v", proxy["type"])
+	}
+	if proxy["private-key"] != "cGFzc3dvcmQxMjM=" {
+		t.Errorf("Expected private-key cGFzc3dvcmQxMjM=, got %v", proxy["private-key"])
+	}
+	if proxy["public-key"] != "cHVibGljMTIzNDU=" {
+		t.Errorf("Expected public-key cHVibGljMTIzNDU=, got %v", proxy["public-key"])
+	}
+}
+
+func TestParseVLESS_RealityAliases(t *testing.T) {
+	link := "vless://11111111-2222-3333-4444-555555555555@example.com:443?type=tcp&security=reality&public_key=aliaspubkey&short_id=5678&sni=target.com#%F0%9F%87%AB%F0%9F%87%B7%20FR"
+	proxy, country, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse VLESS with reality aliases: %v", err)
+	}
+
+	if country != "FR" {
+		t.Errorf("Expected country FR, got %s", country)
+	}
+	reality, ok := proxy["reality-opts"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("reality-opts missing or invalid")
+	}
+	if reality["public-key"] != "aliaspubkey" {
+		t.Errorf("Expected public-key aliaspubkey, got %v", reality["public-key"])
+	}
+	if reality["short-id"] != "5678" {
+		t.Errorf("Expected short-id 5678, got %v", reality["short-id"])
+	}
+}
+
+func TestParseSS_ChachaAlias(t *testing.T) {
+	userInfo := base64.StdEncoding.EncodeToString([]byte("chacha20-poly1305:password123"))
+	link := "ss://" + userInfo + "@ss.example.com:8388#%F0%9F%87%B3%F0%9F%87%B1%20NL"
+	proxy, country, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse SS with chacha20-poly1305: %v", err)
+	}
+
+	if country != "NL" {
+		t.Errorf("Expected country NL, got %s", country)
+	}
+	if proxy["cipher"] != "chacha20-ietf-poly1305" {
+		t.Errorf("Expected normalized cipher chacha20-ietf-poly1305, got %v", proxy["cipher"])
+	}
+}
+
+func TestParseSS_IPv6(t *testing.T) {
+	userInfo := base64.StdEncoding.EncodeToString([]byte("aes-256-gcm:password123"))
+	link := "ss://" + userInfo + "@[2001:db8::1]:8388#%F0%9F%87%A9%F0%9F%87%AA%20DE"
+	proxy, _, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse IPv6 SS: %v", err)
+	}
+
+	if proxy["server"] != "2001:db8::1" {
+		t.Errorf("Expected server 2001:db8::1, got %v", proxy["server"])
+	}
+	if proxy["port"] != 8388 {
+		t.Errorf("Expected port 8388, got %v", proxy["port"])
+	}
+}
+
 func TestGenerateClashConfig(t *testing.T) {
 	links := []string{
 		"vless://11111111-2222-3333-4444-555555555555@example.com:443?type=tcp&security=reality&pbk=testpubkey&sid=1234&sni=target.com#🇩🇪 DE - [t.me/test]",
 		"vless://22222222-3333-4444-5555-666666666666@example2.com:443?type=tcp&security=reality&pbk=testpubkey&sid=1234&sni=target2.com#🇩🇪 DE - [t.me/test2]",
 		"trojan://password123@trojan.example.com:443?security=tls&sni=trojan.example.com#🇫🇷 FR - [t.me/test]",
 		"trojan://password456@trojan2.example.com:443?security=tls&sni=trojan2.example.com#🇫🇷 FR - [t.me/test2]",
+		"vless://33333333-4444-5555-6666-777777777777@104.16.1.1:443?type=ws&security=tls#☁️ CDN/RELAY - [t.me/test]",
+		"vless://44444444-5555-6666-7777-888888888888@104.16.1.2:443?type=ws&security=tls#☁️ CDN/RELAY - [t.me/test2]",
+		"vless://55555555-6666-7777-8888-999999999999@ir.relay.example:443?type=tcp#🇮🇷 IR-RELAY - [t.me/test]",
+		"vless://66666666-7777-8888-9999-000000000000@ir2.relay.example:443?type=tcp#🇮🇷 IR-RELAY - [t.me/test2]",
 	}
 
 	yamlData, err := GenerateClashConfig(links)
@@ -169,6 +248,12 @@ func TestGenerateClashConfig(t *testing.T) {
 	}
 	if !strings.Contains(yamlStr, "🇫🇷 France (Auto)") {
 		t.Errorf("Generated YAML missing French auto group:\n%s", yamlStr)
+	}
+	if !strings.Contains(yamlStr, "☁️ CDN & Cloud Relay (Auto)") {
+		t.Errorf("Generated YAML missing CDN auto group:\n%s", yamlStr)
+	}
+	if !strings.Contains(yamlStr, "🇮🇷 Iran Domestic Relay (Auto)") {
+		t.Errorf("Generated YAML missing Iran Domestic Relay auto group:\n%s", yamlStr)
 	}
 	if !strings.Contains(yamlStr, "⚡ AUTO (Fastest Node)") {
 		t.Errorf("Generated YAML missing AUTO group:\n%s", yamlStr)
