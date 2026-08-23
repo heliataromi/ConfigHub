@@ -60,8 +60,16 @@ func ScrapeChannel(channel string) (extractor.Configs, error) {
 
         // Check if the message is within the last 24 hours
         if now.Sub(msgTime) <= 24*time.Hour {
-            // Get the message text HTML
-            htmlContent, _ := s.Find(".tgme_widget_message_text").Html()
+            var htmlContent string
+            if textElem := s.Find(".tgme_widget_message_text"); textElem.Length() > 0 {
+                htmlContent, _ = textElem.Html()
+            } else if captionElem := s.Find(".tgme_widget_message_caption"); captionElem.Length() > 0 {
+                htmlContent, _ = captionElem.Html()
+            }
+
+            if htmlContent == "" {
+                return
+            }
 
             // Replace HTML line breaks with actual newlines
             textContent := strings.ReplaceAll(htmlContent, "<br/>", "\n")
