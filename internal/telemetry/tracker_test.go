@@ -67,3 +67,39 @@ func TestTracker_RecordAndExport(t *testing.T) {
 		t.Errorf("Expected 2 dropped items, got %d", report.DroppedCount)
 	}
 }
+
+func TestTracker_RecordDuplicatesAndExport(t *testing.T) {
+	tmpDir := t.TempDir()
+	dupPath := filepath.Join(tmpDir, "duplicates.json")
+
+	tracker := NewTracker()
+	tracker.RecordDuplicate("vless", "fp123", "t.me/channelA", "vless://rawA", "t.me/channelB", "vless://rawB")
+	tracker.RecordDuplicate("vless", "fp123", "t.me/channelA", "vless://rawA", "sub.com/list", "vless://rawSub")
+
+	if err := tracker.ExportDuplicates(dupPath, 3, 1); err != nil {
+		t.Fatalf("Failed to export duplicates: %v", err)
+	}
+
+	data, err := os.ReadFile(dupPath)
+	if err != nil {
+		t.Fatalf("Failed to read duplicates report: %v", err)
+	}
+
+	var report DuplicatesReport
+	if err := json.Unmarshal(data, &report); err != nil {
+		t.Fatalf("Duplicates JSON invalid: %v", err)
+	}
+
+	if report.TotalDuplicates != 2 {
+		t.Errorf("Expected 2 total duplicates, got %d", report.TotalDuplicates)
+	}
+	if len(report.DuplicateGroups) != 1 {
+		t.Fatalf("Expected 1 duplicate group, got %d", len(report.DuplicateGroups))
+	}
+	if len(report.DuplicateGroups[0].Duplicates) != 2 {
+		t.Errorf("Expected 2 duplicates in group, got %d", len(report.DuplicateGroups[0].Duplicates))
+	}
+	if report.DuplicateGroups[0].Retained.Source != "t.me/channelA" {
+		t.Errorf("Expected retained source t.me/channelA, got %s", report.DuplicateGroups[0].Retained.Source)
+	}
+}

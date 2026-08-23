@@ -70,15 +70,21 @@ func main() {
     var mu sync.Mutex
     var wg sync.WaitGroup
 
-    // Helper function to deduplicate configs with channel source priority
+    // Helper function to deduplicate configs with channel source priority and telemetry tracking
     processConfigs := func(configs []string, proto string, channel string, source string) {
         for _, c := range configs {
             fp := parser.GetFingerprint(c)
             if existing, exists := uniqueConfigs[proto][fp]; !exists {
                 uniqueConfigs[proto][fp] = ConfigItem{Raw: c, Channel: channel, Source: source}
-            } else if source == "channel" && existing.Source != "channel" {
-                // Channel source takes priority over external subscription
-                uniqueConfigs[proto][fp] = ConfigItem{Raw: c, Channel: channel, Source: source}
+            } else {
+                if source == "channel" && existing.Source != "channel" {
+                    // Channel source takes priority over external subscription
+                    telemetry.Global.RecordDuplicate(proto, fp, channel, c, existing.Channel, existing.Raw)
+                    uniqueConfigs[proto][fp] = ConfigItem{Raw: c, Channel: channel, Source: source}
+                } else {
+                    // Current config is duplicate of existing retained config
+                    telemetry.Global.RecordDuplicate(proto, fp, existing.Channel, existing.Raw, channel, c)
+                }
             }
         }
     }
@@ -190,11 +196,22 @@ func main() {
     }
     fmt.Println("[+] Successfully exported Geo-named files to 'sub/'!")
 
-    // 6. Export Telemetry & Observability Report
+    // 6. Export Telemetry & Observability Reports
+    totalUnique := 0
+    for _, count := range uniqueCounts {
+        totalUnique += count
+    }
+
     if err := telemetry.Global.ExportReport("sub/telemetry.json", uniqueCounts); err != nil {
         fmt.Printf("[-] Warning: Failed to export telemetry report: %v\n", err)
     } else {
         fmt.Println("[+] Successfully exported observability report to 'sub/telemetry.json'!")
+    }
+
+    if err := telemetry.Global.ExportDuplicates("sub/duplicates.json", 0, totalUnique); err != nil {
+        fmt.Printf("[-] Warning: Failed to export duplicates inspection report: %v\n", err)
+    } else {
+        fmt.Println("[+] Successfully exported duplicate inspection report to 'sub/duplicates.json'!")
     }
     telemetry.Global.PrintConsoleSummary(uniqueCounts)
 }
