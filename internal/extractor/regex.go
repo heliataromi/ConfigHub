@@ -32,6 +32,13 @@ type Configs struct {
     WireGuard []string
 }
 
+// Count returns the total number of valid configs across all protocols
+func (c Configs) Count() int {
+    return len(c.Vmess) + len(c.Vless) + len(c.Trojan) + len(c.SS) +
+        len(c.SSR) + len(c.TUIC) + len(c.Hy2) + len(c.Hysteria) +
+        len(c.Socks) + len(c.WireGuard)
+}
+
 func extractRegex(text string, re *regexp.Regexp) []string {
     matches := re.FindAllStringSubmatch(text, -1)
     var valid []string

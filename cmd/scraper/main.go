@@ -69,23 +69,31 @@ func main() {
     var mu sync.Mutex
     var wg sync.WaitGroup
 
-    // Helper function to deduplicate configs
+    // Helper function to deduplicate configs with channel source priority
     processConfigs := func(configs []string, proto string, channel string, source string) {
         for _, c := range configs {
             fp := parser.GetFingerprint(c)
-            if _, exists := uniqueConfigs[proto][fp]; !exists {
+            if existing, exists := uniqueConfigs[proto][fp]; !exists {
+                uniqueConfigs[proto][fp] = ConfigItem{Raw: c, Channel: channel, Source: source}
+            } else if source == "channel" && existing.Source != "channel" {
+                // Channel source takes priority over external subscription
                 uniqueConfigs[proto][fp] = ConfigItem{Raw: c, Channel: channel, Source: source}
             }
         }
     }
 
-    // 3. Scrape Concurrently
+    // 3. Scrape Concurrently with Bounded Worker Pools
+    channelSem := make(chan struct{}, 6) // Max 6 concurrent requests to Telegram
     for _, ch := range channels {
         wg.Add(1)
         go func(channel string) {
             defer wg.Done()
+            channelSem <- struct{}{}
+            defer func() { <-channelSem }()
+
             configs, err := scraper.ScrapeChannel(channel)
             if err != nil {
+                fmt.Printf("[-] Error scraping channel %s: %v\n", channel, err)
                 return
             }
 
@@ -103,14 +111,18 @@ func main() {
             processConfigs(configs.Socks, "socks", channelName, "channel")
             processConfigs(configs.WireGuard, "wireguard", channelName, "channel")
             mu.Unlock()
-            fmt.Printf("[+] %s: Scraped\n", channelName)
+            fmt.Printf("[+] %s: Scraped (%d configs)\n", channelName, configs.Count())
         }(ch)
     }
 
+    subSem := make(chan struct{}, 8) // Max 8 concurrent requests for subscriptions
     for _, sub := range subscriptions {
         wg.Add(1)
         go func(subURL string) {
             defer wg.Done()
+            subSem <- struct{}{}
+            defer func() { <-subSem }()
+
             configs, err := scraper.ScrapeSubscription(subURL)
             if err != nil {
                 fmt.Printf("[-] Error scraping subscription %s: %v\n", subURL, err)
@@ -145,13 +157,13 @@ func main() {
             processConfigs(configs.Socks, "socks", shortName, "subscription")
             processConfigs(configs.WireGuard, "wireguard", shortName, "subscription")
             mu.Unlock()
-            fmt.Printf("[+] %s: Scraped\n", shortName)
+            fmt.Printf("[+] %s: Scraped (%d configs)\n", shortName, configs.Count())
         }(sub)
     }
 
     wg.Wait()
 
-    // 4. Rename configs using GeoIP & Channel ID
+    // 4. Rename configs using GeoIP & Channel ID (Concurrent Worker Pool)
     fmt.Println("\n[*] Resolving IPs and Applying GeoIP Names. This may take a moment...")
 
     finalConfigs := make(map[string][]exporter.RenamedConfig)
@@ -175,12 +187,37 @@ func main() {
     fmt.Println("[+] Successfully exported Geo-named files to 'sub/'!")
 }
 
-// processAndRename iterates through the map and renames each config
+// processAndRename iterates through the map and renames each config concurrently
 func processAndRename(configMap map[string]ConfigItem, db *maxminddb.Reader) []exporter.RenamedConfig {
-    var results []exporter.RenamedConfig
+    items := make([]ConfigItem, 0, len(configMap))
     for _, item := range configMap {
-        renamed := parser.RenameConfig(item.Raw, item.Channel, db)
-        results = append(results, exporter.RenamedConfig{URL: renamed, Source: item.Source})
+        items = append(items, item)
     }
-    return results
+
+    results := make([]exporter.RenamedConfig, len(items))
+    var renameWg sync.WaitGroup
+    workers := 16
+    sem := make(chan struct{}, workers)
+
+    for i, item := range items {
+        renameWg.Add(1)
+        go func(idx int, ci ConfigItem) {
+            defer renameWg.Done()
+            sem <- struct{}{}
+            defer func() { <-sem }()
+
+            renamed := parser.RenameConfig(ci.Raw, ci.Channel, db)
+            results[idx] = exporter.RenamedConfig{URL: renamed, Source: ci.Source}
+        }(i, item)
+    }
+
+    renameWg.Wait()
+
+    var finalResults []exporter.RenamedConfig
+    for _, res := range results {
+        if res.URL != "" {
+            finalResults = append(finalResults, res)
+        }
+    }
+    return finalResults
 }
