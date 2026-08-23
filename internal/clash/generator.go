@@ -42,12 +42,14 @@ var countryNames = map[string]string{
 	"IR": "🇮🇷 Iran",
 	"AM": "🇦🇲 Armenia",
 	"GE": "🇬🇪 Georgia",
-	"AZ": "🇦🇿 Azerbaijan",
-	"KZ": "🇰🇿 Kazakhstan",
-	"IL": "🇮🇱 Israel",
-	"AU": "🇦🇺 Australia",
-	"BR": "🇧🇷 Brazil",
-	"ZA": "🇿🇦 South Africa",
+	"AZ":       "🇦🇿 Azerbaijan",
+	"KZ":       "🇰🇿 Kazakhstan",
+	"IL":       "🇮🇱 Israel",
+	"AU":       "🇦🇺 Australia",
+	"BR":       "🇧🇷 Brazil",
+	"ZA":       "🇿🇦 South Africa",
+	"CDN":      "☁️ CDN & Cloud Relay",
+	"IR-RELAY": "🇮🇷 Iran Domestic Relay",
 }
 
 // GenerateClashConfig converts a slice of proxy links to a full Clash Meta YAML string

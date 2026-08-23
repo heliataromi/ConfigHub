@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/url"
 	"strconv"
 	"strings"
@@ -46,10 +47,17 @@ func extractNameAndCountry(remark string) (name string, country string) {
 		remark = "Proxy"
 	}
 
-	// Example format: "🇩🇪 DE - [t.me/channel]"
+	// Example formats: "🇩🇪 DE - [t.me/channel]", "☁️ CDN/RELAY - [channel]", "🇮🇷 IR-RELAY - [channel]"
 	parts := strings.Fields(remark)
-	if len(parts) >= 2 && len(parts[1]) == 2 && strings.ToUpper(parts[1]) == parts[1] {
-		country = parts[1]
+	if len(parts) >= 2 {
+		tag := strings.ToUpper(strings.TrimSpace(parts[1]))
+		if len(tag) == 2 {
+			country = tag
+		} else if tag == "CDN/RELAY" || tag == "CDN" || tag == "RELAY" {
+			country = "CDN"
+		} else if tag == "IR-RELAY" || tag == "IRAN-RELAY" {
+			country = "IR-RELAY"
+		}
 	}
 
 	return remark, country
@@ -124,15 +132,39 @@ func parseVLESS(link string) (map[string]interface{}, string, error) {
 		}
 	}
 
-	if security == "reality" || q.Get("pbk") != "" {
+	pbk := q.Get("pbk")
+	if pbk == "" {
+		pbk = q.Get("public_key")
+	}
+	if pbk == "" {
+		pbk = q.Get("publicKey")
+	}
+
+	sid := q.Get("sid")
+	if sid == "" {
+		sid = q.Get("short_id")
+	}
+	if sid == "" {
+		sid = q.Get("shortId")
+	}
+
+	spx := q.Get("spx")
+	if spx == "" {
+		spx = q.Get("spider_x")
+	}
+	if spx == "" {
+		spx = q.Get("spiderX")
+	}
+
+	if security == "reality" || pbk != "" {
 		proxy["tls"] = true
 		realityOpts := map[string]interface{}{
-			"public-key": q.Get("pbk"),
+			"public-key": pbk,
 		}
-		if sid := q.Get("sid"); sid != "" {
+		if sid != "" {
 			realityOpts["short-id"] = sid
 		}
-		if spx := q.Get("spx"); spx != "" {
+		if spx != "" {
 			realityOpts["spider-x"] = spx
 		}
 		proxy["reality-opts"] = realityOpts
@@ -397,6 +429,7 @@ var validSSCiphers = map[string]bool{
 	"chacha20-ietf":                 true,
 	"chacha20":                      true,
 	"chacha20-ietf-poly1305":        true,
+	"chacha20-poly1305":             true,
 	"xchacha20-ietf-poly1305":       true,
 	"2022-blake3-aes-128-gcm":       true,
 	"2022-blake3-aes-256-gcm":       true,
@@ -404,10 +437,24 @@ var validSSCiphers = map[string]bool{
 	"2022-blake3-chacha8-poly1305":  true,
 	"none":                          true,
 	"dummy":                         true,
+	"plain":                         true,
+	"camellia-128-cfb":              true,
+	"camellia-192-cfb":              true,
+	"camellia-256-cfb":              true,
 }
 
 func isValidSSCipher(cipher string) bool {
 	return validSSCiphers[strings.ToLower(strings.TrimSpace(cipher))]
+}
+
+func splitHostPortSafe(hostPort string, defaultPort int) (string, int) {
+	hostPort = strings.TrimSpace(hostPort)
+	if h, p, err := net.SplitHostPort(hostPort); err == nil {
+		port := toInt(p, defaultPort)
+		return strings.Trim(h, "[]"), port
+	}
+	cleaned := strings.Trim(hostPort, "[]")
+	return cleaned, defaultPort
 }
 
 func parseSS(link string) (map[string]interface{}, string, error) {
@@ -480,6 +527,9 @@ func parseSS(link string) (map[string]interface{}, string, error) {
 	if !isValidSSCipher(cipher) {
 		return nil, "", fmt.Errorf("unsupported or invalid ss cipher: %s", cipher)
 	}
+	if cipher == "chacha20-poly1305" {
+		cipher = "chacha20-ietf-poly1305"
+	}
 
 	// Validate and normalize Shadowsocks 2022 keys
 	if strings.HasPrefix(cipher, "2022-") {
@@ -495,15 +545,10 @@ func parseSS(link string) (map[string]interface{}, string, error) {
 		password = strings.Join(normalizedKeys, ":")
 	}
 
-	// Parse host & port
-	hpParts := strings.Split(hostPort, ":")
-	if len(hpParts) < 2 {
-		return nil, "", fmt.Errorf("invalid ss host:port")
-	}
-	server := hpParts[0]
-	port := toInt(hpParts[1], 8388)
+	// Parse host & port safely with IPv6 support
+	server, port := splitHostPortSafe(hostPort, 8388)
 	if port <= 0 || port > 65535 || server == "" {
-		return nil, "", fmt.Errorf("invalid server or port in ss link")
+		return nil, "", fmt.Errorf("invalid server or port in ss link: %s", hostPort)
 	}
 
 	proxy := map[string]interface{}{
@@ -844,11 +889,28 @@ func parseWireGuard(link string) (map[string]interface{}, string, error) {
 
 	server := u.Hostname()
 	port := toInt(u.Port(), 51820)
+	q := u.Query()
+
 	privKey := ""
 	if u.User != nil {
 		privKey = u.User.Username()
 	}
+	if privKey == "" {
+		privKey = q.Get("private_key")
+	}
+	if privKey == "" {
+		privKey = q.Get("privatekey")
+	}
+	if privKey == "" {
+		privKey = q.Get("privkey")
+	}
+	if privKey == "" {
+		privKey = q.Get("secret_key")
+	}
 	if unescaped, err := url.PathUnescape(privKey); err == nil && unescaped != "" {
+		privKey = unescaped
+	}
+	if unescaped, err := url.QueryUnescape(privKey); err == nil && unescaped != "" {
 		privKey = unescaped
 	}
 
@@ -856,7 +918,6 @@ func parseWireGuard(link string) (map[string]interface{}, string, error) {
 		return nil, "", fmt.Errorf("missing or invalid server, port, or private-key in wireguard link")
 	}
 
-	q := u.Query()
 	name, country := extractNameAndCountry(u.Fragment)
 
 	pubKey := q.Get("publickey")
