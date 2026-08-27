@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
@@ -190,9 +191,12 @@ func (t *Tracker) PrintConsoleSummary(uniqueCounts map[string]int) {
 			t.totalDuplicates, (float64(t.totalDuplicates)/float64(totalYield))*100.0)
 	}
 	if len(t.droppedItems) > 0 {
-		fmt.Printf("Logged Dropped Items    : %d (saved to sub/telemetry.json)\n", len(t.droppedItems))
+		fmt.Printf("Logged Dropped Items    : %d\n", len(t.droppedItems))
 	}
-	fmt.Printf("Duplicate Inspection    : saved to sub/duplicates.json\n")
+	exportEnv := strings.ToLower(os.Getenv("EXPORT_TELEMETRY"))
+	if exportEnv == "true" || exportEnv == "1" {
+		fmt.Printf("Reports Output          : saved to reports/telemetry.json & duplicates.json\n")
+	}
 	fmt.Println("---------------------------------------------------------------------")
 	for proto, count := range uniqueCounts {
 		fmt.Printf("  %-10s : %d unique\n", proto, count)

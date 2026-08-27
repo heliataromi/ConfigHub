@@ -10,6 +10,7 @@ bin/
 
 # Our local generated configs
 sub/
+reports/
 
 # IDE and OS specific files
 .vscode/
@@ -19,3 +20,8 @@ sub/
 GeoLite2-Country.mmdb
 /scraper
 plans/
+
+# Local environment configuration
+.env
+.env.*
+!.env.example
