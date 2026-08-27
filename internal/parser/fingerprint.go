@@ -22,7 +22,9 @@ func GetFingerprint(link string) string {
     if strings.HasPrefix(link, "ss://") {
         return getSSFingerprint(link)
     }
-    if strings.HasPrefix(link, "tg://proxy?") || strings.HasPrefix(link, "https://t.me/proxy?") || strings.HasPrefix(link, "http://t.me/proxy?") {
+    if strings.HasPrefix(link, "tg://proxy?") || strings.HasPrefix(link, "https://t.me/proxy?") || strings.HasPrefix(link, "http://t.me/proxy?") ||
+        strings.HasPrefix(link, "tg://socks?") || strings.HasPrefix(link, "https://t.me/socks?") || strings.HasPrefix(link, "http://t.me/socks?") ||
+        strings.HasPrefix(link, "tg://http?") || strings.HasPrefix(link, "https://t.me/http?") || strings.HasPrefix(link, "http://t.me/http?") {
         return getTelegramFingerprint(link)
     }
     if strings.HasPrefix(link, "cottendns://") {
@@ -333,9 +335,33 @@ func getTelegramFingerprint(link string) string {
     }
     q := u.Query()
     server := strings.ToLower(strings.TrimSuffix(strings.TrimSpace(q.Get("server")), "."))
+    server = strings.Trim(server, "[]")
     port := strings.TrimSpace(q.Get("port"))
     secret := strings.ToLower(strings.TrimSpace(q.Get("secret")))
-    return fmt.Sprintf("tg://proxy?server=%s:%s&secret=%s", server, port, secret)
+
+    isSocks := strings.HasPrefix(link, "tg://socks?") || strings.HasPrefix(link, "https://t.me/socks?") || strings.HasPrefix(link, "http://t.me/socks?")
+    isHTTP := strings.HasPrefix(link, "tg://http?") || strings.HasPrefix(link, "https://t.me/http?") || strings.HasPrefix(link, "http://t.me/http?")
+
+    if port == "" {
+        if isSocks {
+            port = "1080"
+        } else {
+            port = "443"
+        }
+    }
+
+    if secret != "" {
+        return fmt.Sprintf("tg://proxy?server=%s:%s&secret=%s", server, port, secret)
+    }
+
+    user := strings.TrimSpace(q.Get("user"))
+    pass := strings.TrimSpace(q.Get("pass"))
+
+    if isHTTP {
+        return fmt.Sprintf("tg://http?server=%s:%s&user=%s&pass=%s", server, port, user, pass)
+    }
+
+    return fmt.Sprintf("tg://socks?server=%s:%s&user=%s&pass=%s", server, port, user, pass)
 }
 
 func getWhiteDNSFingerprint(link, scheme string) string {

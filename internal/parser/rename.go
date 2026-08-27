@@ -24,7 +24,9 @@ func RenameConfig(rawLink, channel string, db *maxminddb.Reader) string {
     if strings.HasPrefix(rawLink, "ss://") {
         return renameSS(rawLink, channel, db)
     }
-    if strings.HasPrefix(rawLink, "tg://proxy?") || strings.HasPrefix(rawLink, "https://t.me/proxy?") || strings.HasPrefix(rawLink, "http://t.me/proxy?") {
+    if strings.HasPrefix(rawLink, "tg://proxy?") || strings.HasPrefix(rawLink, "https://t.me/proxy?") || strings.HasPrefix(rawLink, "http://t.me/proxy?") ||
+        strings.HasPrefix(rawLink, "tg://socks?") || strings.HasPrefix(rawLink, "https://t.me/socks?") || strings.HasPrefix(rawLink, "http://t.me/socks?") ||
+        strings.HasPrefix(rawLink, "tg://http?") || strings.HasPrefix(rawLink, "https://t.me/http?") || strings.HasPrefix(rawLink, "http://t.me/http?") {
         return renameTelegram(rawLink, channel, db)
     }
     if strings.HasPrefix(rawLink, "cottendns://") {
@@ -198,10 +200,39 @@ func renameTelegram(link, channel string, db *maxminddb.Reader) string {
     q := u.Query()
     server := strings.TrimSuffix(strings.TrimSpace(q.Get("server")), ".")
     server = strings.Trim(server, "[]")
-    iso, flag := geoip.GetCountry(server, db)
-    newName := fmt.Sprintf("%s %s - [%s]", flag, iso, channel)
 
-    return fmt.Sprintf("tg://proxy?server=%s&port=%s&secret=%s#%s", q.Get("server"), q.Get("port"), q.Get("secret"), url.QueryEscape(newName))
+    isSocks := strings.HasPrefix(link, "tg://socks?") || strings.HasPrefix(link, "https://t.me/socks?") || strings.HasPrefix(link, "http://t.me/socks?")
+    isHTTP := strings.HasPrefix(link, "tg://http?") || strings.HasPrefix(link, "https://t.me/http?") || strings.HasPrefix(link, "http://t.me/http?")
+
+    port := q.Get("port")
+    if port == "" {
+        if isSocks {
+            port = "1080"
+        } else {
+            port = "443"
+        }
+    }
+
+    secret := q.Get("secret")
+    if secret != "" {
+        return fmt.Sprintf("tg://proxy?server=%s&port=%s&secret=%s", server, port, secret)
+    }
+
+    user := q.Get("user")
+    pass := q.Get("pass")
+    authParams := ""
+    if user != "" {
+        authParams += fmt.Sprintf("&user=%s", url.QueryEscape(user))
+    }
+    if pass != "" {
+        authParams += fmt.Sprintf("&pass=%s", url.QueryEscape(pass))
+    }
+
+    if isHTTP {
+        return fmt.Sprintf("tg://http?server=%s&port=%s%s", server, port, authParams)
+    }
+
+    return fmt.Sprintf("tg://socks?server=%s&port=%s%s", server, port, authParams)
 }
 
 func renameWhiteDNS(rawLink, scheme, channel string, db *maxminddb.Reader) string {

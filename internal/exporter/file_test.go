@@ -36,10 +36,18 @@ func TestWriteSubFiles_WithCountrySubs(t *testing.T) {
 	}
 
 	// 1. Verify standard files
-	for _, name := range []string{"vless.txt", "vless_base64.txt", "telegram.txt", "telegram_base64.txt", "mtproto.txt", "mtproto_base64.txt", "cottendns.txt", "stormdns.txt", "whitedns.txt", "mixed.txt", "mixed_lite.txt", "clash.yaml", "clash_lite.yaml", "singbox.json", "singbox_lite.json"} {
+	for _, name := range []string{"vless.txt", "vless_base64.txt", "telegram.txt", "cottendns.txt", "stormdns.txt", "whitedns.txt", "mixed.txt", "mixed_lite.txt", "clash.yaml", "clash_lite.yaml", "singbox.json", "singbox_lite.json"} {
 		path := filepath.Join(tmpDir, name)
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			t.Errorf("Expected standard file %s to exist", name)
+		}
+	}
+
+	// Verify telegram_base64.txt and mtproto.txt are NOT generated
+	for _, name := range []string{"telegram_base64.txt", "mtproto.txt", "mtproto_base64.txt"} {
+		path := filepath.Join(tmpDir, name)
+		if _, err := os.Stat(path); !os.IsNotExist(err) {
+			t.Errorf("Expected file %s NOT to exist", name)
 		}
 	}
 

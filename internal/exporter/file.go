@@ -50,9 +50,6 @@ func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
             }
         }
         filesToCreate[protocolName+".txt"] = protoConfigs
-        if protocolName == "telegram" {
-            filesToCreate["mtproto.txt"] = protoConfigs
-        }
     }
     if len(whitednsConfigs) > 0 {
         filesToCreate["whitedns.txt"] = whitednsConfigs
@@ -73,7 +70,7 @@ func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
         }
 
         var finalConfigs []string
-        if filename == "telegram.txt" || filename == "mtproto.txt" || filename == "cottendns.txt" || filename == "stormdns.txt" || filename == "whitedns.txt" {
+        if filename == "telegram.txt" || filename == "cottendns.txt" || filename == "stormdns.txt" || filename == "whitedns.txt" {
             finalConfigs = configs
         } else {
             // Prepend dummy config at the top for standard client subscriptions
@@ -88,14 +85,16 @@ func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
             return fmt.Errorf("failed to write %s: %w", filename, err)
         }
 
-        // Write Base64 File
-        base64Name := strings.Replace(filename, ".txt", "_base64.txt", 1)
-        base64Path := filepath.Join(outDir, base64Name)
+        // Write Base64 File (skip for telegram.txt)
+        if filename != "telegram.txt" {
+            base64Name := strings.Replace(filename, ".txt", "_base64.txt", 1)
+            base64Path := filepath.Join(outDir, base64Name)
 
-        encodedContent := base64.StdEncoding.EncodeToString([]byte(rawContent))
-        err = os.WriteFile(base64Path, []byte(encodedContent), 0644)
-        if err != nil {
-            return fmt.Errorf("failed to write %s: %w", base64Name, err)
+            encodedContent := base64.StdEncoding.EncodeToString([]byte(rawContent))
+            err = os.WriteFile(base64Path, []byte(encodedContent), 0644)
+            if err != nil {
+                return fmt.Errorf("failed to write %s: %w", base64Name, err)
+            }
         }
     }
 

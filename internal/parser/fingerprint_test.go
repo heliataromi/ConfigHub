@@ -78,6 +78,24 @@ func TestGetFingerprint_TelegramProxy(t *testing.T) {
 	if fp1 != fp2 {
 		t.Fatalf("Telegram proxy fingerprint normalization failed:\n  fp1: %s\n  fp2: %s", fp1, fp2)
 	}
+
+	socksTg := "tg://socks?server=1.2.3.4&port=1080&user=usr&pass=pwd#Remark1"
+	socksHTTPS := "https://t.me/socks?server=1.2.3.4.&port=1080&user=usr&pass=pwd"
+	fpSocks1 := GetFingerprint(socksTg)
+	fpSocks2 := GetFingerprint(socksHTTPS)
+
+	if fpSocks1 != fpSocks2 {
+		t.Fatalf("Telegram socks fingerprint normalization failed:\n  fp1: %s\n  fp2: %s", fpSocks1, fpSocks2)
+	}
+
+	httpTg := "tg://http?server=1.2.3.4&port=8080&user=usr&pass=pwd#Remark1"
+	httpHTTPS := "https://t.me/http?server=1.2.3.4.&port=8080&user=usr&pass=pwd"
+	fpHTTP1 := GetFingerprint(httpTg)
+	fpHTTP2 := GetFingerprint(httpHTTPS)
+
+	if fpHTTP1 != fpHTTP2 {
+		t.Fatalf("Telegram http fingerprint normalization failed:\n  fp1: %s\n  fp2: %s", fpHTTP1, fpHTTP2)
+	}
 }
 
 func TestGetFingerprint_WhiteDNS(t *testing.T) {
