@@ -10,6 +10,7 @@ import (
     "time"
 
     "ConfigHub/internal/clash"
+    "ConfigHub/internal/singbox"
 
     ptime "github.com/yaa110/go-persian-calendar"
 )
@@ -151,6 +152,27 @@ func WriteSubFiles(outDir string, configsMap map[string][]RenamedConfig) error {
             clashLitePath := filepath.Join(outDir, "clash_lite.yaml")
             if err := os.WriteFile(clashLitePath, clashLiteYAML, 0644); err != nil {
                 return fmt.Errorf("failed to write clash_lite.yaml: %w", err)
+            }
+        }
+    }
+
+    // 6. Generate Sing-box Subscriptions (Full & Lite)
+    if len(mixed) > 0 {
+        singboxMixedJSON, err := singbox.GenerateSingboxConfig(mixed)
+        if err == nil {
+            singboxPath := filepath.Join(outDir, "singbox.json")
+            if err := os.WriteFile(singboxPath, singboxMixedJSON, 0644); err != nil {
+                return fmt.Errorf("failed to write singbox.json: %w", err)
+            }
+        }
+    }
+
+    if len(mixedLite) > 0 {
+        singboxLiteJSON, err := singbox.GenerateSingboxConfig(mixedLite)
+        if err == nil {
+            singboxLitePath := filepath.Join(outDir, "singbox_lite.json")
+            if err := os.WriteFile(singboxLitePath, singboxLiteJSON, 0644); err != nil {
+                return fmt.Errorf("failed to write singbox_lite.json: %w", err)
             }
         }
     }
