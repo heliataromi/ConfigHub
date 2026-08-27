@@ -54,7 +54,9 @@ func ValidateConfig(link string) (bool, string) {
 		return validateJuicity(link)
 	} else if strings.HasPrefix(link, "naive+https://") || strings.HasPrefix(link, "naive+http://") {
 		return validateNaive(link)
-	} else if strings.HasPrefix(link, "tg://proxy?") || strings.HasPrefix(link, "https://t.me/proxy?") || strings.HasPrefix(link, "http://t.me/proxy?") {
+	} else if strings.HasPrefix(link, "tg://proxy?") || strings.HasPrefix(link, "https://t.me/proxy?") || strings.HasPrefix(link, "http://t.me/proxy?") ||
+		strings.HasPrefix(link, "tg://socks?") || strings.HasPrefix(link, "https://t.me/socks?") || strings.HasPrefix(link, "http://t.me/socks?") ||
+		strings.HasPrefix(link, "tg://http?") || strings.HasPrefix(link, "https://t.me/http?") || strings.HasPrefix(link, "http://t.me/http?") {
 		return validateTelegram(link)
 	} else if strings.HasPrefix(link, "anytls://") {
 		return validateAnyTLS(link)
@@ -389,14 +391,27 @@ func validateTelegram(link string) (bool, string) {
 	}
 	port := strings.TrimSpace(q.Get("port"))
 	secret := strings.TrimSpace(q.Get("secret"))
-	if secret == "" {
-		return false, "missing telegram proxy secret"
-	}
-	if len(secret) < 20 {
-		return false, "telegram proxy secret too short"
+
+	isSocks := strings.HasPrefix(link, "tg://socks?") || strings.HasPrefix(link, "https://t.me/socks?") || strings.HasPrefix(link, "http://t.me/socks?")
+
+	defaultPort := 443
+	if isSocks {
+		defaultPort = 1080
 	}
 
-	return validateHostAndPort(server, port, 443)
+	if secret != "" {
+		if len(secret) < 20 {
+			return false, "telegram proxy secret too short"
+		}
+	} else if !isSocks && !strings.HasPrefix(link, "tg://http?") && !strings.HasPrefix(link, "https://t.me/http?") && !strings.HasPrefix(link, "http://t.me/http?") {
+		user := q.Get("user")
+		pass := q.Get("pass")
+		if user == "" && pass == "" {
+			return false, "missing telegram proxy secret"
+		}
+	}
+
+	return validateHostAndPort(server, port, defaultPort)
 }
 
 func validateJuicity(link string) (bool, string) {

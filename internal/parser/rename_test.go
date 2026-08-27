@@ -34,10 +34,22 @@ func TestRenameSSR(t *testing.T) {
 }
 
 func TestRenameTelegram(t *testing.T) {
-	link := "tg://proxy?server=1.2.3.4&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d"
+	link := "tg://proxy?server=1.2.3.4&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d#OldChannelPromo"
 	renamed := RenameConfig(link, "t.me/test", nil)
-	if !strings.HasPrefix(renamed, "tg://proxy?") || !strings.Contains(renamed, "#") {
-		t.Errorf("Expected renamed Telegram proxy link to contain # with remarks, got: %s", renamed)
+	if !strings.HasPrefix(renamed, "tg://proxy?") || strings.Contains(renamed, "#") {
+		t.Errorf("Expected clean Telegram proxy link without #, got: %s", renamed)
+	}
+
+	socksLink := "https://t.me/socks?server=1.2.3.4&port=1080&user=u1&pass=p1#AnotherPromo"
+	renamedSocks := RenameConfig(socksLink, "t.me/test", nil)
+	if !strings.HasPrefix(renamedSocks, "tg://socks?") || strings.Contains(renamedSocks, "#") || !strings.Contains(renamedSocks, "user=u1") {
+		t.Errorf("Expected clean Telegram socks link without #, got: %s", renamedSocks)
+	}
+
+	httpLink := "https://t.me/http?server=1.2.3.4&port=8080#CustomName"
+	renamedHTTP := RenameConfig(httpLink, "t.me/test", nil)
+	if !strings.HasPrefix(renamedHTTP, "tg://http?") || strings.Contains(renamedHTTP, "#") {
+		t.Errorf("Expected clean Telegram http link without #, got: %s", renamedHTTP)
 	}
 }
 

@@ -86,30 +86,50 @@ func ScrapeChannel(channel string) (extractor.Configs, error) {
         }
 
         if now.Sub(msgTime) <= 24*time.Hour {
-            var htmlContent string
-            if textElem := s.Find(".tgme_widget_message_text"); textElem.Length() > 0 {
-                htmlContent, _ = textElem.Html()
-            } else if captionElem := s.Find(".tgme_widget_message_caption"); captionElem.Length() > 0 {
-                htmlContent, _ = captionElem.Html()
+            msgCount++
+
+            // 1. Extract all hyperlink targets (inline links in text, captions, and glass buttons)
+            s.Find("a[href]").Each(func(_ int, a *goquery.Selection) {
+                if href, exists := a.Attr("href"); exists {
+                    href = strings.TrimSpace(href)
+                    href = html.UnescapeString(href)
+                    if strings.Contains(href, "&amp;") {
+                        href = html.UnescapeString(href)
+                    }
+                    if href != "" {
+                        rawTexts = append(rawTexts, href)
+                    }
+                }
+            })
+
+            // 2. Extract visible text and captions
+            extractHTML := func(elem *goquery.Selection) {
+                if elem.Length() == 0 {
+                    return
+                }
+                htmlContent, err := elem.Html()
+                if err != nil || htmlContent == "" {
+                    return
+                }
+
+                textContent := strings.ReplaceAll(htmlContent, "<br/>", "\n")
+                textContent = strings.ReplaceAll(textContent, "<br>", "\n")
+                textContent = strings.ReplaceAll(textContent, "</p>", "\n")
+                textContent = strings.ReplaceAll(textContent, "</div>", "\n")
+                textContent = strings.ReplaceAll(textContent, "</blockquote>", "\n")
+                textContent = htmlTagRegex.ReplaceAllString(textContent, " ")
+                textContent = html.UnescapeString(textContent)
+
+                if strings.TrimSpace(textContent) != "" {
+                    rawTexts = append(rawTexts, textContent)
+                }
             }
 
-            if htmlContent == "" {
-                return
-            }
-
-            textContent := strings.ReplaceAll(htmlContent, "<br/>", "\n")
-            textContent = strings.ReplaceAll(textContent, "<br>", "\n")
-            textContent = strings.ReplaceAll(textContent, "</p>", "\n")
-            textContent = strings.ReplaceAll(textContent, "</div>", "\n")
-            textContent = strings.ReplaceAll(textContent, "</blockquote>", "\n")
-            textContent = htmlTagRegex.ReplaceAllString(textContent, " ")
-            textContent = html.UnescapeString(textContent)
-
-            rawTexts = append(rawTexts, textContent)
+            extractHTML(s.Find(".tgme_widget_message_text"))
+            extractHTML(s.Find(".tgme_widget_message_caption"))
         }
     })
 
-    msgCount = len(rawTexts)
     fullText := strings.Join(rawTexts, "\n")
     finalConfigs = extractor.AuditAndExtract(fullText, "t.me/"+channel, telemetry.Global.RecordDropped)
     return finalConfigs, nil

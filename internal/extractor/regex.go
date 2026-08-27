@@ -18,7 +18,7 @@ var (
     wgRegex       = regexp.MustCompile(`(?:^|[^a-zA-Z])((?:wireguard|wg)://[^\s<"']+)`)
     juicityRegex  = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(juicity://[^\s<"']+)`)
     naiveRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(naive\+https?://[^\s<"']+)`)
-    tgProxyRegex  = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])((?:tg://proxy\?|https?://t\.me/proxy\?)[^\s<"']+)`)
+    tgProxyRegex  = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])((?:tg://(?:proxy|socks|http)\?|https?://t\.me/(?:proxy|socks|http)\?)[^\s<"']+)`)
     anytlsRegex   = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(anytls://[^\s<"']+)`)
     snellRegex    = regexp.MustCompile(`(?:^|[^a-zA-Z0-9])(snell://[^\s<"']+)`)
     httpRegex     = regexp.MustCompile(`(?:^|[^a-zA-Z0-9+])(https?://[^:@\s]+:[^:@\s]+@[^\s<"']+)`)
@@ -167,7 +167,10 @@ func AuditAndExtract(text, source string, recordDropped func(source, candidate, 
                 strings.HasPrefix(candidate, "wg://") || strings.HasPrefix(candidate, "juicity://") ||
                 strings.HasPrefix(candidate, "naive+https://") || strings.HasPrefix(candidate, "naive+http://") ||
                 strings.HasPrefix(candidate, "tg://proxy?") || strings.HasPrefix(candidate, "https://t.me/proxy?") ||
-                strings.HasPrefix(candidate, "http://t.me/proxy?") || strings.HasPrefix(candidate, "anytls://") ||
+                strings.HasPrefix(candidate, "http://t.me/proxy?") || strings.HasPrefix(candidate, "tg://socks?") ||
+                strings.HasPrefix(candidate, "https://t.me/socks?") || strings.HasPrefix(candidate, "http://t.me/socks?") ||
+                strings.HasPrefix(candidate, "tg://http?") || strings.HasPrefix(candidate, "https://t.me/http?") ||
+                strings.HasPrefix(candidate, "http://t.me/http?") || strings.HasPrefix(candidate, "anytls://") ||
                 strings.HasPrefix(candidate, "snell://") || strings.HasPrefix(candidate, "cottendns://") ||
                 strings.HasPrefix(candidate, "stormdns://")
 
