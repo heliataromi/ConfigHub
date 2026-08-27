@@ -28,6 +28,9 @@ type ConfigItem struct {
 }
 
 func main() {
+    // 0. Load optional local .env configuration
+    config.LoadEnv(".env")
+
     // 1. Prepare GeoIP Database
     err := geoip.EnsureDB()
     if err != nil {
