@@ -18,6 +18,7 @@ An automated V2Ray and Clash (Mihomo) configuration scraper built in Go. This to
 * **Deduplication:** Parses actual URL parameters to eliminate duplicates.
 * **GeoIP Recognition:** Automatically resolves IPs and domains to assign country codes and flags.
 * **🚀 Clash Meta (Mihomo) Generation:** Full support for Clash Meta YAML with automated latency testing (`url-test`), failover (`fallback`), load balancing, clean Country Auto Groups, and Fake-IP DNS.
+* **📦 Sing-box Generation:** Generates clean, modern JSON configuration profiles (`singbox.json` & `singbox_lite.json`) with auto latency testing (`urltest`), failover, load balancing, Fake-IP DNS, and Iranian domestic traffic bypass.
 * **Categorized & Encoded:** Generates separate files for each protocol in both Normal and Base64 formats to support all clients.
 
 ### Subscription Links
@@ -50,7 +51,16 @@ Copy the link corresponding to your preferred protocol or client.
 | **Clash Meta (All / Mixed)** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
 | **Clash Meta Lite (Mobile)** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
 
+#### 📦 Sing-box Subscriptions
+> Designed with automated URL testing (`urltest`), failover, load balancing, and Fake-IP split DNS.
+
+| Subscription | Format | Raw URL |
+| :--- | :---: | :--- |
+| **Sing-box (All / Mixed)** | `JSON` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json` |
+| **Sing-box Lite (Mobile)** | `JSON` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox_lite.json` |
+
 #### Recommended Clients
+* **Sing-box:** [Sing-box](https://github.com/SagerNet/sing-box) | [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid) | [Karing](https://github.com/KaringX/karing) | [Hiddify](https://github.com/hiddify/hiddify-next) | [Streisand](https://apps.apple.com/app/streisand/id6450534064)
 * **Clash Meta / Mihomo:** [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev) | [Mihomo Party](https://github.com/mihomo-party-org/mihomo-party) | [Clash Meta for Android](https://github.com/MetaCubeX/ClashMetaForAndroid) | [FlClash](https://github.com/chen08209/FlClash)
 * **Android:** [v2rayNG](https://github.com/2dust/v2rayNG) | [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid)
 * **Windows:** [v2rayN](https://github.com/2dust/v2rayN) | [NekoBox](https://github.com/qr243vbi/nekobox)
@@ -71,6 +81,12 @@ Copy the link corresponding to your preferred protocol or client.
 4. Select the downloaded profile to activate it.
 5. In **Home / Proxies**, leave Group on `PROXY` and Proxy on **`⚡ AUTO (Fastest Node)`** for zero-maintenance automated speed testing and routing.
 
+##### 📦 For Sing-box Clients (Sing-box, Karing, NekoBox, Hiddify)
+1. Copy the **Sing-box** JSON URL (`singbox.json` or `singbox_lite.json`).
+2. Open your client (e.g. **Karing** or **Sing-box**).
+3. Go to **Profiles / Subscriptions** -> Add / Import from URL -> Paste the link.
+4. Activate the profile. Under Outbounds / Selectors, choose **`⚡ AUTO (Fastest Node)`**.
+
 > In Hope of a Free Internet.
 
 ---
@@ -85,6 +101,7 @@ Copy the link corresponding to your preferred protocol or client.
 * **حذف تکراری‌ها (Deduplication):** بررسی پارامترهای کانفیگ برای حذف کانفیگ‌های تکراری.
 * **تشخیص لوکیشن:** استخراج IP و دامنه، و نمایش پرچم و کدهای کشورها.
 * **🚀 پشتیبانی کامل از کلش (Clash Meta / Mihomo):** تولید خودکار کانفیگ کلش همراه با تست پینگ خودکار (`url-test`)، پشتیبان (`fallback`)، گروه‌های کشوری تفکیک‌شده و جلوگیری از شلوغی با پوشهٔ اختصاصی انتخاب دستی (`🎯 MANUAL`).
+* **📦 پشتیبانی از سینگ‌باکس (Sing-box):** تولید پروفایل کامل و سبک JSON برای Sing-box به همراه تست پینگ خودکار (`urltest`)، فیلتر ترافیک مستقیم ایران و سیستم Fake-IP DNS.
 * **دسته‌بندی و انکود Base64:** تفکیک کانفیگ‌ها بر اساس پروتکل و ارائهٔ نسخه Base64 برای سازگاری کامل با آیفون.
 
 ### لینک‌های اشتراک (سابسکریپشن)
@@ -117,7 +134,16 @@ Copy the link corresponding to your preferred protocol or client.
 | **کلش ترکیبی (همه کانفیگ‌ها)** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
 | **کلش لایت (مخصوص موبایل)** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
 
+#### 📦 لینک‌های اشتراک مخصوص سینگ‌باکس (Sing-box)
+> دارای تست پینگ خودکار، انتخاب سریع‌ترین نود و روتینگ تفکیک‌شده ترافیک ایران.
+
+| نوع اشتراک | فرمت | لینک مستقیم (Raw URL) |
+| :--- | :---: | :--- |
+| **سینگ‌باکس ترکیبی (همه کانفیگ‌ها)** | `JSON` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json` |
+| **سینگ‌باکس لایت (مخصوص موبایل)** | `JSON` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox_lite.json` |
+
 #### برنامه‌های پیشنهادی
+* **سینگ‌باکس (Sing-box):** [Sing-box](https://github.com/SagerNet/sing-box) | [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid) | [Karing](https://github.com/KaringX/karing) | [Hiddify](https://github.com/hiddify/hiddify-next) | [Streisand](https://apps.apple.com/app/streisand/id6450534064)
 * **کلش (Clash Meta / Mihomo):** [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev) | [Mihomo Party](https://github.com/mihomo-party-org/mihomo-party) | [Clash Meta for Android](https://github.com/MetaCubeX/ClashMetaForAndroid) | [FlClash](https://github.com/chen08209/FlClash)
 * **اندروید:** [v2rayNG](https://github.com/2dust/v2rayNG) | [NekoBox](https://github.com/MatsuriDayo/NekoBoxForAndroid)
 * **ویندوز:** [v2rayN](https://github.com/2dust/v2rayN) | [NekoBox](https://github.com/qr243vbi/nekobox)
@@ -138,5 +164,11 @@ Copy the link corresponding to your preferred protocol or client.
 3. از منوی کناری به بخش **Profiles** رفته و لینک را در کادر **Profile URL** قرار داده و **Import** را بزنید.
 4. روی پروفایل جدید کلیک کنید تا انتخاب و فعال شود.
 5. در بخش **Home** یا **Proxies**، گزینهٔ `PROXY` را روی **`⚡ AUTO (Fastest Node)`** بگذارید تا همیشه کم‌پینگ‌ترین و پایدارترین سرور به‌طور خودکار انتخاب شود.
+
+##### 📦 مخصوص برنامه‌های سینگ‌باکس (Sing-box, Karing, NekoBox, Hiddify)
+1. یکی از لینک‌های **Sing-box** جدول بالا را کپی کنید.
+2. وارد نرم‌افزار خود (مثلاً **Karing** یا **Sing-box**) شوید.
+3. به بخش **Profiles** یا **Subscriptions** رفته و لینک را از طریق گزینهٔ **Import from URL** اضافه کنید.
+4. پروفایل را فعال کرده و گروه خروجی (Outbound) را روی **`⚡ AUTO (Fastest Node)`** بگذارید.
 
 > به امید اینترنت آزاد.
