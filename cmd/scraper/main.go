@@ -4,6 +4,8 @@ import (
     "fmt"
     "log"
     "net/url"
+    "os"
+    "path/filepath"
     "strings"
     "sync"
 
@@ -224,22 +226,33 @@ func main() {
     }
     fmt.Println("[+] Successfully exported Geo-named files to 'sub/'!")
 
-    // 6. Export Telemetry & Observability Reports
-    totalUnique := 0
-    for _, count := range uniqueCounts {
-        totalUnique += count
-    }
+    // 6. Export Telemetry & Observability Reports (Only if EXPORT_TELEMETRY == "true" or "1")
+    exportEnv := strings.ToLower(os.Getenv("EXPORT_TELEMETRY"))
+    if exportEnv == "true" || exportEnv == "1" {
+        totalUnique := 0
+        for _, count := range uniqueCounts {
+            totalUnique += count
+        }
 
-    if err := telemetry.Global.ExportReport("sub/telemetry.json", uniqueCounts); err != nil {
-        fmt.Printf("[-] Warning: Failed to export telemetry report: %v\n", err)
-    } else {
-        fmt.Println("[+] Successfully exported observability report to 'sub/telemetry.json'!")
-    }
+        reportsDir := "reports"
+        if err := os.MkdirAll(reportsDir, 0755); err != nil {
+            fmt.Printf("[-] Warning: Failed to create reports directory: %v\n", err)
+        } else {
+            telemetryPath := filepath.Join(reportsDir, "telemetry.json")
+            duplicatesPath := filepath.Join(reportsDir, "duplicates.json")
 
-    if err := telemetry.Global.ExportDuplicates("sub/duplicates.json", 0, totalUnique); err != nil {
-        fmt.Printf("[-] Warning: Failed to export duplicates inspection report: %v\n", err)
-    } else {
-        fmt.Println("[+] Successfully exported duplicate inspection report to 'sub/duplicates.json'!")
+            if err := telemetry.Global.ExportReport(telemetryPath, uniqueCounts); err != nil {
+                fmt.Printf("[-] Warning: Failed to export telemetry report: %v\n", err)
+            } else {
+                fmt.Printf("[+] Successfully exported observability report to '%s'!\n", telemetryPath)
+            }
+
+            if err := telemetry.Global.ExportDuplicates(duplicatesPath, 0, totalUnique); err != nil {
+                fmt.Printf("[-] Warning: Failed to export duplicates inspection report: %v\n", err)
+            } else {
+                fmt.Printf("[+] Successfully exported duplicate inspection report to '%s'!\n", duplicatesPath)
+            }
+        }
     }
     telemetry.Global.PrintConsoleSummary(uniqueCounts)
 }

@@ -10,6 +10,7 @@ bin/
 
 # Our local generated configs
 sub/
+reports/
 
 # IDE and OS specific files
 .vscode/
