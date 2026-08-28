@@ -23,7 +23,7 @@ An automated collector for V2Ray, Xray, Clash (Mihomo), and Sing-box configurati
 
 ### Quick Guide
 
-* **General / V2Ray & Xray:** Use [Mixed (All Protocols)](#v2ray--standard-subscriptions) in INCY, v2rayNG, v2rayN, or Karing.
+* **General / V2Ray & Xray:** Use [Mixed (All Protocols)](#v2ray--standard-subscriptions) in v2rayNG, v2rayN, INCY, or Karing.
 * **iOS (iPhone / iPad):** Use [Mixed Base64](#v2ray--standard-subscriptions) or [Sing-box JSON](#sing-box-subscriptions) in INCY, Streisand, Karing, or V2Box.
 * **Low-Memory Devices:** Use [Mixed Lite](#v2ray--standard-subscriptions).
 * **Automated Benchmarking:** Use [Clash Meta](#clash-meta-mihomo-subscriptions) or [Sing-box](#sing-box-subscriptions).
@@ -93,19 +93,19 @@ Direct MTProto and SOCKS proxies for Telegram:
 
 #### Clash Meta (Mihomo) Subscriptions
 
-| Subscription | Format | Raw URL |
-| :--- | :---: | :--- |
-| **Clash Meta (Mixed)** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
-| **Clash Meta Lite** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
+| Subscription | Raw URL |
+| :--- | :--- |
+| **Clash Meta (Mixed)** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
+| **Clash Meta Lite** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
 
 *Import directly:* [Clash / FlClash](clash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub) · [Stash](stash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub)
 
 #### Sing-box Subscriptions
 
-| Subscription | Format | Raw URL |
-| :--- | :---: | :--- |
-| **Sing-box (Mixed)** | `JSON` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json` |
-| **Sing-box Lite** | `JSON` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox_lite.json` |
+| Subscription | Raw URL |
+| :--- | :--- |
+| **Sing-box (Mixed)** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json` |
+| **Sing-box Lite** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox_lite.json` |
 
 *Import directly:* [Sing-box / Karing](sing-box://import-remote-profile?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json#ConfigHub)
 
@@ -174,8 +174,8 @@ Direct MTProto and SOCKS proxies for Telegram:
 
 ### راهنمای انتخاب لینک
 
-* **استفاده عمومی / V2Ray و Xray:** از [لینک ترکیبی (همه پروتکل‌ها)](#لینک‌های-اشتراک-v2ray-و-xray) در برنامه‌های INCY، v2rayNG، v2rayN یا Karing استفاده کنید.
-* **کاربران iOS (آیفون و آیپد):** از [ترکیبی Base64](#لینک‌های-اشتراک-v2ray-و-xray) یا [پروفایل Sing-box](#لینک‌های-اشتراک-سینگ‌باکس) در برنامه‌های INCY، Streisand، Karing یا V2Box استفاده کنید.
+* **استفاده عمومی / V2Ray و Xray:** از [لینک ترکیبی (همه پروتکل‌ها)](#لینک‌های-اشتراک-v2ray-و-xray) در برنامه‌های INCY ،v2rayN ،v2rayNG یا Karing استفاده کنید.
+* **کاربران iOS (آیفون و آیپد):** از [ترکیبی Base64](#لینک‌های-اشتراک-v2ray-و-xray) یا [پروفایل Sing-box](#لینک‌های-اشتراک-سینگ‌باکس) در برنامه‌های Karing ،Streisand ،INCY یا V2Box استفاده کنید.
 * **دستگاه‌های ضعیف‌تر:** از [ترکیبی لایت (Lite)](#لینک‌های-اشتراک-v2ray-و-xray) استفاده کنید.
 * **انتخاب خودکار کم‌پینگ‌ترین سرور:** از [کلش](#لینک‌های-اشتراک-کلش-متا-mihomo) یا [سینگ‌باکس](#لینک‌های-اشتراک-سینگ‌باکس) استفاده کنید.
 * **تلگرام:** از [پروکسی‌های مستقیم تلگرام](#پروکسی‌های-تلگرام) استفاده کنید.
@@ -244,19 +244,19 @@ https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.jso
 
 #### لینک‌های اشتراک کلش متا (Mihomo)
 
-| نوع اشتراک | فرمت | لینک مستقیم (Raw URL) |
-| :--- | :---: | :--- |
-| **کلش ترکیبی** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
-| **کلش لایت** | `YAML` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
+| نوع اشتراک | لینک مستقیم (Raw URL) |
+| :--- | :--- |
+| **کلش ترکیبی** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
+| **کلش لایت** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
 
 *ورود مستقیم:* [Clash / FlClash](clash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub) · [Stash](stash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub)
 
 #### لینک‌های اشتراک سینگ‌باکس
 
-| نوع اشتراک | فرمت | لینک مستقیم (Raw URL) |
-| :--- | :---: | :--- |
-| **سینگ‌باکس ترکیبی** | `JSON` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json` |
-| **سینگ‌باکس لایت** | `JSON` | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox_lite.json` |
+| نوع اشتراک | لینک مستقیم (Raw URL) |
+| :--- | :--- |
+| **سینگ‌باکس ترکیبی** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json` |
+| **سینگ‌باکس لایت** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox_lite.json` |
 
 *ورود مستقیم:* [Sing-box / Karing](sing-box://import-remote-profile?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json#ConfigHub)
 
@@ -286,23 +286,23 @@ https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.jso
 
 ### راهنمای استفاده
 
-#### برنامه‌های V2Ray و Xray (مانند v2rayNG, v2rayN, INCY, NekoBox)
+#### برنامه‌های V2Ray و Xray (مانند Nekobox ،INCY ،v2rayN ،v2rayNG)
 1. لینک اشتراک موردنظر را از جدول بالا کپی کنید.
 2. در برنامه به بخش `Subscription Group` یا `Subscriptions` رفته و گزینهٔ افزودن (`+`) را بزنید.
 3. لینک را در کادر `URL` جای‌گذاری و ذخیره کنید.
 4. روی **Update Subscription** کلیک کنید تا سرورها بارگذاری شوند.
 
-#### برنامه‌های کلش متا (Clash Verge Rev, Mihomo Party, FlClash)
+#### برنامه‌های کلش متا (مانند FlClash ،Mihomo Party ،Clash Verge Rev)
 1. لینک `clash.yaml` را کپی کرده یا از لینک ورود مستقیم استفاده کنید.
 2. در برنامه وارد بخش **Profiles** شده و لینک را در **Profile URL** وارد و **Import** کنید.
 3. پروفایل را فعال کنید.
 4. در بخش **Proxies**، گروه `🔰 PROXY` را روی `⚡ AUTO (Fastest Node)` قرار دهید.
 
-#### برنامه‌های سینگ‌باکس (Sing-box, Karing, Hiddify)
+#### برنامه‌های سینگ‌باکس (Hiddify ،Karing ،Sing-box)
 1. لینک `singbox.json` را کپی کرده یا از لینک ورود مستقیم استفاده کنید.
 2. در برنامه به بخش **Profiles / Subscriptions** رفته و گزینهٔ Import from URL را بزنید.
 3. پروفایل را فعال کرده و خروجی را روی `⚡ AUTO (Fastest Node)` بگذارید.
 
-> In Hope of a Free Internet.
+> به امید اینترنت آزاد
 
 </div>
