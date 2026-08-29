@@ -1,4 +1,12 @@
 https://raw.githubusercontent.com/iampedii/whitedns-sub/refs/heads/main/base64.txt
+https://raw.githubusercontent.com/F0rc3Run/F0rc3Run/refs/heads/main/Best-Results/sub.txt
+https://github.com/MhdiTaheri/V2rayCollector/raw/refs/heads/main/sub/mix
+https://raw.githubusercontent.com/youfoundamin/V2rayCollector/main/mixed_iran.txt
+https://raw.githubusercontent.com/acymz/AutoVPN/refs/heads/main/data/V2.txt
+https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt
+https://raw.githubusercontent.com/barry-far/V2ray-Config/main/Sub2.txt
+https://raw.githubusercontent.com/patterniha/Free-Configs/main/configs.txt
 https://raw.githubusercontent.com/mahsanet/MahsaFreeConfig/refs/heads/main/mci/sub_1.txt
 https://raw.githubusercontent.com/mahsanet/MahsaFreeConfig/refs/heads/main/mci/sub_2.txt
 https://raw.githubusercontent.com/mahsanet/MahsaFreeConfig/refs/heads/main/mci/sub_3.txt
@@ -7,10 +15,8 @@ https://raw.githubusercontent.com/mahsanet/MahsaFreeConfig/refs/heads/main/mtn/s
 https://raw.githubusercontent.com/mahsanet/MahsaFreeConfig/refs/heads/main/mtn/sub_2.txt
 https://raw.githubusercontent.com/mahsanet/MahsaFreeConfig/refs/heads/main/mtn/sub_3.txt
 https://raw.githubusercontent.com/mahsanet/MahsaFreeConfig/refs/heads/main/mtn/sub_4.txt
-https://raw.githubusercontent.com/masir-sefid/Sub/main/@Masir_Sefid.txt
 https://raw.githubusercontent.com/Rayan-Config/C-Sub/refs/heads/main/configs/proxy.txt
 https://raw.githubusercontent.com/ShadowException/VPN/refs/heads/main/configs/VPN-cat
 https://bin.mudfish.net/r/335-9603-5234#DailyV2ry
-https://key.zarazaex.xyz/sub
 https://sub.shadowproxy66.workers.dev/sub/be80a76c-6044-417c-9bff-e587f9380d05#ShadowProxy66(1)
 https://sub.shadowproxy66.workers.dev/sub/214abfe9-791e-44ba-bd8e-0afe298119f6#ShadowProxy66(2)
