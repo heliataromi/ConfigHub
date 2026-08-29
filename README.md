@@ -1,9 +1,13 @@
+<div align="center">
+
 # Auto V2Ray & Clash Config Collector
 
 [![Automatic Config Scraper](https://github.com/heliataromi/ConfigHub/actions/workflows/scraper.yml/badge.svg)](https://github.com/heliataromi/ConfigHub/actions/workflows/scraper.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-*Languages:* [English](#english) | [فارسی](#فارسی)
+*Languages:* [🇬🇧 English](#english) &nbsp;|&nbsp; [<img src="https://commons.wikimedia.org/wiki/Special:FilePath/State_flag_of_Iran_(1964%E2%80%931980).svg" height="13" valign="middle" alt="Lion and Sun" /> فارسی](#فارسی)
+
+</div>
 
 ---
 
@@ -98,7 +102,7 @@ Direct MTProto and SOCKS proxies for Telegram:
 | **Clash Meta (Mixed)** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
 | **Clash Meta Lite** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
 
-*Import directly:* [Clash / FlClash](clash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub) · [Stash](stash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub)
+*How to use:* Copy the raw URL above and paste it into **Profiles → Import URL** in Clash Verge Rev, FlClash, Stash, or Clash Nyanpasu.
 
 #### Sing-box Subscriptions
 
@@ -107,7 +111,7 @@ Direct MTProto and SOCKS proxies for Telegram:
 | **Sing-box (Mixed)** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json` |
 | **Sing-box Lite** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox_lite.json` |
 
-*Import directly:* [Sing-box / Karing](sing-box://import-remote-profile?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json#ConfigHub)
+*How to use:* Copy the raw URL above and paste it into **Profiles → Remote Profile** in Sing-box, Karing, or Streisand.
 
 ---
 
@@ -161,7 +165,7 @@ Direct MTProto and SOCKS proxies for Telegram:
 
 <div dir="rtl">
 
-ابزار جمع‌آوری و پالایش خودکار کانفیگ‌های V2Ray، Xray، کلش (Clash Meta) و Sing-box که با زبان Go نوشته شده است. این ابزار هر چند ساعت کانال‌های عمومی تلگرام و اشتراک‌های مختلف را بررسی کرده، کانفیگ‌های خراب و تکراری را حذف می‌کند، بر اساس IP موقعیت جغرافیایی و پرچم کشورها را مشخص کرده و لینک‌های اشتراک مرتب را خروجی می‌دهد.
+ابزار جمع‌آوری و پالایش خودکار کانفیگ‌های V2Ray، Xray، کلش (Clash Meta) و Sing-box که با زبان Go نوشته شده‌است. این ابزار هر چند ساعت کانال‌های عمومی تلگرام و اشتراک‌های مختلف را بررسی کرده، کانفیگ‌های خراب و تکراری را حذف می‌کند، بر اساس IP موقعیت جغرافیایی و پرچم کشورها را مشخص کرده و لینک‌های اشتراک مرتب را خروجی می‌دهد.
 
 ### قابلیت‌ها
 * **پروتکل‌ها:** پشتیبانی از VLESS، VMess، Trojan، Shadowsocks، SSR، TUIC، Hysteria 2، AnyTLS، WireGuard و Socks در دو فرمت معمولی و Base64.
@@ -249,7 +253,7 @@ https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.jso
 | **کلش ترکیبی** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
 | **کلش لایت** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
 
-*ورود مستقیم:* [Clash / FlClash](clash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub) · [Stash](stash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub)
+*راهنما:* آدرس لینک مستقیم بالا را کپی کرده و در بخش **Profiles → Import URL** برنامه‌های Clash Verge Rev، FlClash، Stash یا Clash Nyanpasu وارد کنید.
 
 #### لینک‌های اشتراک سینگ‌باکس
 
@@ -258,7 +262,7 @@ https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.jso
 | **سینگ‌باکس ترکیبی** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json` |
 | **سینگ‌باکس لایت** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox_lite.json` |
 
-*ورود مستقیم:* [Sing-box / Karing](sing-box://import-remote-profile?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json#ConfigHub)
+*راهنما:* آدرس لینک مستقیم بالا را کپی کرده و در بخش **Profiles → Remote Profile** برنامه‌های Sing-box، Karing یا Streisand وارد کنید.
 
 ---
 
