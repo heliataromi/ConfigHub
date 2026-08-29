@@ -41,6 +41,9 @@ func ScrapeChannel(channel string) (extractor.Configs, error) {
     }()
 
     url := fmt.Sprintf("https://t.me/s/%s", channel)
+    if strings.HasPrefix(channel, "http://") || strings.HasPrefix(channel, "https://") {
+        url = channel
+    }
 
     req, err := http.NewRequest("GET", url, nil)
     if err != nil {

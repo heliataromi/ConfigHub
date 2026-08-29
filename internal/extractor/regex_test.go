@@ -143,3 +143,31 @@ func TestAuditAndExtract_NoFalsePositiveOnValidInlineConfig(t *testing.T) {
 	}
 }
 
+func TestAuditAndExtract_RecordsDropped(t *testing.T) {
+	text := `
+Here is a valid config: vless://11111111-2222-3333-4444-555555555555@example.com:443?type=tcp#ValidNode
+Here is an unsupported scheme: customproto://user:pass@1.2.3.4:8080/path#Custom
+Here is a short malformed vmess: vmess://short
+`
+	var droppedReasons []string
+	configs := AuditAndExtract(text, "test_channel", func(source, candidate, reason string) {
+		droppedReasons = append(droppedReasons, reason)
+	})
+
+	if len(configs.Vless) != 1 {
+		t.Fatalf("Expected 1 valid VLESS config, got %d", len(configs.Vless))
+	}
+	if len(droppedReasons) != 2 {
+		t.Fatalf("Expected 2 dropped reasons recorded, got %d: %v", len(droppedReasons), droppedReasons)
+	}
+}
+
+func TestAuditAndExtract_NilCallback(t *testing.T) {
+	text := "vless://11111111-2222-3333-4444-555555555555@example.com:443?type=tcp#ValidNode"
+	configs := AuditAndExtract(text, "test_channel", nil)
+	if len(configs.Vless) != 1 {
+		t.Fatalf("Expected 1 Vless config with nil callback, got %d", len(configs.Vless))
+	}
+}
+
+

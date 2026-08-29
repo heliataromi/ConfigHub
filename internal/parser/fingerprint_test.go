@@ -109,3 +109,21 @@ func TestGetFingerprint_WhiteDNS(t *testing.T) {
 		t.Fatalf("WhiteDNS fingerprint normalization failed:\n  fp1: %s\n  fp2: %s", fp1, fp2)
 	}
 }
+
+func TestGetFingerprint_SSR(t *testing.T) {
+	// ssr://1.2.3.4:8388:origin:aes-256-cfb:plain:pass/?obfsparam=&remarks=name1
+	payload1 := base64.RawURLEncoding.EncodeToString([]byte("1.2.3.4:8388:origin:aes-256-cfb:plain:pass/?obfsparam=&remarks=name1"))
+	ssr1 := "ssr://" + payload1
+
+	// same node with different remark name2
+	payload2 := base64.RawURLEncoding.EncodeToString([]byte("1.2.3.4:8388:origin:aes-256-cfb:plain:pass/?obfsparam=&remarks=name2"))
+	ssr2 := "ssr://" + payload2
+
+	fp1 := GetFingerprint(ssr1)
+	fp2 := GetFingerprint(ssr2)
+
+	if fp1 != fp2 {
+		t.Fatalf("SSR fingerprint normalization failed (remarks should be ignored):\n  fp1: %s\n  fp2: %s", fp1, fp2)
+	}
+}
+

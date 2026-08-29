@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"encoding/base64"
 	"strings"
 	"testing"
 )
@@ -86,3 +87,24 @@ func TestRenameStandardProtocols(t *testing.T) {
 		}
 	}
 }
+
+func TestRenameVMess(t *testing.T) {
+	jsonPayload := `{"v":"2","ps":"OldRemark","add":"1.2.3.4","port":443,"id":"7aecb4a5-f0a4-32a0-aabe-c9d5241e313f","aid":0,"net":"ws","path":"/","tls":"tls"}`
+	encoded := base64.StdEncoding.EncodeToString([]byte(jsonPayload))
+	link := "vmess://" + encoded
+
+	renamed := RenameConfig(link, "t.me/test", nil)
+	if !strings.HasPrefix(renamed, "vmess://") {
+		t.Fatalf("Expected vmess:// prefix, got: %s", renamed)
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(renamed, "vmess://"))
+	if err != nil {
+		t.Fatalf("Failed to decode renamed vmess base64: %v", err)
+	}
+
+	if !strings.Contains(string(decoded), "t.me/test") {
+		t.Errorf("Expected renamed VMess ps field to contain channel name, got: %s", string(decoded))
+	}
+}
+

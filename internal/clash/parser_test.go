@@ -265,3 +265,173 @@ func TestGenerateClashConfig(t *testing.T) {
 	}
 }
 
+func TestParseSSR(t *testing.T) {
+	// ssr://1.2.3.4:8388:origin:aes-256-cfb:plain:cGFzc3dvcmQ=/?remarks=8J-HqfCfh6ogREUgLSBbdC5tZS90ZXN0XQ==&obfsparam=b2Jmcw==&protoparam=cHJvdG8=
+	payload := base64.RawURLEncoding.EncodeToString([]byte("1.2.3.4:8388:origin:aes-256-cfb:plain:" + base64.RawURLEncoding.EncodeToString([]byte("password123")) + "/?remarks=" + base64.RawURLEncoding.EncodeToString([]byte("🇩🇪 DE - [t.me/test]")) + "&obfsparam=" + base64.RawURLEncoding.EncodeToString([]byte("obfsparam1")) + "&protoparam=" + base64.RawURLEncoding.EncodeToString([]byte("protoparam1"))))
+	link := "ssr://" + payload
+
+	proxy, country, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse SSR: %v", err)
+	}
+
+	if country != "DE" {
+		t.Errorf("Expected country DE, got %s", country)
+	}
+	if proxy["type"] != "ssr" {
+		t.Errorf("Expected type ssr, got %v", proxy["type"])
+	}
+	if proxy["server"] != "1.2.3.4" {
+		t.Errorf("Expected server 1.2.3.4, got %v", proxy["server"])
+	}
+	if proxy["cipher"] != "aes-256-cfb" {
+		t.Errorf("Expected cipher aes-256-cfb, got %v", proxy["cipher"])
+	}
+	if proxy["password"] != "password123" {
+		t.Errorf("Expected password password123, got %v", proxy["password"])
+	}
+	if proxy["obfs-param"] != "obfsparam1" {
+		t.Errorf("Expected obfs-param obfsparam1, got %v", proxy["obfs-param"])
+	}
+	if proxy["protocol-param"] != "protoparam1" {
+		t.Errorf("Expected protocol-param protoparam1, got %v", proxy["protocol-param"])
+	}
+}
+
+func TestParseSS_Plugins(t *testing.T) {
+	// 1. v2ray-plugin
+	userBase64 := base64.StdEncoding.EncodeToString([]byte("aes-256-gcm:pass123"))
+	v2rayLink := "ss://" + userBase64 + "@1.2.3.4:8388?plugin=v2ray-plugin%3Bhost%3Dexample.com%3Bpath%3D%2Fws%3Btls%3D1#%F0%9F%87%A9%F0%9F%87%AA%20DE"
+	proxyV2, _, err := ParseConfigToClash(v2rayLink)
+	if err != nil {
+		t.Fatalf("Failed to parse SS with v2ray-plugin: %v", err)
+	}
+	if proxyV2["plugin"] != "v2ray-plugin" {
+		t.Errorf("Expected plugin v2ray-plugin, got %v", proxyV2["plugin"])
+	}
+
+	// 2. obfs-local
+	obfsLink := "ss://" + userBase64 + "@1.2.3.4:8388?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3Dexample.com#%F0%9F%87%A9%F0%9F%87%AA%20DE"
+	proxyObfs, _, err := ParseConfigToClash(obfsLink)
+	if err != nil {
+		t.Fatalf("Failed to parse SS with obfs: %v", err)
+	}
+	if proxyObfs["plugin"] != "obfs" {
+		t.Errorf("Expected plugin obfs, got %v", proxyObfs["plugin"])
+	}
+}
+
+func TestParseHysteria(t *testing.T) {
+	link := "hysteria://1.2.3.4:443?auth=pass123&peer=example.com&upmbps=50&downmbps=100&alpn=h3&obfs=obfspass#%F0%9F%87%A9%F0%9F%87%AA%20DE"
+	proxy, country, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse Hysteria: %v", err)
+	}
+
+	if country != "DE" {
+		t.Errorf("Expected country DE, got %s", country)
+	}
+	if proxy["type"] != "hysteria" {
+		t.Errorf("Expected type hysteria, got %v", proxy["type"])
+	}
+	if proxy["auth_str"] != "pass123" {
+		t.Errorf("Expected auth_str pass123, got %v", proxy["auth_str"])
+	}
+	if proxy["up"] != "50" || proxy["down"] != "100" {
+		t.Errorf("Expected up 50 down 100, got up=%v down=%v", proxy["up"], proxy["down"])
+	}
+}
+
+func TestParseSocks(t *testing.T) {
+	link := "socks5://user1:pass123@1.2.3.4:1080#%F0%9F%87%A9%F0%9F%87%AA%20DE"
+	proxy, country, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse Socks: %v", err)
+	}
+
+	if country != "DE" {
+		t.Errorf("Expected country DE, got %s", country)
+	}
+	if proxy["type"] != "socks5" {
+		t.Errorf("Expected type socks5, got %v", proxy["type"])
+	}
+	if proxy["username"] != "user1" || proxy["password"] != "pass123" {
+		t.Errorf("Expected user1:pass123, got user=%v pass=%v", proxy["username"], proxy["password"])
+	}
+}
+
+func TestParseTransports_Clash(t *testing.T) {
+	// 1. VLESS gRPC
+	grpcLink := "vless://11111111-2222-3333-4444-555555555555@example.com:443?type=grpc&serviceName=mygrpcservice&security=tls#🇩🇪 DE"
+	proxyGRPC, _, err := ParseConfigToClash(grpcLink)
+	if err != nil {
+		t.Fatalf("Failed to parse VLESS gRPC: %v", err)
+	}
+	if proxyGRPC["network"] != "grpc" {
+		t.Errorf("Expected network grpc, got %v", proxyGRPC["network"])
+	}
+	if grpcOpts, ok := proxyGRPC["grpc-opts"].(map[string]interface{}); !ok || grpcOpts["grpc-service-name"] != "mygrpcservice" {
+		t.Errorf("Expected grpc-service-name mygrpcservice, got %v", proxyGRPC["grpc-opts"])
+	}
+
+	// 2. VLESS HTTPUpgrade
+	upgradeLink := "vless://11111111-2222-3333-4444-555555555555@example.com:443?type=httpupgrade&path=%2Fupgrade&host=example.com#🇩🇪 DE"
+	proxyUpgrade, _, err := ParseConfigToClash(upgradeLink)
+	if err != nil {
+		t.Fatalf("Failed to parse VLESS HTTPUpgrade: %v", err)
+	}
+	if proxyUpgrade["network"] != "httpupgrade" {
+		t.Errorf("Expected network httpupgrade, got %v", proxyUpgrade["network"])
+	}
+
+	// 3. VLESS H2
+	h2Link := "vless://11111111-2222-3333-4444-555555555555@example.com:443?type=h2&path=%2Fh2path&host=example.com#🇩🇪 DE"
+	proxyH2, _, err := ParseConfigToClash(h2Link)
+	if err != nil {
+		t.Fatalf("Failed to parse VLESS H2: %v", err)
+	}
+	if proxyH2["network"] != "h2" {
+		t.Errorf("Expected network h2, got %v", proxyH2["network"])
+	}
+
+	// 4. VMess gRPC
+	vmessGRPC := `{"v":"2","ps":"🇩🇪 DE","add":"1.2.3.4","port":443,"id":"11111111-2222-3333-4444-555555555555","aid":0,"net":"grpc","path":"grpc-service","tls":"tls"}`
+	proxyVmessGRPC, _, err := ParseConfigToClash("vmess://" + base64.StdEncoding.EncodeToString([]byte(vmessGRPC)))
+	if err != nil {
+		t.Fatalf("Failed to parse VMess gRPC: %v", err)
+	}
+	if proxyVmessGRPC["network"] != "grpc" {
+		t.Errorf("Expected VMess network grpc, got %v", proxyVmessGRPC["network"])
+	}
+
+	// 5. Trojan gRPC
+	trojanGRPC := "trojan://mypass@1.2.3.4:443?type=grpc&serviceName=trojangrpc&security=tls#🇩🇪 DE"
+	proxyTrojanGRPC, _, err := ParseConfigToClash(trojanGRPC)
+	if err != nil {
+		t.Fatalf("Failed to parse Trojan gRPC: %v", err)
+	}
+	if proxyTrojanGRPC["network"] != "grpc" {
+		t.Errorf("Expected Trojan network grpc, got %v", proxyTrojanGRPC["network"])
+	}
+}
+
+func TestParseWireGuard_AdvancedParams_Clash(t *testing.T) {
+	wgLink := "wireguard://cGFzc3dvcmQ=@1.2.3.4:51820?public_key=cHVibGlj&ip=10.0.0.2&mtu=1420&reserved=1,2,3&preshared_key=cHJlc2hhcmVk#🇩🇪 DE"
+	proxyWG, _, err := ParseConfigToClash(wgLink)
+	if err != nil {
+		t.Fatalf("Failed to parse WireGuard advanced: %v", err)
+	}
+
+	if proxyWG["mtu"] != 1420 {
+		t.Errorf("Expected mtu 1420, got %v", proxyWG["mtu"])
+	}
+	if proxyWG["preshared-key"] != "cHJlc2hhcmVk" {
+		t.Errorf("Expected preshared-key cHJlc2hhcmVk, got %v", proxyWG["preshared-key"])
+	}
+	if reserved, ok := proxyWG["reserved"].([]int); !ok || len(reserved) != 3 {
+		t.Errorf("Expected reserved [1,2,3], got %v", proxyWG["reserved"])
+	}
+}
+
+
+

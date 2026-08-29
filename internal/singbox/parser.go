@@ -781,6 +781,17 @@ func parseWireGuard(link string) (map[string]interface{}, string, error) {
 		}
 	}
 
+	psk := q.Get("preshared_key")
+	if psk == "" {
+		psk = q.Get("presharedkey")
+	}
+	if psk == "" {
+		psk = q.Get("psk")
+	}
+	if psk != "" {
+		outbound["pre_shared_key"] = psk
+	}
+
 	return outbound, tag, nil
 }
 
