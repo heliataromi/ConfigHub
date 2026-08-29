@@ -104,9 +104,18 @@ func TestValidateConfig_NewProtocolsEdgeCases(t *testing.T) {
 		{"anytls://00000000-0000-0000-0000-000000000000@1.2.3.4:443", "AnyTLS all-zero dummy UUID"},
 		{"anytls://@1.2.3.4:443", "AnyTLS missing UUID"},
 		{"snell://@1.2.3.4:443", "Snell missing PSK"},
+		{"snell://psk@1.2.3.4:0", "Snell port zero"},
 		{"http://1.2.3.4:8080", "HTTP proxy missing credentials"},
 		{"cottendns://invalid-base64-payload", "CottenDNS invalid base64"},
 		{"stormdns://eyJzY2hlbWEiOiJ3aGl0ZWRucy5wcm9maWxlIiwicHJvZmlsZSI6eyJzZXJ2ZXIiOnt9fX0=", "StormDNS missing domain"},
+		{"wireguard://@1.2.3.4:51820?public_key=pubkey", "WireGuard missing private key"},
+		{"wireguard://privkey@1.2.3.4:51820?ip=10.0.0.2", "WireGuard missing public_key"},
+		{"hysteria://1.2.3.4:0", "Hysteria port zero"},
+		{"socks5://1.2.3.4:99999", "Socks port out of range"},
+		{"hy2://pass@1.2.3.4:0", "Hy2 port zero"},
+		{"trojan://@1.2.3.4:443", "Trojan missing password"},
+		{"vless://not-a-valid-uuid@1.2.3.4:443", "VLESS invalid UUID format"},
+		{"vmess://eyJhZGQiOiIxLjIuMy40IiwicG9ydCI6NDQzLCJpZCI6ImludmFsaWQtdXVpZCJ9", "VMess invalid UUID format"},
 	}
 
 	for _, tc := range invalidCases {

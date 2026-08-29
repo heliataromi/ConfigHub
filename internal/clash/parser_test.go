@@ -360,4 +360,78 @@ func TestParseSocks(t *testing.T) {
 	}
 }
 
+func TestParseTransports_Clash(t *testing.T) {
+	// 1. VLESS gRPC
+	grpcLink := "vless://11111111-2222-3333-4444-555555555555@example.com:443?type=grpc&serviceName=mygrpcservice&security=tls#🇩🇪 DE"
+	proxyGRPC, _, err := ParseConfigToClash(grpcLink)
+	if err != nil {
+		t.Fatalf("Failed to parse VLESS gRPC: %v", err)
+	}
+	if proxyGRPC["network"] != "grpc" {
+		t.Errorf("Expected network grpc, got %v", proxyGRPC["network"])
+	}
+	if grpcOpts, ok := proxyGRPC["grpc-opts"].(map[string]interface{}); !ok || grpcOpts["grpc-service-name"] != "mygrpcservice" {
+		t.Errorf("Expected grpc-service-name mygrpcservice, got %v", proxyGRPC["grpc-opts"])
+	}
+
+	// 2. VLESS HTTPUpgrade
+	upgradeLink := "vless://11111111-2222-3333-4444-555555555555@example.com:443?type=httpupgrade&path=%2Fupgrade&host=example.com#🇩🇪 DE"
+	proxyUpgrade, _, err := ParseConfigToClash(upgradeLink)
+	if err != nil {
+		t.Fatalf("Failed to parse VLESS HTTPUpgrade: %v", err)
+	}
+	if proxyUpgrade["network"] != "httpupgrade" {
+		t.Errorf("Expected network httpupgrade, got %v", proxyUpgrade["network"])
+	}
+
+	// 3. VLESS H2
+	h2Link := "vless://11111111-2222-3333-4444-555555555555@example.com:443?type=h2&path=%2Fh2path&host=example.com#🇩🇪 DE"
+	proxyH2, _, err := ParseConfigToClash(h2Link)
+	if err != nil {
+		t.Fatalf("Failed to parse VLESS H2: %v", err)
+	}
+	if proxyH2["network"] != "h2" {
+		t.Errorf("Expected network h2, got %v", proxyH2["network"])
+	}
+
+	// 4. VMess gRPC
+	vmessGRPC := `{"v":"2","ps":"🇩🇪 DE","add":"1.2.3.4","port":443,"id":"11111111-2222-3333-4444-555555555555","aid":0,"net":"grpc","path":"grpc-service","tls":"tls"}`
+	proxyVmessGRPC, _, err := ParseConfigToClash("vmess://" + base64.StdEncoding.EncodeToString([]byte(vmessGRPC)))
+	if err != nil {
+		t.Fatalf("Failed to parse VMess gRPC: %v", err)
+	}
+	if proxyVmessGRPC["network"] != "grpc" {
+		t.Errorf("Expected VMess network grpc, got %v", proxyVmessGRPC["network"])
+	}
+
+	// 5. Trojan gRPC
+	trojanGRPC := "trojan://mypass@1.2.3.4:443?type=grpc&serviceName=trojangrpc&security=tls#🇩🇪 DE"
+	proxyTrojanGRPC, _, err := ParseConfigToClash(trojanGRPC)
+	if err != nil {
+		t.Fatalf("Failed to parse Trojan gRPC: %v", err)
+	}
+	if proxyTrojanGRPC["network"] != "grpc" {
+		t.Errorf("Expected Trojan network grpc, got %v", proxyTrojanGRPC["network"])
+	}
+}
+
+func TestParseWireGuard_AdvancedParams_Clash(t *testing.T) {
+	wgLink := "wireguard://cGFzc3dvcmQ=@1.2.3.4:51820?public_key=cHVibGlj&ip=10.0.0.2&mtu=1420&reserved=1,2,3&preshared_key=cHJlc2hhcmVk#🇩🇪 DE"
+	proxyWG, _, err := ParseConfigToClash(wgLink)
+	if err != nil {
+		t.Fatalf("Failed to parse WireGuard advanced: %v", err)
+	}
+
+	if proxyWG["mtu"] != 1420 {
+		t.Errorf("Expected mtu 1420, got %v", proxyWG["mtu"])
+	}
+	if proxyWG["preshared-key"] != "cHJlc2hhcmVk" {
+		t.Errorf("Expected preshared-key cHJlc2hhcmVk, got %v", proxyWG["preshared-key"])
+	}
+	if reserved, ok := proxyWG["reserved"].([]int); !ok || len(reserved) != 3 {
+		t.Errorf("Expected reserved [1,2,3], got %v", proxyWG["reserved"])
+	}
+}
+
+
 

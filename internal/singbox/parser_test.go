@@ -176,3 +176,57 @@ func TestSplitAndTrim_Singbox(t *testing.T) {
 	}
 }
 
+func TestParseTransports_Singbox(t *testing.T) {
+	// 1. VLESS gRPC
+	grpcLink := "vless://11111111-2222-3333-4444-555555555555@example.com:443?type=grpc&serviceName=mygrpcservice&security=tls#DE"
+	outboundGRPC, _, err := ParseConfigToSingbox(grpcLink)
+	if err != nil {
+		t.Fatalf("Failed to parse VLESS gRPC in Singbox: %v", err)
+	}
+	transportMap, ok := outboundGRPC["transport"].(map[string]interface{})
+	if !ok || transportMap["type"] != "grpc" {
+		t.Errorf("Expected transport type grpc, got %v", outboundGRPC["transport"])
+	}
+
+	// 2. VLESS HTTPUpgrade
+	upgradeLink := "vless://11111111-2222-3333-4444-555555555555@example.com:443?type=httpupgrade&path=%2Fupgrade&host=example.com#DE"
+	outboundUpgrade, _, err := ParseConfigToSingbox(upgradeLink)
+	if err != nil {
+		t.Fatalf("Failed to parse VLESS HTTPUpgrade in Singbox: %v", err)
+	}
+	transportUpgrade, ok := outboundUpgrade["transport"].(map[string]interface{})
+	if !ok || transportUpgrade["type"] != "httpupgrade" {
+		t.Errorf("Expected transport type httpupgrade, got %v", outboundUpgrade["transport"])
+	}
+
+	// 3. Trojan gRPC
+	trojanGRPC := "trojan://mypass@1.2.3.4:443?type=grpc&serviceName=trojangrpc&security=tls#DE"
+	outboundTrojan, _, err := ParseConfigToSingbox(trojanGRPC)
+	if err != nil {
+		t.Fatalf("Failed to parse Trojan gRPC in Singbox: %v", err)
+	}
+	transportTrojan, ok := outboundTrojan["transport"].(map[string]interface{})
+	if !ok || transportTrojan["type"] != "grpc" {
+		t.Errorf("Expected transport type grpc, got %v", outboundTrojan["transport"])
+	}
+}
+
+func TestParseWireGuard_AdvancedParams_Singbox(t *testing.T) {
+	wgLink := "wireguard://cGFzc3dvcmQ=@1.2.3.4:51820?public_key=cHVibGlj&ip=10.0.0.2&mtu=1420&reserved=1,2,3&preshared_key=cHJlc2hhcmVk#DE"
+	outboundWG, _, err := ParseConfigToSingbox(wgLink)
+	if err != nil {
+		t.Fatalf("Failed to parse WireGuard advanced in Singbox: %v", err)
+	}
+
+	if outboundWG["mtu"] != 1420 {
+		t.Errorf("Expected mtu 1420, got %v", outboundWG["mtu"])
+	}
+	if outboundWG["pre_shared_key"] != "cHJlc2hhcmVk" {
+		t.Errorf("Expected pre_shared_key cHJlc2hhcmVk, got %v", outboundWG["pre_shared_key"])
+	}
+	if reserved, ok := outboundWG["reserved"].([]int); !ok || len(reserved) != 3 {
+		t.Errorf("Expected reserved [1,2,3], got %v", outboundWG["reserved"])
+	}
+}
+
+
