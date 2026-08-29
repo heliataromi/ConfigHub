@@ -4,6 +4,7 @@ amir_webstudio
 Amirhossein_Mahboobi
 appsooner
 ArV2ray
+bored_vpn
 chillguy_vpn
 ConfigX2ray
 cpy_teeL
@@ -14,6 +15,7 @@ electvpn0
 erfanandroid
 FastNetTools
 filembad
+Filtereshekan
 Filtershekan_channel
 Fr33C0nfig
 gahanian_net
@@ -21,7 +23,9 @@ hi_proxy_iran
 icv2ray
 Iranvasll
 irconfiig
+iRoProxy
 IVXChannel
+jackalproxy
 KAFING_2
 Kia_Net
 meliproxyy
@@ -36,6 +40,8 @@ Outline_ir
 persianvpnhub
 proxy_kafee
 ProxyArc
+ProxyDaemi
+ProxyMTProto
 proxyvpn11
 prrofile_purple
 SafeV2ray
@@ -47,6 +53,7 @@ SOSkeyNET
 SparrK_VPN
 SpeedTunnel
 SRCVPN
+TelMTProto
 UnNurmal
 v2box
 v2FreeHub
@@ -67,6 +74,7 @@ Viturey
 vpn2freenet
 VPNBaz
 vpnrezz
+whitedns
 WhiteNet_new
 X_Golio
 xixv2ray

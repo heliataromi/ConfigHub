@@ -1,0 +1,143 @@
+package telemetry
+
+import (
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"testing"
+	"time"
+)
+
+func TestTracker_RecordAndExport(t *testing.T) {
+	tmpDir := t.TempDir()
+	reportPath := filepath.Join(tmpDir, "telemetry.json")
+
+	tracker := NewTracker()
+	tracker.RecordSource(ChannelStat{
+		Name:          "test_channel",
+		Type:          "channel",
+		StatusCode:    200,
+		Duration:      100 * time.Millisecond,
+		MessagesCount: 15,
+		ConfigsYield:  5,
+	})
+	tracker.RecordSource(ChannelStat{
+		Name:       "bad_sub",
+		Type:       "subscription",
+		StatusCode: 404,
+		Duration:   50 * time.Millisecond,
+		Error:      "received status code 404",
+	})
+
+	tracker.RecordDropped("test_channel", "customproto://12345", "unsupported or unrecognized proxy scheme")
+	tracker.RecordDropped("test_channel", "vmess://short", "vmess payload too short or malformed")
+
+	uniqueCounts := map[string]int{
+		"vless": 3,
+		"vmess": 2,
+	}
+
+	if err := tracker.ExportReport(reportPath, uniqueCounts); err != nil {
+		t.Fatalf("Failed to export telemetry report: %v", err)
+	}
+
+	data, err := os.ReadFile(reportPath)
+	if err != nil {
+		t.Fatalf("Failed to read report file: %v", err)
+	}
+
+	var report SummaryReport
+	if err := json.Unmarshal(data, &report); err != nil {
+		t.Fatalf("Report JSON is invalid: %v", err)
+	}
+
+	if report.TotalChannels != 2 {
+		t.Errorf("Expected 2 total channels, got %d", report.TotalChannels)
+	}
+	if report.ActiveChannels != 1 {
+		t.Errorf("Expected 1 active channel, got %d", report.ActiveChannels)
+	}
+	if report.FailedChannels != 1 {
+		t.Errorf("Expected 1 failed channel, got %d", report.FailedChannels)
+	}
+	if report.TotalUnique != 5 {
+		t.Errorf("Expected 5 total unique, got %d", report.TotalUnique)
+	}
+	if report.DroppedCount != 2 {
+		t.Errorf("Expected 2 dropped items, got %d", report.DroppedCount)
+	}
+}
+
+func TestTracker_RecordDuplicatesAndExport(t *testing.T) {
+	tmpDir := t.TempDir()
+	dupPath := filepath.Join(tmpDir, "duplicates.json")
+
+	tracker := NewTracker()
+	tracker.RecordDuplicate("vless", "fp123", "t.me/channelA", "vless://rawA", "t.me/channelB", "vless://rawB")
+	tracker.RecordDuplicate("vless", "fp123", "t.me/channelA", "vless://rawA", "sub.com/list", "vless://rawSub")
+
+	if err := tracker.ExportDuplicates(dupPath, 3, 1); err != nil {
+		t.Fatalf("Failed to export duplicates: %v", err)
+	}
+
+	data, err := os.ReadFile(dupPath)
+	if err != nil {
+		t.Fatalf("Failed to read duplicates report: %v", err)
+	}
+
+	var report DuplicatesReport
+	if err := json.Unmarshal(data, &report); err != nil {
+		t.Fatalf("Duplicates JSON invalid: %v", err)
+	}
+
+	if report.TotalDuplicates != 2 {
+		t.Errorf("Expected 2 total duplicates, got %d", report.TotalDuplicates)
+	}
+	if len(report.DuplicateGroups) != 1 {
+		t.Fatalf("Expected 1 duplicate group, got %d", len(report.DuplicateGroups))
+	}
+	if len(report.DuplicateGroups[0].Duplicates) != 2 {
+		t.Errorf("Expected 2 duplicates in group, got %d", len(report.DuplicateGroups[0].Duplicates))
+	}
+	if report.DuplicateGroups[0].Retained.Source != "t.me/channelA" {
+		t.Errorf("Expected retained source t.me/channelA, got %s", report.DuplicateGroups[0].Retained.Source)
+	}
+}
+
+func TestTracker_PrintConsoleSummary(t *testing.T) {
+	tracker := NewTracker()
+	tracker.RecordSource(ChannelStat{
+		Name:          "chan1",
+		Type:          "channel",
+		StatusCode:    200,
+		Duration:      50 * time.Millisecond,
+		MessagesCount: 10,
+		ConfigsYield:  10,
+	})
+	tracker.RecordDuplicate("vless", "fp1", "chan1", "link1", "chan2", "link2")
+	tracker.RecordDropped("chan1", "badproto://123", "unsupported")
+
+	uniqueCounts := map[string]int{
+		"vless": 9,
+	}
+
+	// Verify PrintConsoleSummary does not panic
+	tracker.PrintConsoleSummary(uniqueCounts)
+}
+
+func TestTracker_EmptyTracker(t *testing.T) {
+	tmpDir := t.TempDir()
+	reportPath := filepath.Join(tmpDir, "empty_report.json")
+	dupPath := filepath.Join(tmpDir, "empty_dups.json")
+
+	tracker := NewTracker()
+	if err := tracker.ExportReport(reportPath, map[string]int{}); err != nil {
+		t.Fatalf("Failed to export empty report: %v", err)
+	}
+	if err := tracker.ExportDuplicates(dupPath, 0, 0); err != nil {
+		t.Fatalf("Failed to export empty duplicates: %v", err)
+	}
+
+	tracker.PrintConsoleSummary(map[string]int{})
+}
+

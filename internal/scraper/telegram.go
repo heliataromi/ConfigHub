@@ -4,77 +4,136 @@ import (
     "fmt"
     "html"
     "net/http"
+    "regexp"
     "strings"
     "time"
 
     "ConfigHub/internal/extractor"
+    "ConfigHub/internal/telemetry"
 
     "github.com/PuerkitoBio/goquery"
 )
 
+var htmlTagRegex = regexp.MustCompile(`<[^>]+>`)
+
 // ScrapeChannel fetches a Telegram web preview and extracts configs from the last 24 hours
 func ScrapeChannel(channel string) (extractor.Configs, error) {
+    startTime := time.Now()
+    var finalConfigs extractor.Configs
+    var finalErr error
+    var statusCode int
+    var msgCount int
+
+    defer func() {
+        errStr := ""
+        if finalErr != nil {
+            errStr = finalErr.Error()
+        }
+        telemetry.Global.RecordSource(telemetry.ChannelStat{
+            Name:          channel,
+            Type:          "channel",
+            StatusCode:    statusCode,
+            Duration:      time.Since(startTime),
+            MessagesCount: msgCount,
+            ConfigsYield:  finalConfigs.Count(),
+            Error:         errStr,
+        })
+    }()
+
     url := fmt.Sprintf("https://t.me/s/%s", channel)
+    if strings.HasPrefix(channel, "http://") || strings.HasPrefix(channel, "https://") {
+        url = channel
+    }
 
     req, err := http.NewRequest("GET", url, nil)
     if err != nil {
+        finalErr = err
         return extractor.Configs{}, err
     }
 
-    // Prevent Telegram from blocking the request by mimicking a browser
     req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
 
     client := &http.Client{Timeout: 10 * time.Second}
     resp, err := client.Do(req)
     if err != nil {
+        finalErr = err
         return extractor.Configs{}, err
     }
     defer resp.Body.Close()
 
+    statusCode = resp.StatusCode
     if resp.StatusCode != 200 {
-        return extractor.Configs{}, fmt.Errorf("received status code %d", resp.StatusCode)
+        finalErr = fmt.Errorf("received status code %d", resp.StatusCode)
+        return extractor.Configs{}, finalErr
     }
 
     doc, err := goquery.NewDocumentFromReader(resp.Body)
     if err != nil {
+        finalErr = err
         return extractor.Configs{}, err
     }
 
     var rawTexts []string
     now := time.Now()
 
-    // Find all message containers on the page
     doc.Find(".tgme_widget_message").Each(func(i int, s *goquery.Selection) {
-        // Extract the timestamp from the <time datetime="..."> tag
         timeTag := s.Find(".tgme_widget_message_date time")
         datetimeAttr, exists := timeTag.Attr("datetime")
         if !exists {
-            return // Skip if no time is found
+            return
         }
 
-        // Telegram formats time in RFC3339 (e.g., 2026-05-27T10:00:00+00:00)
         msgTime, err := time.Parse(time.RFC3339, datetimeAttr)
         if err != nil {
             return
         }
 
-        // Check if the message is within the last 24 hours
         if now.Sub(msgTime) <= 24*time.Hour {
-            // Get the message text HTML
-            htmlContent, _ := s.Find(".tgme_widget_message_text").Html()
+            msgCount++
 
-            // Replace HTML line breaks with actual newlines
-            textContent := strings.ReplaceAll(htmlContent, "<br/>", "\n")
-            textContent = strings.ReplaceAll(textContent, "<br>", "\n")
+            // 1. Extract all hyperlink targets (inline links in text, captions, and glass buttons)
+            s.Find("a[href]").Each(func(_ int, a *goquery.Selection) {
+                if href, exists := a.Attr("href"); exists {
+                    href = strings.TrimSpace(href)
+                    href = html.UnescapeString(href)
+                    if strings.Contains(href, "&amp;") {
+                        href = html.UnescapeString(href)
+                    }
+                    if href != "" {
+                        rawTexts = append(rawTexts, href)
+                    }
+                }
+            })
 
-            // Unescape HTML entities (converts &amp; to &, &quot; to ", etc.)
-            textContent = html.UnescapeString(textContent)
+            // 2. Extract visible text and captions
+            extractHTML := func(elem *goquery.Selection) {
+                if elem.Length() == 0 {
+                    return
+                }
+                htmlContent, err := elem.Html()
+                if err != nil || htmlContent == "" {
+                    return
+                }
 
-            rawTexts = append(rawTexts, textContent)
+                textContent := strings.ReplaceAll(htmlContent, "<br/>", "\n")
+                textContent = strings.ReplaceAll(textContent, "<br>", "\n")
+                textContent = strings.ReplaceAll(textContent, "</p>", "\n")
+                textContent = strings.ReplaceAll(textContent, "</div>", "\n")
+                textContent = strings.ReplaceAll(textContent, "</blockquote>", "\n")
+                textContent = htmlTagRegex.ReplaceAllString(textContent, " ")
+                textContent = html.UnescapeString(textContent)
+
+                if strings.TrimSpace(textContent) != "" {
+                    rawTexts = append(rawTexts, textContent)
+                }
+            }
+
+            extractHTML(s.Find(".tgme_widget_message_text"))
+            extractHTML(s.Find(".tgme_widget_message_caption"))
         }
     })
 
-    // Combine all valid message texts and extract the configs
     fullText := strings.Join(rawTexts, "\n")
-    return extractor.Extract(fullText), nil
+    finalConfigs = extractor.AuditAndExtract(fullText, "t.me/"+channel, telemetry.Global.RecordDropped)
+    return finalConfigs, nil
 }
