@@ -98,7 +98,7 @@ Direct MTProto and SOCKS proxies for Telegram:
 | **Clash Meta (Mixed)** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
 | **Clash Meta Lite** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
 
-*Import directly:* [Clash / FlClash](clash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub) · [Stash](stash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub)
+*How to use:* Copy the raw URL above and paste it into **Profiles → Import URL** in Clash Verge Rev, FlClash, Stash, or Clash Nyanpasu.
 
 #### Sing-box Subscriptions
 
@@ -107,7 +107,7 @@ Direct MTProto and SOCKS proxies for Telegram:
 | **Sing-box (Mixed)** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json` |
 | **Sing-box Lite** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox_lite.json` |
 
-*Import directly:* [Sing-box / Karing](sing-box://import-remote-profile?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json#ConfigHub)
+*How to use:* Copy the raw URL above and paste it into **Profiles → Remote Profile** in Sing-box, Karing, or Streisand.
 
 ---
 
@@ -249,7 +249,7 @@ https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.jso
 | **کلش ترکیبی** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml` |
 | **کلش لایت** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash_lite.yaml` |
 
-*ورود مستقیم:* [Clash / FlClash](clash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub) · [Stash](stash://install-config?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/clash.yaml&name=ConfigHub)
+*راهنما:* آدرس لینک مستقیم بالا را کپی کرده و در بخش **Profiles → Import URL** برنامه‌های Clash Verge Rev، FlClash، Stash یا Clash Nyanpasu وارد کنید.
 
 #### لینک‌های اشتراک سینگ‌باکس
 
@@ -258,7 +258,7 @@ https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.jso
 | **سینگ‌باکس ترکیبی** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json` |
 | **سینگ‌باکس لایت** | `https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox_lite.json` |
 
-*ورود مستقیم:* [Sing-box / Karing](sing-box://import-remote-profile?url=https://raw.githubusercontent.com/heliataromi/ConfigHub/subscription/singbox.json#ConfigHub)
+*راهنما:* آدرس لینک مستقیم بالا را کپی کرده و در بخش **Profiles → Remote Profile** برنامه‌های Sing-box، Karing یا Streisand وارد کنید.
 
 ---
 
