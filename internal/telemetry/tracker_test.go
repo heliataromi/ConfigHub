@@ -103,3 +103,41 @@ func TestTracker_RecordDuplicatesAndExport(t *testing.T) {
 		t.Errorf("Expected retained source t.me/channelA, got %s", report.DuplicateGroups[0].Retained.Source)
 	}
 }
+
+func TestTracker_PrintConsoleSummary(t *testing.T) {
+	tracker := NewTracker()
+	tracker.RecordSource(ChannelStat{
+		Name:          "chan1",
+		Type:          "channel",
+		StatusCode:    200,
+		Duration:      50 * time.Millisecond,
+		MessagesCount: 10,
+		ConfigsYield:  10,
+	})
+	tracker.RecordDuplicate("vless", "fp1", "chan1", "link1", "chan2", "link2")
+	tracker.RecordDropped("chan1", "badproto://123", "unsupported")
+
+	uniqueCounts := map[string]int{
+		"vless": 9,
+	}
+
+	// Verify PrintConsoleSummary does not panic
+	tracker.PrintConsoleSummary(uniqueCounts)
+}
+
+func TestTracker_EmptyTracker(t *testing.T) {
+	tmpDir := t.TempDir()
+	reportPath := filepath.Join(tmpDir, "empty_report.json")
+	dupPath := filepath.Join(tmpDir, "empty_dups.json")
+
+	tracker := NewTracker()
+	if err := tracker.ExportReport(reportPath, map[string]int{}); err != nil {
+		t.Fatalf("Failed to export empty report: %v", err)
+	}
+	if err := tracker.ExportDuplicates(dupPath, 0, 0); err != nil {
+		t.Fatalf("Failed to export empty duplicates: %v", err)
+	}
+
+	tracker.PrintConsoleSummary(map[string]int{})
+}
+

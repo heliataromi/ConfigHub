@@ -1,9 +1,13 @@
 package scraper
 
 import (
+	"fmt"
 	"html"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"ConfigHub/internal/extractor"
 
@@ -77,6 +81,77 @@ func TestExtractInlineHyperlinksAndButtons(t *testing.T) {
 
 	if len(configs.Telegram) != 4 {
 		t.Fatalf("Expected 4 extracted Telegram proxies, got %d: %v", len(configs.Telegram), configs.Telegram)
+	}
+}
+
+func TestScrapeChannel_MockedServer(t *testing.T) {
+	recentTime := time.Now().UTC().Format(time.RFC3339)
+	oldTime := time.Now().Add(-48 * time.Hour).UTC().Format(time.RFC3339)
+
+	sampleHTML := fmt.Sprintf(`
+<!DOCTYPE html>
+<html>
+<body>
+  <!-- Recent message with text and photo caption -->
+  <div class="tgme_widget_message" data-post="test/1">
+    <div class="tgme_widget_message_date"><time datetime="%s">Recent</time></div>
+    <div class="tgme_widget_message_text">
+      vless://7aecb4a5-f0a4-32a0-aabe-c9d5241e313f@191.40.32.96:10018?security=reality&type=tcp#Node1
+    </div>
+    <div class="tgme_widget_message_caption">
+      hy2://pass1@1.2.3.4:443?sni=example.com#PhotoCaptionNode
+    </div>
+    <div class="tgme_widget_message_inline_keyboard">
+      <a class="tgme_widget_message_inline_button" href="tg://proxy?server=Suodbo.co.uk&amp;port=443&amp;secret=eef0eeb0bd9adc4fd4a93994ee3b2a216b63646e2e79656b74616e65742e636f6d">Connect</a>
+    </div>
+  </div>
+
+  <!-- Old message (> 24h) should be skipped -->
+  <div class="tgme_widget_message" data-post="test/2">
+    <div class="tgme_widget_message_date"><time datetime="%s">Old</time></div>
+    <div class="tgme_widget_message_text">
+      trojan://oldpass@1.2.3.4:443#OldNode
+    </div>
+  </div>
+</body>
+</html>
+`, recentTime, oldTime)
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(sampleHTML))
+	}))
+	defer server.Close()
+
+	configs, err := ScrapeChannel(server.URL)
+	if err != nil {
+		t.Fatalf("ScrapeChannel failed: %v", err)
+	}
+
+	if len(configs.Vless) != 1 {
+		t.Errorf("Expected 1 VLESS config, got %d", len(configs.Vless))
+	}
+	if len(configs.Hy2) != 1 {
+		t.Errorf("Expected 1 Hy2 config, got %d", len(configs.Hy2))
+	}
+	if len(configs.Telegram) != 1 {
+		t.Errorf("Expected 1 Telegram proxy config, got %d", len(configs.Telegram))
+	}
+	if len(configs.Trojan) != 0 {
+		t.Errorf("Expected 0 Trojan configs (older than 24h), got %d", len(configs.Trojan))
+	}
+}
+
+func TestScrapeChannel_HTTPError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer server.Close()
+
+	_, err := ScrapeChannel(server.URL)
+	if err == nil {
+		t.Errorf("Expected error on HTTP 404, got nil")
 	}
 }
 

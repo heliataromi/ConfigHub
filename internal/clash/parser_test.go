@@ -265,3 +265,99 @@ func TestGenerateClashConfig(t *testing.T) {
 	}
 }
 
+func TestParseSSR(t *testing.T) {
+	// ssr://1.2.3.4:8388:origin:aes-256-cfb:plain:cGFzc3dvcmQ=/?remarks=8J-HqfCfh6ogREUgLSBbdC5tZS90ZXN0XQ==&obfsparam=b2Jmcw==&protoparam=cHJvdG8=
+	payload := base64.RawURLEncoding.EncodeToString([]byte("1.2.3.4:8388:origin:aes-256-cfb:plain:" + base64.RawURLEncoding.EncodeToString([]byte("password123")) + "/?remarks=" + base64.RawURLEncoding.EncodeToString([]byte("🇩🇪 DE - [t.me/test]")) + "&obfsparam=" + base64.RawURLEncoding.EncodeToString([]byte("obfsparam1")) + "&protoparam=" + base64.RawURLEncoding.EncodeToString([]byte("protoparam1"))))
+	link := "ssr://" + payload
+
+	proxy, country, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse SSR: %v", err)
+	}
+
+	if country != "DE" {
+		t.Errorf("Expected country DE, got %s", country)
+	}
+	if proxy["type"] != "ssr" {
+		t.Errorf("Expected type ssr, got %v", proxy["type"])
+	}
+	if proxy["server"] != "1.2.3.4" {
+		t.Errorf("Expected server 1.2.3.4, got %v", proxy["server"])
+	}
+	if proxy["cipher"] != "aes-256-cfb" {
+		t.Errorf("Expected cipher aes-256-cfb, got %v", proxy["cipher"])
+	}
+	if proxy["password"] != "password123" {
+		t.Errorf("Expected password password123, got %v", proxy["password"])
+	}
+	if proxy["obfs-param"] != "obfsparam1" {
+		t.Errorf("Expected obfs-param obfsparam1, got %v", proxy["obfs-param"])
+	}
+	if proxy["protocol-param"] != "protoparam1" {
+		t.Errorf("Expected protocol-param protoparam1, got %v", proxy["protocol-param"])
+	}
+}
+
+func TestParseSS_Plugins(t *testing.T) {
+	// 1. v2ray-plugin
+	userBase64 := base64.StdEncoding.EncodeToString([]byte("aes-256-gcm:pass123"))
+	v2rayLink := "ss://" + userBase64 + "@1.2.3.4:8388?plugin=v2ray-plugin%3Bhost%3Dexample.com%3Bpath%3D%2Fws%3Btls%3D1#%F0%9F%87%A9%F0%9F%87%AA%20DE"
+	proxyV2, _, err := ParseConfigToClash(v2rayLink)
+	if err != nil {
+		t.Fatalf("Failed to parse SS with v2ray-plugin: %v", err)
+	}
+	if proxyV2["plugin"] != "v2ray-plugin" {
+		t.Errorf("Expected plugin v2ray-plugin, got %v", proxyV2["plugin"])
+	}
+
+	// 2. obfs-local
+	obfsLink := "ss://" + userBase64 + "@1.2.3.4:8388?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3Dexample.com#%F0%9F%87%A9%F0%9F%87%AA%20DE"
+	proxyObfs, _, err := ParseConfigToClash(obfsLink)
+	if err != nil {
+		t.Fatalf("Failed to parse SS with obfs: %v", err)
+	}
+	if proxyObfs["plugin"] != "obfs" {
+		t.Errorf("Expected plugin obfs, got %v", proxyObfs["plugin"])
+	}
+}
+
+func TestParseHysteria(t *testing.T) {
+	link := "hysteria://1.2.3.4:443?auth=pass123&peer=example.com&upmbps=50&downmbps=100&alpn=h3&obfs=obfspass#%F0%9F%87%A9%F0%9F%87%AA%20DE"
+	proxy, country, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse Hysteria: %v", err)
+	}
+
+	if country != "DE" {
+		t.Errorf("Expected country DE, got %s", country)
+	}
+	if proxy["type"] != "hysteria" {
+		t.Errorf("Expected type hysteria, got %v", proxy["type"])
+	}
+	if proxy["auth_str"] != "pass123" {
+		t.Errorf("Expected auth_str pass123, got %v", proxy["auth_str"])
+	}
+	if proxy["up"] != "50" || proxy["down"] != "100" {
+		t.Errorf("Expected up 50 down 100, got up=%v down=%v", proxy["up"], proxy["down"])
+	}
+}
+
+func TestParseSocks(t *testing.T) {
+	link := "socks5://user1:pass123@1.2.3.4:1080#%F0%9F%87%A9%F0%9F%87%AA%20DE"
+	proxy, country, err := ParseConfigToClash(link)
+	if err != nil {
+		t.Fatalf("Failed to parse Socks: %v", err)
+	}
+
+	if country != "DE" {
+		t.Errorf("Expected country DE, got %s", country)
+	}
+	if proxy["type"] != "socks5" {
+		t.Errorf("Expected type socks5, got %v", proxy["type"])
+	}
+	if proxy["username"] != "user1" || proxy["password"] != "pass123" {
+		t.Errorf("Expected user1:pass123, got user=%v pass=%v", proxy["username"], proxy["password"])
+	}
+}
+
+

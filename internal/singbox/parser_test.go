@@ -121,3 +121,58 @@ func TestVLESSRealityDetails(t *testing.T) {
 		t.Errorf("expected short_id abcd1234, got %v", realityMap["short_id"])
 	}
 }
+
+func TestParseHysteria_Singbox(t *testing.T) {
+	link := "hysteria://1.2.3.4:443?auth=pass123&peer=example.com&obfs=salamander#HysteriaNode"
+	outbound, tag, err := ParseConfigToSingbox(link)
+	if err != nil {
+		t.Fatalf("Failed to parse Hysteria: %v", err)
+	}
+
+	if tag != "HysteriaNode" {
+		t.Errorf("Expected tag HysteriaNode, got %s", tag)
+	}
+	if outbound["type"] != "hysteria" {
+		t.Errorf("Expected type hysteria, got %v", outbound["type"])
+	}
+	if outbound["auth_str"] != "pass123" {
+		t.Errorf("Expected auth_str pass123, got %v", outbound["auth_str"])
+	}
+	if outbound["obfs"] != "salamander" {
+		t.Errorf("Expected obfs salamander, got %v", outbound["obfs"])
+	}
+}
+
+func TestParseSocks_Singbox(t *testing.T) {
+	link := "socks5://user1:pass123@1.2.3.4:1080#SocksNode"
+	outbound, tag, err := ParseConfigToSingbox(link)
+	if err != nil {
+		t.Fatalf("Failed to parse Socks: %v", err)
+	}
+
+	if tag != "SocksNode" {
+		t.Errorf("Expected tag SocksNode, got %s", tag)
+	}
+	if outbound["type"] != "socks" {
+		t.Errorf("Expected type socks, got %v", outbound["type"])
+	}
+	if outbound["username"] != "user1" || outbound["password"] != "pass123" {
+		t.Errorf("Expected user1:pass123, got username=%v password=%v", outbound["username"], outbound["password"])
+	}
+}
+
+func TestSplitAndTrim_Singbox(t *testing.T) {
+	result := splitAndTrim("  a, b , c  ,d ", ",")
+	if len(result) != 4 {
+		t.Fatalf("Expected 4 items, got %d", len(result))
+	}
+	if result[0] != "a" || result[1] != "b" || result[2] != "c" || result[3] != "d" {
+		t.Errorf("Unexpected result: %v", result)
+	}
+
+	emptyResult := splitAndTrim("   ", ",")
+	if len(emptyResult) != 0 {
+		t.Errorf("Expected empty slice, got %v", emptyResult)
+	}
+}
+

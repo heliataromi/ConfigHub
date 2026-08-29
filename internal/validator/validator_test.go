@@ -2,6 +2,8 @@ package validator
 
 import (
 	"testing"
+
+	"ConfigHub/internal/extractor"
 )
 
 func TestValidateConfig_ValidProtocols(t *testing.T) {
@@ -116,3 +118,104 @@ func TestValidateConfig_NewProtocolsEdgeCases(t *testing.T) {
 		}
 	}
 }
+
+func TestValidateConfig_SSR(t *testing.T) {
+	// ssr://127.0.0.1:8888:origin:none:plain:YmFzZTY0/?remarks=VGVzdE5vZGU (valid structure encoded)
+	// payload: 198.51.200.1:8388:origin:aes-256-cfb:plain:cGFzc3dvcmQ=/?remarks=VGVzdE5vZGU=
+	validPayload := "MTk4LjUxLjIwMC4xOjgzODg6b3JpZ2luOmFlcy0yNTYtY2ZiOnBsYWluOmNHRnpjM2R2Y21RPy9yZW1hcmtzPVZHVnpaRTUvWkdVPQ=="
+	validSSR := "ssr://" + validPayload
+
+	ok, reason := ValidateConfig(validSSR)
+	if !ok {
+		t.Errorf("Expected valid SSR to pass validation, failed: %s", reason)
+	}
+
+	invalidCases := []struct {
+		name string
+		link string
+	}{
+		{"Invalid base64 payload", "ssr://invalid-base64-payload!!!"},
+		{"Incomplete colon sections", "ssr://MTk4LjUxLjIwMC4xOjgzODg="}, // only host:port
+		{"Port zero", "ssr://MTk4LjUxLjIwMC4xOjA6b3JpZ2luOmFlcy0yNTYtY2ZiOnBsYWluOmNHRnpjM2R2Y21RPw=="},
+	}
+
+	for _, tc := range invalidCases {
+		t.Run(tc.name, func(t *testing.T) {
+			ok, reason := ValidateConfig(tc.link)
+			if ok {
+				t.Errorf("Expected invalid SSR (%s) to fail, but passed", tc.name)
+			}
+			t.Logf("SSR correctly rejected: %s", reason)
+		})
+	}
+}
+
+func TestSanitizeConfigs(t *testing.T) {
+	input := extractor.Configs{
+		Vless: []string{
+			"vless://7aecb4a5-f0a4-32a0-aabe-c9d5241e313f@191.40.32.96:10018?security=reality&type=tcp#ValidVLESS",
+			"vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0#DummyBanner",
+			"vless://YOUR_UUID_HERE@198.51.200.1:443#Bogus",
+		},
+		Vmess: []string{
+			"vmess://eyJhZGQiOiIxOTguNTEuMjAwLjEiLCJwb3J0Ijo0NDMsImlkIjoiN2FlY2I0YTUtZjBhNC0zMmEwLWFhYmUtYzlkNTI0MWUzMTNmIiwibmV0Ijoid3MiLCJ0bHMiOiJ0bHMiLCJwcyI6IlZNZXNzIn0=",
+			"vmess://eyJhZGQiOiIxMjcuMC4wLjEiLCJwb3J0IjowLCJpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMCIsInBzIjoiTGFzdCB1cGRhdGUifQ==",
+		},
+		Trojan: []string{
+			"trojan://mypassword@198.51.200.1:443?security=tls#ValidTrojan",
+			"trojan://@198.51.200.1:443#NoPass",
+		},
+		SS: []string{
+			"ss://YWVzLTI1Ni1nY206cGFzc3dvcmQ=@198.51.200.1:8388#ValidSS",
+			"ss://invalid-base64@127.0.0.1:0#BadSS",
+		},
+		Hy2: []string{
+			"hy2://mypassword@198.51.200.1:443?sni=example.com#ValidHy2",
+			"hy2://@198.51.200.1:443#EmptyPass",
+		},
+		TUIC: []string{
+			"tuic://7aecb4a5-f0a4-32a0-aabe-c9d5241e313f:pass1@198.51.200.1:443#ValidTUIC",
+		},
+		WireGuard: []string{
+			"wireguard://cGFzc3dvcmQ=@198.51.200.1:51820?public_key=cHVibGlj&ip=10.0.0.2#ValidWG",
+			"wireguard://@198.51.200.1:51820#NoKey",
+		},
+	}
+
+	var droppedCount int
+	recordDropped := func(source, candidate, reason string) {
+		droppedCount++
+		if source != "test_source" {
+			t.Errorf("Expected source 'test_source', got '%s'", source)
+		}
+	}
+
+	sanitized := SanitizeConfigs(input, "test_source", recordDropped)
+
+	if len(sanitized.Vless) != 1 {
+		t.Errorf("Expected 1 valid Vless, got %d", len(sanitized.Vless))
+	}
+	if len(sanitized.Vmess) != 1 {
+		t.Errorf("Expected 1 valid Vmess, got %d", len(sanitized.Vmess))
+	}
+	if len(sanitized.Trojan) != 1 {
+		t.Errorf("Expected 1 valid Trojan, got %d", len(sanitized.Trojan))
+	}
+	if len(sanitized.SS) != 1 {
+		t.Errorf("Expected 1 valid SS, got %d", len(sanitized.SS))
+	}
+	if len(sanitized.Hy2) != 1 {
+		t.Errorf("Expected 1 valid Hy2, got %d", len(sanitized.Hy2))
+	}
+	if len(sanitized.TUIC) != 1 {
+		t.Errorf("Expected 1 valid TUIC, got %d", len(sanitized.TUIC))
+	}
+	if len(sanitized.WireGuard) != 1 {
+		t.Errorf("Expected 1 valid WireGuard, got %d", len(sanitized.WireGuard))
+	}
+
+	if droppedCount != 7 {
+		t.Errorf("Expected 7 dropped configs recorded, got %d", droppedCount)
+	}
+}
+
