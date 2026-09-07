@@ -1,0 +1,13 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/06/16%20🕒03:35
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo3RDRHWU5EYUZ5NGVlYmU0N3R2Rg@169.38.107.52:8389#%F0%9F%87%AE%F0%9F%87%B3+IN+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M@172.105.39.228:5600#%F0%9F%87%AE%F0%9F%87%B3+IN+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M@172.105.39.228:3306#%F0%9F%87%AE%F0%9F%87%B3+IN+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206UmV4bkJnVTdFVjVBRHhH@172.105.39.124:7002#%F0%9F%87%AE%F0%9F%87%B3+IN+-+%5Bgithub.com%2Fbarry-far%5D
+ss://YWVzLTI1Ni1nY206VEV6amZBWXEySWp0dW9T@172.105.54.131:6697#%F0%9F%87%AE%F0%9F%87%B3+IN+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206UHZ2YXc0ODY4NjdEMnc0eWN0TDJVTFRRQDE4NS4xMDguMTA2LjI0OjQwMjgy#%F0%9F%87%AE%F0%9F%87%B3+IN+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpFQkRSbzlUSHg0Q3FpRlU3aDVnZm92NzZvTnd6WlVSQWgwWndiV2pCS2RkdFVodno@103.120.178.193:31348#%F0%9F%87%AE%F0%9F%87%B3+IN+-+%5Bgithub.com%2Fbarry-far%5D
+vless://9ac19657-8d09-483d-9490-73817bff52b0@140.245.28.182:443?flow=xtls-rprx-vision&fp=ios&pbk=sE7iHMdyFUNBBSGfqDm_XdIIgeEv734REAGl6oP-XAQ&security=reality&sid=6c782575&sni=updates.cdn-apple.com#%F0%9F%87%AE%F0%9F%87%B3%20IN%20-%20%5Bgithub.com/free18%5D
+vless://a2d7890a-5451-4470-9300-a059792924bb@49.50.76.194:443?encryption=none&security=none&type=tcp&headerType=http&host=play.google.com&path=/#%F0%9F%87%AE%F0%9F%87%B3%20IN%20-%20%5Bgithub.com/F0rc3Run%5D
+vless://9ac19657-8d09-483d-9490-73817bff52b0@129.159.17.27:443?flow=xtls-rprx-vision&fp=safari&pbk=dMKDyievcyOty4qL9Y5kVfAZw8ey6IX0LNdHuGnQd1g&security=reality&sid=c12d1c16&sni=updates.cdn-apple.com#%F0%9F%87%AE%F0%9F%87%B3%20IN%20-%20%5Bgithub.com/free18%5D
+hysteria2://H7mP2xY9kJ4nQ8wR5tF6vB3z@vpn-in-001.fastervpn.world:443?insecure=1&sni=vpn-in-001.fastervpn.world#%F0%9F%87%AE%F0%9F%87%B3%20IN%20-%20%5Bgithub.com/acymz%5D
+hy2://H7mP2xY9kJ4nQ8wR5tF6vB3z@vpn-in-001.fastervpn.world:443/?insecure=1&sni=vpn-in-001.fastervpn.world#%F0%9F%87%AE%F0%9F%87%B3%20IN%20-%20%5Bgithub.com/barry-far%5D

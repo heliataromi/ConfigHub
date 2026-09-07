@@ -1,0 +1,13 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/06/16%20🕒03:35
+ss://YWVzLTI1Ni1nY206ZHBHakE0R2t6VjI4UVBEWXpFcDk0Y1Rl@180.149.228.179:49514#%F0%9F%87%A6%F0%9F%87%BA+AU+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://Y2hhY2hhMjAtaWV0ZjpAb3Blbl92cG5z@20.211.112.115:2986#%F0%9F%87%A6%F0%9F%87%BA+AU+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpiSU9vaTVUdUltRzJLY2N4VjctamNBN0Nleit2dW4tY19F@104.156.233.234:27116#%F0%9F%87%A6%F0%9F%87%BA+AU+-+%5Bgithub.com%2Fbarry-far%5D
+ss://YWVzLTI1Ni1nY206VEV6amZBWXEySWp0dW9T@172.105.180.227:6679#%F0%9F%87%A6%F0%9F%87%BA+AU+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpkc0hxN0ptUkZoU2t2eHpDdU1GeQ@46.102.153.106:8389#%F0%9F%87%A6%F0%9F%87%BA+AU+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206S2l4THZLendqZWtHMDBybQ@172.105.180.227:8080#%F0%9F%87%A6%F0%9F%87%BA+AU+-+%5Bgithub.com%2Fyoufoundamin%5D
+vless://a14b736b-a92a-48d6-a596-5d31f7378ded@51.161.204.242:443?security=reality&encryption=none&pbk=a2qGjvUPq6Nz5FTbn_MSHp-055q2h8YXqIL5VIJ5zwE&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=www.cloudflare.com&sid=d15c17cef9b2e456#%F0%9F%87%A6%F0%9F%87%BA%20AU%20-%20%5Bgithub.com/F0rc3Run%5D
+vless://8e2419a7-ef0d-4b19-b52b-3333a0edcba8@103.75.119.12:443?sni=www.apple.com.cn&flow=xtls-rprx-vision-udp443&fp=chrome&security=tls#%F0%9F%87%A6%F0%9F%87%BA%20AU%20-%20%5Bgithub.com/acymz%5D
+hysteria2://H7mP2xY9kJ4nQ8wR5tF6vB3z@vpn-au-002.fastervpn.world:443?insecure=1&sni=whatsapp.com#%F0%9F%87%A6%F0%9F%87%BA%20AU%20-%20%5Bgithub.com/acymz%5D
+hy2://H7mP2xY9kJ4nQ8wR5tF6vB3z@vpn-au-002.fastervpn.world:443/?insecure=1&sni=whatsapp.com#%F0%9F%87%A6%F0%9F%87%BA%20AU%20-%20%5Bgithub.com/barry-far%5D
+hy2://H7mP2xY9kJ4nQ8wR5tF6vB3z@vpn-au-002.fastervpn.world:443/?insecure=1&sni=css.rbxcdn.com#%F0%9F%87%A6%F0%9F%87%BA%20AU%20-%20%5Bgithub.com/barry-far%5D
+hysteria2://H7mP2xY9kJ4nQ8wR5tF6vB3z@vpn-au-002.fastervpn.world:443?insecure=1&sni=css.rbxcdn.com#%F0%9F%87%A6%F0%9F%87%BA%20AU%20-%20%5Bgithub.com/acymz%5D

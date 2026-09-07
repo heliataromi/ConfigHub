@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/06/16%20🕒03:35
+vless://cd842ef8-9577-47f3-83ca-627147ed291b@38.54.59.209:2087?encryption=none&path=%2Fd1000b16fe76&security=none&type=ws#%F0%9F%87%AA%F0%9F%87%AC%20EG%20-%20%5Bt.me/oneclickvpnkeys%5D

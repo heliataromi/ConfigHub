@@ -1,0 +1,14 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/06/16%20🕒03:35
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@38.180.240.150:1443/?insecure=1&sni=fr.freeguard.org#%F0%9F%87%AB%F0%9F%87%B7%20FR%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@95.168.184.34:1443/?insecure=1&sni=lon1.freeguard.org#%F0%9F%87%AC%F0%9F%87%A7%20GB%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@195.54.170.7:1443/?insecure=1&sni=no.freeguard.org#%F0%9F%87%B3%F0%9F%87%B4%20NO%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@185.108.129.126:1443/?insecure=1&sni=dmw.freeguard.org#%F0%9F%87%AE%F0%9F%87%AA%20IE%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@209.50.228.248:1443/?insecure=1&sni=ma2.freeguard.org#%F0%9F%87%BA%F0%9F%87%B8%20US%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@15.204.248.103:1443/?insecure=1&sni=rs3.freeguard.org#%F0%9F%87%BA%F0%9F%87%B8%20US%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@173.208.50.220:1443/?insecure=1&sni=lon3.freeguard.org#%F0%9F%87%AC%F0%9F%87%A7%20GB%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@38.180.161.71:1443/?insecure=1&sni=ch.freeguard.org#%F0%9F%87%A8%F0%9F%87%AD%20CH%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@176.32.39.116:1443/?insecure=1&sni=msk4.freeguard.org#%F0%9F%87%B7%F0%9F%87%BA%20RU%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@194.113.194.231:1443/?insecure=1&sni=ny.freeguard.org#%F0%9F%87%BA%F0%9F%87%B8%20US%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@15.204.248.181:1443/?insecure=1&sni=rs2.freeguard.org#%F0%9F%87%BA%F0%9F%87%B8%20US%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@3.89.113.76:1443/?insecure=1&sni=abr.freeguard.org#%F0%9F%87%BA%F0%9F%87%B8%20US%20-%20%5Bt.me/oneclickvpnkeys%5D
+anytls://b652305a-0c63-4527-8cb3-0ea582076124@178.162.221.200:1443/?insecure=1&sni=fra.freeguard.org#%F0%9F%87%A9%F0%9F%87%AA%20DE%20-%20%5Bt.me/oneclickvpnkeys%5D
