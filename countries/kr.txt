@@ -1,0 +1,14 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/06/22%20🕒12:11
+vless://e85ca8bc-21a5-418d-a639-00236f0c3d81@47.80.62.188:443?flow=xtls-rprx-vision&fp=chrome&pbk=an8lRnGRbCvX-GW3zuc5woB6hrTxEhfyrGCv-7_QyVo&security=reality&sid=b229991df62826cc&sni=www.nvidia.com#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/free18%5D
+vless://f5851a6e-72da-4e4e-99b2-c79629149503@47.80.61.21:443?flow=xtls-rprx-vision&fp=chrome&pbk=wrSzVpmEdnTU7oS5UbKuNnvP57Z7cJkOZRBwRqHM_Hk&security=reality&sid=6132a3b8dd2d8c6b&sni=www.logitech.com#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/free18%5D
+vless://0d4cb711-c030-4f13-adf5-6a72dab4121c@47.80.62.71:443?flow=xtls-rprx-vision&fp=chrome&pbk=AT4sr3XkuNa7QewDoScx7NnPTCa-Z6o_7ccPgivVDSQ&security=reality&sid=0b674631d5fc6b93&sni=www.nvidia.com#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/free18%5D
+vless://581cb8c3-dadb-4e10-a18b-5e79bfe7bd93@47.80.14.8:443?flow=xtls-rprx-vision&fp=chrome&pbk=OBIHAXdhfYJ0PWsZjy3QYPRjTfMQlvjmBsTf1CT671w&security=reality&sid=71110d3f7ef57760&sni=www.samsung.com#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/free18%5D
+vless://43e60b75-9920-450a-94ee-8762758ca49c@47.80.62.191:443?flow=xtls-rprx-vision&fp=chrome&pbk=Qe5e0FBZwuwYMRYikx8sH5iaowPQwdkn6kgIN8xrQHE&security=reality&sid=bd0040df20a53b36&sni=www.logitech.com#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/free18%5D
+ss://YWVzLTI1Ni1jZmI6cXdlclJFV1FAQEAyMjEuMTUwLjEwOS44MTo0Mjk3OA==#%F0%9F%87%B0%F0%9F%87%B7+KR+-+%5Bgithub.com%2FMhdiTaheri%5D
+ss://YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M=@141.164.45.187:8888#%F0%9F%87%B0%F0%9F%87%B7+KR+-+%5Bgithub.com%2Fbarry-far%5D
+ss://YWVzLTI1Ni1nY206UmV4bkJnVTdFVjVBRHhH@141.164.45.187:7002?#%F0%9F%87%B0%F0%9F%87%B7+KR+-+%5Bgithub.com%2FF0rc3Run%5D
+ss://YWVzLTI1Ni1nY206WEtGS2wyclVMaklwNzQ@141.164.45.187:8008#%F0%9F%87%B0%F0%9F%87%B7+KR+-+%5Bgithub.com%2FF0rc3Run%5D
+ss://YWVzLTI1Ni1nY206bEdxczk1UWtGSG8yTlY@141.164.45.187:5498#%F0%9F%87%B0%F0%9F%87%B7+KR+-+%5Bgithub.com%2FF0rc3Run%5D
+hy2://1beb216e3f60aea9555dae60d219a5ca@152-69-231-175.liao.kdns.fr:50160/?sni=152-69-231-175.liao.kdns.fr#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/barry-far%5D
+hysteria2://1671a252e2a97dc2bda4e515475931da@132.226.226.189:50160?insecure=1&security=tls&sni=www.bing.com#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/acymz%5D
+hysteria2://1beb216e3f60aea9555dae60d219a5ca@152-69-231-175.liao.kdns.fr:50160?sni=152-69-231-175.liao.kdns.fr#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/acymz%5D
