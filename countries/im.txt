@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/06/28%20🕒22:17
+vless://6202b230-417c-4d8e-b624-0f71afa9c75d@185.162.229.50:8880?encryption=none&host=vms.lifetime61.workers.dev&path=%2F&security=none&type=ws#%F0%9F%87%AE%F0%9F%87%B2%20IM%20-%20%5Bt.me/oneclickvpnkeys%5D

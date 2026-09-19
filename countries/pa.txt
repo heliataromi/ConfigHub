@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/06/28%20🕒22:17
+vless://d7d26654-6979-480a-8865-9ed3563123e4@5.252.155.225:443?security=reality&flow=xtls-rprx-vision&pbk=Ua80Sem5yHVDbRu37u1yYM5vWBzinhru__7ACrvnx1E&type=tcp&headerType=none&encryption=none&sni=console.cloud.yandex.ru&fp=firefox#%F0%9F%87%B5%F0%9F%87%A6%20PA%20-%20%5Bt.me/chillguy_vpn%5D
