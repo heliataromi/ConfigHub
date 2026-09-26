@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/07/04%20🕒21:28
+vless://d342d11e-d424-4583-b36e-524ab1f0afa4@202.181.177.8:8443?path=%2Fchannels%2Fact&amp;security=tls&amp;encryption=none&amp;insecure=0&amp;host=cdn8848.776676.xyz&amp;fp=chrome&amp;type=ws&amp;allowInsecure=0&amp;sni=cdn8848.776676.xyz#%F0%9F%87%A7%F0%9F%87%BF%20BZ%20-%20%5Bgithub.com/MhdiTaheri%5D

@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/07/04%20🕒21:28
+vless://e950cb84-4d46-44f8-ba9a-e6064e7ec2a4@144.31.129.19:443?flow=xtls-rprx-vision&sid=d9662905&fp=safari&security=reality&type=tcp&encryption=none&headerType=none&sni=media-crown.ru&pbk=gF0oeN2ndJ1hDZynSUu504hiXzUI6oioEerdyG7yMVQ#%F0%9F%87%A7%F0%9F%87%BE%20BY%20-%20%5Bt.me/SOSkeyNET%5D
