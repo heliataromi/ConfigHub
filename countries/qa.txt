@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/07/12%20🕒04:07
+vless://b6f775c2-70fd-4247-8d12-82cac46fdd50@34.18.212.19:443?encryption=none&security=reality&type=tcp&sni=www.cloudflare.com&fp=chrome&pbk=tT6wEOh8ASizQYNRb51QdDlxAksSJbEaBnbQBajc6SQ&sid=c5426331173ca15c#%F0%9F%87%B6%F0%9F%87%A6%20QA%20-%20%5Bgithub.com/free18%5D
