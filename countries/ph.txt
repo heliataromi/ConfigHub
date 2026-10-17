@@ -1,0 +1,8 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/07/26%20🕒00:02
+vless://e13cf851-b4fd-413b-8d49-146e6eb8e5d4@platform103.golnamakcert.top:80?&security=false&fp=chrome&type=ws&headerType=none&host=platform103.halalkhor.info&path=%2Fplatform103#%F0%9F%87%B5%F0%9F%87%AD%20PH%20-%20%5Bgithub.com/ShadowException%5D
+vless://e13cf851-b4fd-413b-8d49-146e6eb8e5d4@platform109.golnamakcert.top:80?path=%2Fplatform109&security=none&encryption=none&host=platform109.halalkhor.info&type=ws#%F0%9F%87%B5%F0%9F%87%AD%20PH%20-%20%5Bgithub.com/ShadowException%5D
+vless://e13cf851-b4fd-413b-8d49-146e6eb8e5d4@platform109.golnamakcert.top:80?security=none&type=ws&path=%2Fplatform109&host=platform109.halalkhor.info&sni=platform109.halalkhor.info#%F0%9F%87%B5%F0%9F%87%AD%20PH%20-%20%5Bgithub.com/ShadowException%5D
+vless://e13cf851-b4fd-413b-8d49-146e6eb8e5d4@platform103.golnamakcert.top:80?path=%2Fplatform103&security=none&type=ws#%F0%9F%87%B5%F0%9F%87%AD%20PH%20-%20%5Bgithub.com/ShadowException%5D
+vless://e13cf851-b4fd-413b-8d49-146e6eb8e5d4@platform109.golnamakcert.top:80?host=platform109.halalkhor.info&path=%2Fplatform109&security=none&sni=platform109.golnamakcert.top&type=ws#%F0%9F%87%B5%F0%9F%87%AD%20PH%20-%20%5Bgithub.com/ShadowException%5D
+vless://e13cf851-b4fd-413b-8d49-146e6eb8e5d4@platform109.golnamakcert.top:80?host=%5B%27platform109.halalkhor.info%27%5D&path=%2Fplatform109&security=none&type=ws#%F0%9F%87%B5%F0%9F%87%AD%20PH%20-%20%5Bgithub.com/ShadowException%5D
+vless://e13cf851-b4fd-413b-8d49-146e6eb8e5d4@platform103.golnamakcert.top:80?&sni=platform103.halalkhor.info&type=ws&headerType=none&host=platform103.halalkhor.info&path=%2Fplatform103#%F0%9F%87%B5%F0%9F%87%AD%20PH%20-%20%5Bgithub.com/ShadowException%5D
