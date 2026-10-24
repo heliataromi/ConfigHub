@@ -1,0 +1,14 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/03%20🕒01:03
+vless://495c7195-85b8-498a-bf20-2ea9ce9175b5@72.60.235.49:8443?encryption=none&security=tls&type=ws&host=snip.edgeoneai.cc.cd&path=%2Ffdip%3Dsstp%3A%2F%2Fvpn%3Avpn%40public-vpn-200.opengw.net%3A443%3Fed%3D2560fp%3Dchromefp%3Dchrome&sni=snip.edgeoneai.cc.cd&fp=chrome#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/free18%5D
+vless://d342d11e-d224-4463-b982-532309285094@216.173.67.59:443?allowInsecure=0&sni=ccc.010304.xyz&type=ws&host=ccc.010304.xyz&path=/fp=chromesecurity=tls#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/acymz%5D
+vless://495c7195-85b8-498a-bf20-2ea9ce9175b5@166.88.194.74:2087?encryption=none&security=tls&type=ws&host=snip.edgeoneai.cc.cd&path=%2F&sni=snip.edgeoneai.cc.cd&fp=chrome#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/acymz%5D
+vless://30572b57-f5ab-4eb8-82d4-a24d399b99f6@111.90.143.184:61111?#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/acymz%5D
+vless://d342d11e-d224-4463-b982-532309285094@216.173.67.59:443?allowInsecure=0&sni=ccc.010304.xyz&type=ws&host=ccc.010304.xyz&path=/fp=chrome&security=tls#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/acymz%5D
+vless://495c7195-85b8-498a-bf20-2ea9ce9175b5@72.60.236.128:8443?encryption=none&security=tls&type=ws&host=snip.edgeoneai.cc.cd&path=%2F&sni=snip.edgeoneai.cc.cd&fp=chrome#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/free18%5D
+vless://e13cf851-b4fd-413b-8d49-146e6eb8e5d4@platform128.golnamakcert.top:80?type=ws&host=platform128.halalkhor.info&path=/platform128#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/acymz%5D
+vless://495c7195-85b8-498a-bf20-2ea9ce9175b5@216.173.67.144:443?encryption=none&security=tls&type=ws&host=snip.edgeoneai.cc.cd&path=%2F&sni=snip.edgeoneai.cc.cd&fp=chrome#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/free18%5D
+vless://495c7195-85b8-498a-bf20-2ea9ce9175b5@45.194.27.99:443?encryption=none&security=tls&type=ws&host=snip.edgeoneai.cc.cd&path=%2Ffp%3Dchrome&sni=snip.edgeoneai.cc.cd&fp=chrome#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/free18%5D
+vless://495c7195-85b8-498a-bf20-2ea9ce9175b5@166.88.35.242:443?encryption=none&security=tls&type=ws&host=snip.edgeoneai.cc.cd&path=%2F&sni=snip.edgeoneai.cc.cd&alpn=h3%2Ch2&fp=chrome#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/free18%5D
+trojan://5931134d1cde66bf83a54acdfebe7ab2@47.250.84.25:443?#%F0%9F%87%B2%F0%9F%87%BE%20MY%20-%20%5Bgithub.com/acymz%5D
+ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@202.59.10.102:989#%F0%9F%87%B2%F0%9F%87%BE+MY+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTp3NEdVRDI4Qnc5dUNNZGJjMnBxQQ@223.25.246.4:8389#%F0%9F%87%B2%F0%9F%87%BE+MY+-+%5Bgithub.com%2Fyoufoundamin%5D

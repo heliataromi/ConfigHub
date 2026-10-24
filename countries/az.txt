@@ -1,0 +1,11 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/03%20🕒01:03
+vless://495c7195-85b8-498a-bf20-2ea9ce9175b5@94.20.154.66:443?encryption=none&security=tls&type=ws&host=snip.edgeoneai.cc.cd&path=%2Ffp%3Dchrome&sni=snip.edgeoneai.cc.cd#%F0%9F%87%A6%F0%9F%87%BF%20AZ%20-%20%5Bgithub.com/free18%5D
+vless://495c7195-85b8-498a-bf20-2ea9ce9175b5@94.20.154.66:443?encryption=none&security=tls&type=ws&host=snip.edgeoneai.cc.cd&path=%2F&sni=snip.edgeoneai.cc.cd&fp=chrome#%F0%9F%87%A6%F0%9F%87%BF%20AZ%20-%20%5Bgithub.com/free18%5D
+ss://YWVzLTI1Ni1nY206WXlDQmVEZFlYNGNhZEhwQ2trbWRKTHE4@62.212.239.43:43893#%F0%9F%87%A6%F0%9F%87%BF+AZ+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206WXlDQmVEZFlYNGNhZEhwQ2trbWRKTHE4@62.212.239.45:43893#%F0%9F%87%A6%F0%9F%87%BF+AZ+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206WXlDQmVEZFlYNGNhZEhwQ2trbWRKTHE4@62.212.239.67:43893#%F0%9F%87%A6%F0%9F%87%BF+AZ+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206OG42cHdBY3JydjJwajZ0RlkycDNUYlE2@62.212.239.44:33992#%F0%9F%87%A6%F0%9F%87%BF+AZ+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1jZmI6MzEzNTc3MTYxOQ@94.20.154.38:50000#%F0%9F%87%A6%F0%9F%87%BF+AZ+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@94.20.154.26:989#%F0%9F%87%A6%F0%9F%87%BF+AZ+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1jZmI6OTM0NDY2NTA3Nw@94.20.154.38:50006#%F0%9F%87%A6%F0%9F%87%BF+AZ+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206WXlDQmVEZFlYNGNhZEhwQ2trbWRKTHE4@62.212.239.53:43893#%F0%9F%87%A6%F0%9F%87%BF+AZ+-+%5Bgithub.com%2Fyoufoundamin%5D

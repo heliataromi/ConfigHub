@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/03%20🕒01:03
+vless://bb0f1ed0-0298-40a1-adb1-1f5d6ab33d54@arcturus.yokkastars.com:40443?security=reality&amp;encryption=none&amp;pbk=w4AYHvQnQS6olDqoG9ptLOtgehaWOsv9HQhDax5bLA4&amp;headerType=none&amp;fp=chrome&amp;type=tcp&amp;flow=xtls-rprx-vision&amp;sni=deepl.com&amp;sid=db46e2946fc466fd#%F0%9F%87%AE%F0%9F%87%B6%20IQ%20-%20%5Bgithub.com/MhdiTaheri%5D

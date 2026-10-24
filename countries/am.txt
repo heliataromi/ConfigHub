@@ -1,0 +1,5 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/03%20🕒01:03
+vless://f667a096-5231-4cfb-8759-92bb32473139@77.91.68.70:55983?sni=yahoo.com&fp=chrome&security=tls#%F0%9F%87%A6%F0%9F%87%B2%20AM%20-%20%5Bgithub.com/acymz%5D
+vless://f7376394-cd54-11f1-bb6a-bff6d0326f6a@194.36.37.59:10004?type=ws&path=/vpnjantit#%F0%9F%87%A6%F0%9F%87%B2%20AM%20-%20%5Bgithub.com/acymz%5D
+vless://b8df3f50-ffef-4c7e-9ef3-d5b156a47c02@88.218.95.88:443?sni=www.google.com&type=grpc&serviceName=grpc&fp=chrome&security=tls#%F0%9F%87%A6%F0%9F%87%B2%20AM%20-%20%5Bgithub.com/acymz%5D
+ss://YWVzLTI1Ni1nY206NzgyMzVlN2RjNTVlOWFkMQ@86.107.50.183:20111#%F0%9F%87%A6%F0%9F%87%B2+AM+-+%5Bgithub.com%2Fbarry-far%5D

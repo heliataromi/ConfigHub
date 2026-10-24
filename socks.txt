@@ -1,0 +1,12 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/03%20🕒01:03
+socks5://89.191.226.64:1080#%F0%9F%87%A9%F0%9F%87%AA%20DE%20-%20%5Bt.me/oneclickvpnkeys%5D
+socks://Og@77.221.148.116:10808#%F0%9F%87%B3%F0%9F%87%B1%20NL%20-%20%5Bt.me/SOSkeyNET%5D
+socks://Og==@173.212.252.150:1080#%F0%9F%87%AB%F0%9F%87%B7%20FR%20-%20%5Bgithub.com/iampedii%5D
+socks://Og==@144.24.111.128:1088#%F0%9F%87%AE%F0%9F%87%B3%20IN%20-%20%5Bgithub.com/iampedii%5D
+socks://ODg4ODo4ODg4@47.236.168.243:1080#%F0%9F%87%B8%F0%9F%87%AC%20SG%20-%20%5Bgithub.com/iampedii%5D
+socks5://77.221.148.116:10808#%F0%9F%87%B3%F0%9F%87%B1%20NL%20-%20%5Bt.me/oneclickvpnkeys%5D
+socks://Og==@69.55.49.177:38182#%F0%9F%87%BA%F0%9F%87%B8%20US%20-%20%5Bgithub.com/iampedii%5D
+socks://dGVzdDEyMzp0ZXN0MTIz@185.145.99.41:1080#%F0%9F%87%AC%F0%9F%87%A7%20GB%20-%20%5Bgithub.com/iampedii%5D
+socks://Og==@209.50.255.91:1080#%F0%9F%87%BA%F0%9F%87%B8%20US%20-%20%5Bgithub.com/iampedii%5D
+socks://Og==@207.180.212.59:1080#%F0%9F%87%AB%F0%9F%87%B7%20FR%20-%20%5Bgithub.com/iampedii%5D
+socks://dGVzdDEyMzp0ZXN0MTIz@169.255.56.148:1080#%F0%9F%87%AC%F0%9F%87%AD%20GH%20-%20%5Bt.me/v2ray1_ng%5D

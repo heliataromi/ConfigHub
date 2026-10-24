@@ -1,0 +1,8 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/03%20🕒01:03
+vless://495c7195-85b8-498a-bf20-2ea9ce9175b5@193.180.209.195:443?encryption=none&security=tls&type=ws&host=snip.edgeoneai.cc.cd&path=%2Ffdip%3Dsstp%3A%2F%2Fvpn%3Avpn%40public-vpn-200.opengw.net%3A443&sni=snip.edgeoneai.cc.cd&fp=chrome#%F0%9F%87%A9%F0%9F%87%B0%20DK%20-%20%5Bgithub.com/free18%5D
+vless://633c1bb0-60d5-41fb-a9c4-11f408b264ec@140.248.69.254:443?mode=auto&amp;pcs=cd6e838b9bfe31cab8b3d5c858b0d6223fe84ece236c1fdb281be93c302e1e6e&amp;path=%2F%3Fed%3D2048&amp;security=tls&amp;alpn=h2&amp;encryption=none&amp;insecure=0&amp;host=1fastli-name.global.ssl.fastly.net&amp;fp=chrome&amp;type=xhttp&amp;allowInsecure=0&amp;sni=speedtest.net#%F0%9F%87%A9%F0%9F%87%B0%20DK%20-%20%5Bgithub.com/MhdiTaheri%5D
+vless://633c1bb0-60d5-41fb-a9c4-11f408b264ec@140.248.69.254:443?mode=auto&pcs=cd6e838b9bfe31cab8b3d5c858b0d6223fe84ece236c1fdb281be93c302e1e6e&path=%2F%3Fed%3D2048&security=tls&alpn=h2&encryption=none&insecure=0&host=1fastli-name.global.ssl.fastly.net&fp=chrome&type=xhttp&allowInsecure=0&sni=speedtest.net#%F0%9F%87%A9%F0%9F%87%B0%20DK%20-%20%5Bt.me/SOSkeyNET%5D
+ss://YWVzLTI1Ni1nY206UHZ2YXc0ODY4NjdEMnc0eWN0TDJVTFRR@193.29.107.179:40282#%F0%9F%87%A9%F0%9F%87%B0+DK+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@192.36.27.79:989#%F0%9F%87%A9%F0%9F%87%B0+DK+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206REtYZld3YzRlYnNjcFhUS3BidDg1clNI@193.29.107.197:38742#%F0%9F%87%A9%F0%9F%87%B0+DK+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206VHV3Nnp6Wk02SndXTlp5WUY5Y2tDNEpa@193.29.107.211:43963#%F0%9F%87%A9%F0%9F%87%B0+DK+-+%5Bgithub.com%2Fyoufoundamin%5D

@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/03%20🕒01:03
+hysteria2://78585441-c8b3-40fb-9b94-15edd312fdcf@202.155.14.134:55555?insecure=1&sni=www.bing.com#%F0%9F%87%AE%F0%9F%87%A9%20ID%20-%20%5Bgithub.com/acymz%5D
