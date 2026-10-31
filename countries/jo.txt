@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/09%20🕒18:18
+vless://495c7195-85b8-498a-bf20-2ea9ce9175b5@62.72.163.108:443?encryption=none&security=tls&type=ws&host=snip.edgeoneai.cc.cd&path=%2Ffp%3Dchrome&sni=snip.edgeoneai.cc.cd#%F0%9F%87%AF%F0%9F%87%B4%20JO%20-%20%5Bgithub.com/acymz%5D
