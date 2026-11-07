@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/16%20🕒22:54
+trojan://5t6i121em5lkmsmk@ph001.zestapp778.com:46298?sni=ph001.zestapp778.com#%F0%9F%87%B5%F0%9F%87%AD%20PH%20-%20%5Bgithub.com/acymz%5D

@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/16%20🕒22:54
+anytls://2f4c3fc5-8fa2-4576-a583-8f98a6026887@tw.ccwink.cc:6549/?insecure=1&sni=baidu.com#%F0%9F%87%B9%F0%9F%87%BC%20TW%20-%20%5Bgithub.com/acymz%5D

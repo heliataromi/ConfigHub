@@ -1,0 +1,6 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/16%20🕒22:54
+socks://ODg4ODo4ODg4@47.236.168.243:1080#%F0%9F%87%B8%F0%9F%87%AC%20SG%20-%20%5Bgithub.com/iampedii%5D
+socks5://5.255.117.127:1080#%F0%9F%87%B3%F0%9F%87%B1%20NL%20-%20%5Bt.me/oneclickvpnkeys%5D
+socks5://91.107.179.68:10809#%F0%9F%87%A9%F0%9F%87%AA%20DE%20-%20%5Bt.me/oneclickvpnkeys%5D
+socks://Og==@82.180.146.251:10800#%F0%9F%87%AE%F0%9F%87%B3%20IN%20-%20%5Bgithub.com/iampedii%5D
+socks://Og==@140.238.243.61:1080#%F0%9F%87%AE%F0%9F%87%B3%20IN%20-%20%5Bgithub.com/iampedii%5D

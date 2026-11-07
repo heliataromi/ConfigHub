@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/16%20🕒22:54
+trojan://sI0wl1bvYlSXu2RsMSAtAIMM@starlink-id.251313.xyz:443?security=tls&sni=www.cloudflare.com&insecure=0&allowInsecure=0&type=tcp&headerType=none#%F0%9F%87%AE%F0%9F%87%A9%20ID%20-%20%5Bgithub.com/free18%5D
