@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/23%20🕒20:18
+vless://99c5b713-dedf-4a10-8070-916ff3f49b0e@194.135.119.82:2053?sni=fs.qicai99.com&type=ws&host=fs.qicai99.com&path=/fp=chrome&security=tls#%F0%9F%87%AC%F0%9F%87%AA%20GE%20-%20%5Bgithub.com/acymz%5D

@@ -1,0 +1,14 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/23%20🕒20:18
+trojan://humanity@131.196.254.151:443?path=%2Fassignment&security=tls&alpn=http%2F1.1&fm=tlshello-0-len&insecure=0&host=www.volumeroot.com&fp=unsafe&type=ws&allowInsecure=0&sni=www.volumeroot.com#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/youfoundamin%5D
+trojan://humanity@131.196.254.151:443?path=%2Fassignment&security=tls&alpn=http%2F1.1&fm=tlshello-0-len&insecure=0&host=www.pleadcourt.org&fp=unsafe&type=ws&allowInsecure=0&sni=www.pleadcourt.org#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/youfoundamin%5D
+trojan://5t6i121em5lkmsmk@149.104.87.125:15083?security=tls&amp;insecure=0&amp;headerType=none&amp;fp=firefox&amp;type=tcp&amp;allowInsecure=0&amp;sni=mx001.zestapp778.com#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/MhdiTaheri%5D
+trojan://humanity@131.196.254.151:443?path=%2Fassignment&security=tls&fm=tlshello-0-len&insecure=0&host=www.volumeroot.com&fp=unsafe&type=ws&allowInsecure=0&sni=www.volumeroot.com#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/youfoundamin%5D
+trojan://humanity@131.196.254.151:443?path=%2Fassignment&security=tls&alpn=http%2F1.1&fm=tlshello-0-len&insecure=0&host=www.volumerOot.coM.&fp=unsafe&type=ws&allowInsecure=0&sni=wWw.Volumeroot.cOm.#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/youfoundamin%5D
+trojan://humanity@131.196.254.151:443?path=%2Fassignment&security=tls&fm=tlshello-0-len&insecure=0&host=www.volumerOot.coM.&fp=unsafe&type=ws&allowInsecure=0&sni=wWw.Volumeroot.cOm.#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/youfoundamin%5D
+trojan://5t6i121em5lkmsmk@149.104.87.125:15083?security=tls&sni=mx001.zestapp778.com&insecure=1&allowInsecure=1&type=tcp&headerType=none#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/free18%5D
+trojan://5t6i121em5lkmsmk@149.104.87.125:15083/?type=tcp&security=tls&sni=mx001.zestapp778.com&allowInsecure=1#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bt.me/oneclickvpnkeys%5D
+vless://b1c31d36-c6b5-414b-88d2-9e24e7bfcca3@131.196.252.97:443?&security=tls&fp=chrome&sni=www.nihaoyun.top&type=ws&headerType=none&host=www.nihaoyun.top&path=%2F#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/ShadowException%5D
+vless://39a390af-1f90-4c0e-89e4-4e2023732e4b@147.78.1.253:443?sni=www.apple.com&flow=xtls-rprx-vision&fp=chrome&security=tls#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/acymz%5D
+vless://e9a8144e-5237-488a-afb1-9ca3d8d54c80@mx001.zestapp778.com:19167?allowInsecure=0&sni=mx001.zestapp778.com&fp=chrome&security=tls#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/acymz%5D
+vless://b1c31d36-c6b5-414b-88d2-9e24e7bfcca3@131.196.252.66:443?&security=tls&fp=chrome&sni=www.nihaoyun.top&type=ws&headerType=none&host=www.nihaoyun.top&path=%2F#%F0%9F%87%B2%F0%9F%87%BD%20MX%20-%20%5Bgithub.com/ShadowException%5D
+ss://YWVzLTI1Ni1nY206Qld5UFBUdXNGS2hHZ3pLaA==@64.177.90.30:8388#%F0%9F%87%B2%F0%9F%87%BD+MX+-+%5Bgithub.com%2Facymz%5D
