@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/30%20🕒16:18
+https://testuser1:e4b72b531a2d10900519@107.151.238.27:443?sni=6b97ee1b.acsnet.co#%F0%9F%87%BA%F0%9F%87%B8%20US%20-%20%5Bt.me/oneclickvpnkeys%5D

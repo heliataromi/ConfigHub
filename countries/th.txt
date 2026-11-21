@@ -1,0 +1,13 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/08/30%20🕒16:18
+socks5://ks878449260d:YlRoWvE0dL_cUqS94wPeKnA4@87.84.49.206:62000#%F0%9F%87%B9%F0%9F%87%AD%20TH%20-%20%5Bgithub.com/acymz%5D
+socks5://userMGEj:KsySvCAP@82.47.154.48:42000#%F0%9F%87%B9%F0%9F%87%AD%20TH%20-%20%5Bt.me/oneclickvpnkeys%5D
+socks://SlBqYXJwVzM6YW8zVzVaTUw@168.222.8.4:42000#%F0%9F%87%B9%F0%9F%87%AD%20TH%20-%20%5Bt.me/cpy_teeL%5D
+socks5://JPjarpW3:ao3W5ZML@168.222.8.4:42000#%F0%9F%87%B9%F0%9F%87%AD%20TH%20-%20%5Bt.me/oneclickvpnkeys%5D
+socks5://ks878449260d:YlRoWvE0dL_cUqS94wPeKnA4@87.84.49.245:62000#%F0%9F%87%B9%F0%9F%87%AD%20TH%20-%20%5Bgithub.com/acymz%5D
+socks://dXNlck1HRWo6S3N5U3ZDQVA@82.47.154.48:42000#%F0%9F%87%B9%F0%9F%87%AD%20TH%20-%20%5Bt.me/cpy_teeL%5D
+socks5://ks878449260d:YlRoWvE0dL_cUqS94wPeKnA4@87.84.49.140:62000#%F0%9F%87%B9%F0%9F%87%AD%20TH%20-%20%5Bgithub.com/acymz%5D
+ss://YWVzLTI1Ni1nY206c3hhakNUd3JsSzB6bCt6bUhwWDBwMGpYSWZhdG56bEx6V2xTUTk1MEwxYz0@103.107.52.106:52351#%F0%9F%87%B9%F0%9F%87%AD+TH+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1nY206Q1RLOEdYRlFnS1lRRXJyZ2hQSmZaNnRr@27.131.164.85:47121#%F0%9F%87%B9%F0%9F%87%AD+TH+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@43.254.132.220:989#%F0%9F%87%B9%F0%9F%87%AD+TH+-+%5Bgithub.com%2Fyoufoundamin%5D
+vless://3c52e091-6714-4915-949f-2149fe69951b@103.86.49.57:80?path=%2Fws&security=&encryption=none&host=aIs.SpEeDtEsT.nEt&type=ws#%F0%9F%87%B9%F0%9F%87%AD%20TH%20-%20%5Bgithub.com/youfoundamin%5D
+vless://3c52e091-6714-4915-949f-2149fe69951b@103.86.49.57:80?path=%2Fws&security=none&encryption=none&host=aIs.SpEeDtEsT.nEt&type=ws#%F0%9F%87%B9%F0%9F%87%AD%20TH%20-%20%5Bgithub.com/youfoundamin%5D
