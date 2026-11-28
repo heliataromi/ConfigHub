@@ -1,0 +1,2 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/09/07%20🕒14:25
+vless://0b7337bf-dcff-432b-9ec6-b4fb6d22fc92@45.135.235.255:443?encryption=none&fp=firefox&host=worker3.fivon81984.workers.dev&path=%2F&security=tls&sni=worker3.fivon81984.workers.dev&type=ws#%F0%9F%87%A7%F0%9F%87%BF%20BZ%20-%20%5Bt.me/oneclickvpnkeys%5D

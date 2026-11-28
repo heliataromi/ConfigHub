@@ -1,0 +1,14 @@
+vless://00000000-0000-0000-0000-000000000000@127.0.0.1:0?type=tcp#🐣🏁%20Last%20update:%20📅1405/09/07%20🕒14:25
+trojan://UX82473651@43.201.100.203:443?security=tls&insecure=0&headerType=none&type=tcp&allowInsecure=0&sni=optimum-snapper.rooster465.autos#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/youfoundamin%5D
+hysteria2://7e68e32f-8015-4f37-9082-70e8b0b58043@3.38.208.216:443?insecure=1&sni=www.bing.com#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/acymz%5D
+socks5://59.11.209.162:1080#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/acymz%5D
+vless://db906786-8c49-4b17-9182-cea680ef954d@krd.80782636.xyz:443?sni=krd.80782636.xyz&type=ws&host=krd.80782636.xyz&path=/kw7x2mq9fp=chrome&security=tls#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/acymz%5D
+vless://21096a6d-88df-49c7-8882-d09e73b4da95@w.fugui.us:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=w.fugui.us&fp=chrome&pbk=J2yp_4F_8h4hHTntLf3URZRrdScOhOPOt1ct9LZJ5n4&sid=9cab9354c40d5f68&type=tcp&headerType=none#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/free18%5D
+vless://27c5483f-17f4-48ae-9a04-def53d88440d@152.69.226.63:25555?security=none&type=ws&path=%2F&sni=152.69.226.63#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/iampedii%5D
+vless://27c5483f-17f4-48ae-9a04-def53d88440d@152.69.226.63:25555?type=ws&path=/#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/acymz%5D
+vless://27c5483f-17f4-48ae-9a04-def53d88440d@152.69.226.63:25555?security=none&type=ws&path=%2F#%F0%9F%87%B0%F0%9F%87%B7%20KR%20-%20%5Bgithub.com/iampedii%5D
+ss://YWVzLTI1Ni1jZmI6MTIzNCFAIyQ=@49.254.204.134:1774#%F0%9F%87%B0%F0%9F%87%B7+KR+-+%5Bgithub.com%2Fiampedii%5D
+ss://YWVzLTI1Ni1nY206YWM5YzBhN2I@211.174.113.172:49642#%F0%9F%87%B0%F0%9F%87%B7+KR+-+%5Bgithub.com%2Fyoufoundamin%5D
+ss://YWVzLTI1Ni1jZmI6cXdlclJFV1FAQEAyMjEuMTUwLjEwOS44MTo0Mjk3OA==#%F0%9F%87%B0%F0%9F%87%B7+KR+-+%5Bgithub.com%2FMhdiTaheri%5D
+ss://YWVzLTI1Ni1jZmI6MTIzNCFAIyQ=@49.254.204.133:1774#%F0%9F%87%B0%F0%9F%87%B7+KR+-+%5Bgithub.com%2Fiampedii%5D
+ss://YWVzLTI1Ni1nY206cXBvd2lfdmlwX3R1bm5lbF8yMDI2X3NlY3VyZQ==@211.233.33.228:8388#%F0%9F%87%B0%F0%9F%87%B7+KR+-+%5Bgithub.com%2Facymz%5D
